@@ -21,7 +21,6 @@ class User {
     static async create(userData: Omit<IUser, 'user_id' | 'auth_token' | 'created_on' | 'updated_on'>): Promise<IUser | null> {
         const query = "INSERT INTO users (email, password, role_id, mobile_no) VALUES (?, ?, ?, ?)";
         const {email, password, role_id, mobile_no} = userData;
-
         const [result] = await pool.execute<ResultSetHeader>(query, [email, password, role_id, mobile_no]);
 
         return await this.findById(result.insertId);

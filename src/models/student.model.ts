@@ -1,7 +1,6 @@
 import { type ResultSetHeader, type RowDataPacket } from "mysql2";
 import pool from "../config/db.mysql.js";
 import type { IStudent, studentCreateData, studentUpdateData } from "../types/student.type.js";
-
 import prisma from "../config/db.prisma.js";
 
 type StudentRow = RowDataPacket & IStudent;
