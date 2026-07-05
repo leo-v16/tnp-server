@@ -1,5 +1,5 @@
 import type { IUser } from "../types/user.type.js";
-import pool from "../config/db.js";
+import pool from "../config/db.mysql.js";
 import { type ResultSetHeader, type RowDataPacket } from "mysql2";
 
 type UserRow = RowDataPacket & IUser;
@@ -16,6 +16,7 @@ class User {
         const [rows] = await pool.execute<UserRow[]>(query, [user_id]);
         return rows[0] ?? null;
     }
+    
 
     static async create(userData: Omit<IUser, 'user_id' | 'auth_token' | 'created_on' | 'updated_on'>): Promise<IUser | null> {
         const query = "INSERT INTO users (email, password, role_id, mobile_no) VALUES (?, ?, ?, ?)";

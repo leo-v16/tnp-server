@@ -1,8 +1,8 @@
 import { type ResultSetHeader, type RowDataPacket } from "mysql2";
-import pool from "../config/db.js";
+import pool from "../config/db.mysql.js";
 import type { IStudent, studentCreateData, studentUpdateData } from "../types/student.type.js";
-import { buildUpdateQuery } from "../utils/db.util.js";
-import ApiError from "../utils/ApiError.js";
+
+import prisma from "../config/db.prisma.js";
 
 type StudentRow = RowDataPacket & IStudent;
 
@@ -23,22 +23,33 @@ class Student {
     }
 
     static async update(user_id: number, studentData: studentUpdateData): Promise<IStudent | null> {
-        const { setClauses, values } = buildUpdateQuery(studentData);
-        const query = `UPDATE student_table SET ${setClauses} WHERE user_id = ${user_id}`;
+        const user = await prisma.student_table.update({
+            where: {
+                user_id: user_id,
+            },
+            data: studentData
+        });
 
-        try {
-            const [result] = await pool.execute<ResultSetHeader>(query, values);
-            if (result.affectedRows === 0) {
-                return null;
-            }
-
-            return await this.findById(result.insertId);
-        } catch(error) {
-            console.error(`[Student.update] Error updating user_id ${user_id}: `, error);
-            
-            throw new ApiError(500, "Database query failed during update operation.");
-        }
+        return user;
     }
+
+//     static async update(user_id: number, studentData: studentUpdateData): Promise<IStudent | null> {
+//         const { setClauses, values } = buildUpdateQuery(studentData);
+//         const query = `UPDATE student_table SET ${setClauses} WHERE user_id = ${user_id}`;
+
+//         try {
+//             const [result] = await pool.execute<ResultSetHeader>(query, values as any[]);
+//             if (result.affectedRows === 0) {
+//                 return null;
+//             }
+
+//             return await this.findById(result.insertId);
+//         } catch(error) {
+//             console.error(`[Student.update] Error updating user_id ${user_id}: `, error);
+            
+//             throw new ApiError(500, "Database query failed during update operation.");
+//         }
+//     }
 }
 
 export default Student;

@@ -1,3 +1,5 @@
+import type { role_table } from "@prisma/client";
+
 export enum Role {
     SuperAdmin = "Super Admin",
     Coordinator = "Coordinator",
@@ -5,7 +7,8 @@ export enum Role {
     Student = "Student"
 }
 
-export interface IRole {
-    role_id: number,
-    role: string,
-}
+export interface IRole extends role_table{};
+// export interface IRole {
+//     role_id: number,
+//     role: string,
+// }

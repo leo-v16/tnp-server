@@ -1,5 +1,5 @@
 import type { RowDataPacket } from "mysql2";
-import pool from "../config/db.js";
+import pool from "../config/db.mysql.js";
 import type { IRole } from "../types/role.type.js";
 
 type RoleRow = RowDataPacket & IRole;
