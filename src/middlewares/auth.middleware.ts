@@ -1,23 +1,43 @@
 import type { Request, Response, NextFunction } from "express";
-import { Jwt } from "../utils/jwt.util.js";
+import { Jwt, type UserJwtPayload } from "../utils/jwt.util.js";
 import ApiError from "../utils/ApiError.js";
 
-export const authenticate = (role_id_list: number[]) => (
+declare global {
+    namespace Express {
+        interface Request {
+            user?: UserJwtPayload
+        }
+    }
+}
+
+export const authenticate = (allowedRoleIds: number | number[]) => (
     req: Request,
     res: Response,
     next: NextFunction
 ) => {
     try {
-        const decode = Jwt.verify(req.body.auth_token);
-        if (decode.email === req.body.email) {
-            role_id_list.forEach((role_id)=> {
-                if (decode.role_id === role_id) {
-                    next();
-                }
-            });
-            // throw new ApiError(401, `Unauthorized: ${decode.email}:${req.body.email} | ${decode.role_id}:${role_id}`);
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            throw new ApiError(401, "Authorization token is missing or malformed");
         }
-        throw new ApiError(401, `Unauthorized`);
+
+        const token = authHeader.split(" ")[1];
+
+        const decoded = Jwt.verify(token ?? "");
+        if (!decoded) {
+            throw new ApiError(401, "Invalid or expired token");
+        }
+        req.user = decoded;
+
+        if (allowedRoleIds !== undefined) {
+            const allowedRoles = Array.isArray(allowedRoleIds) ? allowedRoleIds : [allowedRoleIds];
+
+            if (!allowedRoles.includes(decoded.auth_role_id)) {
+                throw new ApiError(403, "Forbidden: You do not have permission to access this resource");
+            }
+        }
+
+        next();
     } catch (error) {
         next(error);
     }

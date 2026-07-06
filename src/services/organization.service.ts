@@ -3,8 +3,9 @@ import User from "../models/user.model.js";
 import type { IOrganization, organizationApproveInput, organizationRegisterInput, organizationUpdateData } from "../types/organization.type.js";
 import PasswordManager from "../utils/password.util.js";
 import ApiError from "../utils/ApiError.js";
+import type { UserJwtPayload } from "../utils/jwt.util.js";
 
-export const registerOrganizationService = async (input: organizationRegisterInput): Promise<IOrganization> => {
+export const registerOrganizationService = async (input: organizationRegisterInput, actor: UserJwtPayload): Promise<IOrganization> => {
     const existingUser = await User.findByEmail(input.email);
     if (existingUser) {
         throw new ApiError(409, "Organization with this email already exists");
@@ -20,13 +21,13 @@ export const registerOrganizationService = async (input: organizationRegisterInp
     return newOganization;
 }
 
-export const approveOrganizationService = async (input: organizationApproveInput): Promise<IOrganization> => {
-    const existingUser = await User.findByEmail(input.email);
+export const approveOrganizationService = async (input: organizationApproveInput, actor: UserJwtPayload): Promise<IOrganization> => {
+    const existingUser = await User.findByEmail(actor.auth_email);
     if (!existingUser) {
         throw new ApiError(404, "User with this email does not exist");
     } 
 
-    const existingOrganization = await User.findByEmail(input.organization_email);
+    const existingOrganization = await User.findByEmail(input.email);
     if (!existingOrganization) {
         throw new ApiError(404, "Organization with this email does not exist");
     }

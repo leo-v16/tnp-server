@@ -11,9 +11,6 @@ export const organizationRegisterSchema = z.object({
 
 export const organizationApproveSchema = z.object({
     body: z.object({
-        email: z.email("Enter valid email"),
-        auth_token: z.string("Invalid auth token"),
-        role_id: z.number("Frontend must convert role text to role_id"),
-        organization_email: z.email("Enter valid organization email")
+        email: z.email("Enter valid email")
     }).strict()
 })

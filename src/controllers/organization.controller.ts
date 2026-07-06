@@ -1,8 +1,7 @@
-import { register } from "node:module";
 import { approveOrganizationService, registerOrganizationService } from "../services/organization.service.js";
 import type { Request, Response, NextFunction } from "express";
 import type { organizationApproveInput, organizationRegisterInput } from "../types/organization.type.js";
-import { email } from "zod";
+import type { UserJwtPayload } from "../utils/jwt.util.js";
 
 export const registerOrganizationController = async (
     req: Request<{}, {}, organizationRegisterInput>,
@@ -10,10 +9,10 @@ export const registerOrganizationController = async (
     next: NextFunction
 ) => {
     try {
-        const newOrganization = await registerOrganizationService(req.body);
+        const newOrganization = await registerOrganizationService(req.body, req.user as UserJwtPayload);
         res.status(201).json({
             success: true,
-            message: `Organization with email: ${email} created`,
+            message: `Organization with email: ${req.body.email} created`,
             data: newOrganization
         });
     } catch (error) {
@@ -27,10 +26,10 @@ export const approveOrganizationController = async (
     next: NextFunction
 ) => {
     try {
-        const newOrganization = await approveOrganizationService(req.body);
+        const newOrganization = await approveOrganizationService(req.body, req.user as UserJwtPayload);
         res.status(201).json({
             success: true,
-            message: `Organization with email: ${email} created`,
+            message: `Organization with email: ${req.body.email} created`,
             data: newOrganization
         });
     } catch (error) {

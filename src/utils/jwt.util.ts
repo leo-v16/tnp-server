@@ -3,8 +3,9 @@ import "dotenv/config"
 import ApiError from "./ApiError.js";
 
 export interface UserJwtPayload extends jwt.JwtPayload {
-    email: string,
-    role_id: number
+    auth_user_id: number,
+    auth_email: string,
+    auth_role_id: number
 };
 
 export class Jwt {

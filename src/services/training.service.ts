@@ -3,9 +3,10 @@ import Training from "../models/training.model.js";
 import User from "../models/user.model.js";
 import type { ITraining, trainingCreateData, trainingCreateInput } from "../types/training.type.js";
 import ApiError from "../utils/ApiError.js";
+import type { UserJwtPayload } from "../utils/jwt.util.js";
 
-export const createTrainingService = async (input: trainingCreateInput): Promise<ITraining> => {
-    const existingOrganization = await User.findByEmail(input.email);
+export const createTrainingService = async (input: trainingCreateInput, actor: UserJwtPayload): Promise<ITraining> => {
+    const existingOrganization = await User.findByEmail(actor.auth_email);
     if (!existingOrganization) {
         throw new ApiError(404, "Organization with this email does not exist");
     }

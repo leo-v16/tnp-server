@@ -1,7 +1,5 @@
 import { Prisma } from "@prisma/client";
-import { title } from "node:process";
-import { start } from "node:repl";
-import z, { email } from "zod";
+import z from "zod";
 
 export const trainingCreateSchema = z.object({
     body: z.object({
@@ -13,9 +11,5 @@ export const trainingCreateSchema = z.object({
         image_url: z.string().optional(),
         last_date_of_submission: z.date().optional(),
         is_active: z.boolean().optional(),
-
-        email: z.email(),
-        role_id: z.number(),
-        auth_token: z.string() 
     }).strict()
 })

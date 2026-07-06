@@ -33,8 +33,9 @@ export const loginUserService = async (input: userLoginInput): Promise<IUser> =>
     }
 
     const payload: UserJwtPayload = {
-        email: existingUser.email,
-        role_id: existingUser.role_id,
+        auth_user_id: existingUser.user_id,
+        auth_email: existingUser.email,
+        auth_role_id: existingUser.role_id,
     } 
     const auth_token = Jwt.sign(payload);
 

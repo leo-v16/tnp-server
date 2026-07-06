@@ -1,4 +1,4 @@
-import { Role } from "../types/role.type.js";
+import Role from "../models/role.model.js";
 import type { IStudent, studentCreateData, studentUpdateData } from "../types/student.type.js";
 import prisma from "../config/db.prisma.js";
 
