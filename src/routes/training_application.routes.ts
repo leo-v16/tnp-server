@@ -6,6 +6,6 @@ import { createTrainingApplicationController } from "../controllers/training_app
 const trainingApplicationRouter = Router();
 
 trainingApplicationRouter
-.post("/", validate(trainingApplicationCreateSchema), createTrainingApplicationController)
+.post("/create", validate(trainingApplicationCreateSchema), createTrainingApplicationController)
 
 export default trainingApplicationRouter;

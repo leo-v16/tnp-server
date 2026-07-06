@@ -1,5 +1,5 @@
 import prisma from "../config/db.prisma.js";
-import type { ITraining } from "../types/training.type.js";
+import type { ITraining, trainingCreateData } from "../types/training.type.js";
 
 class Training {
     static async findById(training_id: number): Promise<ITraining | null> {
@@ -8,4 +8,13 @@ class Training {
         });
         return training;
     }
+
+    static async create(trainingData: trainingCreateData): Promise<ITraining | null> {
+        const training = prisma.training_table.create({
+            data: trainingData
+        });
+        return training;
+    }
 }
+
+export default Training;

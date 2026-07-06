@@ -8,6 +8,6 @@ import { Role } from "../types/role.type.js";
 const studentRouter = Router();
 
 studentRouter
-.post("/register", validate(studentRegisterSchema), authenticate(Role.SuperAdmin), registerStudentController);
+.post("/register", authenticate(Role.SuperAdmin), validate(studentRegisterSchema), registerStudentController);
 
 export default studentRouter;
