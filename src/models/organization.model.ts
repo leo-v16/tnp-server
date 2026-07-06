@@ -1,5 +1,5 @@
 import prisma from "../config/db.prisma.js";
-import type { IOrganization, organizationCreateData } from "../types/organization.type.js";
+import type { IOrganization, organizationCreateData, organizationUpdateData } from "../types/organization.type.js";
 import Role from "./role.model.js";
 
 class Organization {
@@ -45,7 +45,7 @@ class Organization {
         return newOrganization;
     }
 
-    static async update(user_id: number, organizationData: organizationCreateData): Promise<IOrganization | null> {
+    static async update(user_id: number, organizationData: organizationUpdateData): Promise<IOrganization | null> {
         const organization = await prisma.organization_table.update({
             where: {
                 user_id: user_id,

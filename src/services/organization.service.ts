@@ -1,13 +1,13 @@
 import Organization from "../models/organization.model.js";
 import User from "../models/user.model.js";
-import type { organizationRegisterInput } from "../types/organization.type.js";
+import type { IOrganization, organizationApproveInput, organizationRegisterInput, organizationUpdateData } from "../types/organization.type.js";
 import PasswordManager from "../utils/password.util.js";
 import ApiError from "../utils/ApiError.js";
 
-export const registerOrganizationService = async (input: organizationRegisterInput) => {
+export const registerOrganizationService = async (input: organizationRegisterInput): Promise<IOrganization> => {
     const existingUser = await User.findByEmail(input.email);
     if (existingUser) {
-        throw new ApiError(409, "User with this email already exists");
+        throw new ApiError(409, "Organization with this email already exists");
     }
 
     input.password = await PasswordManager.hashPassword(input.password);
@@ -18,4 +18,26 @@ export const registerOrganizationService = async (input: organizationRegisterInp
     }
 
     return newOganization;
+}
+
+export const approveOrganizationService = async (input: organizationApproveInput): Promise<IOrganization> => {
+    const existingUser = await User.findByEmail(input.email);
+    if (!existingUser) {
+        throw new ApiError(404, "User with this email does not exist");
+    } 
+
+    const existingOrganization = await User.findByEmail(input.organization_email);
+    if (!existingOrganization) {
+        throw new ApiError(404, "Organization with this email does not exist");
+    }
+
+    const organizationData: organizationUpdateData = {
+        approval_id: 1
+    }
+    const organization = await Organization.update(existingOrganization.user_id, organizationData);
+    if (!organization) {
+        throw new ApiError(500, "Failed to approve(update) organization");
+    }
+
+    return organization;
 }
