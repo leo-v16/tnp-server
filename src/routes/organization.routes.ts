@@ -10,6 +10,6 @@ const organizationRouter = Router();
 
 organizationRouter
 .post("/register", validate(organizationRegisterSchema), registerOrganizationController)
-.post("/approve", authenticate(Role.SuperAdmin), validate(organizationApproveSchema), approveOrganizationService);
+.post("/approve", authenticate([Role.SuperAdmin]), validate(organizationApproveSchema), approveOrganizationService);
 
 export default organizationRouter;

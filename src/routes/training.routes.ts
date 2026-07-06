@@ -8,6 +8,6 @@ import { createTrainingController } from "../controllers/training.controller.js"
 const trainingRouter = Router();
 
 trainingRouter
-.post("/create", authenticate(Role.Organization), validate(trainingCreateSchema), createTrainingController);
+.post("/create", authenticate([Role.Organization, Role.SuperAdmin, Role.Coordinator]), validate(trainingCreateSchema), createTrainingController);
 
 export default trainingRouter;
