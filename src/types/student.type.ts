@@ -22,7 +22,7 @@ export interface IStudent extends student_table {};
 //     resume_url: string,
 // }
 
-export type studentCreateData = Pick<IStudent, 'roll_no' | 'name' | 'age' | 'department_id' | 'gender_id' | 'semester_id'> & Omit<userCreateData, 'user_id' | 'role_id'>;
+export type studentCreateData = Pick<IStudent, 'roll_no' | 'name' | 'age' | 'department_id' | 'gender_id' | 'semester_id'> & Omit<userCreateData, 'role_id'>;
 // export type studentCreateData = IStudent & userCreateData;
 export type studentUpdateData = Partial<Omit<IStudent, 'user_id'>>;
 
