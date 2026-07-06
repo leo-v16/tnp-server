@@ -3,6 +3,7 @@ import User from "../models/user.model.js";
 import type { IUser, userLoginInput, userRegisterInput } from "../types/user.type.js";
 import ApiError from "../utils/ApiError.js";
 import PasswordManager from "../utils/password.util.js";
+import { Jwt, type UserJwtPayload } from "../utils/jwt.util.js";
 
 export const registerUserService = async (input: userRegisterInput): Promise<IUser> => {
     const existingUser = await User.findByEmail(input.email);
@@ -31,5 +32,11 @@ export const loginUserService = async (input: userLoginInput): Promise<IUser> =>
         throw new ApiError(401, "Incorrect password");
     }
 
-    return existingUser;
+    const payload: UserJwtPayload = {
+        email: existingUser.email,
+        role_id: existingUser.role_id,
+    } 
+    const auth_token = Jwt.sign(payload);
+
+    return {...existingUser, auth_token: auth_token};
 }

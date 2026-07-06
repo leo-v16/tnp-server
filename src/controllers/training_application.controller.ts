@@ -1,7 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import type { TrainingApplicationCreateInput } from "../types/training_application.type.js";
-import { createTrainingApplicationService } from "../services/student.service.js";
-import { success } from "zod";
+import { createTrainingApplicationService } from "../services/training_application.service.js";
 
 export const createTrainingApplicationController = async (
     req: Request<{}, {}, TrainingApplicationCreateInput>,

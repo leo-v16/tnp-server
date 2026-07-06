@@ -1,4 +1,7 @@
 import { type student_table } from "@prisma/client";
+import type z from "zod";
+import type { studentRegisterSchema } from "../validations/student.validation.js";
+import type { userCreateData } from "./user.type.js";
 
 export interface IStudent extends student_table {};
 
@@ -19,6 +22,8 @@ export interface IStudent extends student_table {};
 //     resume_url: string,
 // }
 
-export type studentCreateData = Pick<IStudent, 'roll_no' | 'name'>;
+export type studentCreateData = Pick<IStudent, 'roll_no' | 'name' | 'age' | 'department_id' | 'gender_id' | 'semester_id'> & Omit<userCreateData, 'user_id' | 'role_id'>;
+// export type studentCreateData = IStudent & userCreateData;
 export type studentUpdateData = Partial<Omit<IStudent, 'user_id'>>;
 
+export type studentRegisterInput = z.infer<typeof studentRegisterSchema>['body'];

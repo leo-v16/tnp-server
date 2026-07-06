@@ -1,29 +1,32 @@
-import type { IUser } from "../types/user.type.js";
-import pool from "../config/db.mysql.js";
-import { type ResultSetHeader, type RowDataPacket } from "mysql2";
-
-type UserRow = RowDataPacket & IUser;
+import type { IUser, userCreateData } from "../types/user.type.js";
+import prisma from "../config/db.prisma.js";
 
 class User {
+
     static async findByEmail(email: string): Promise<IUser | null> {
-        const query = "SELECT * FROM users WHERE email = ? LIMIT 1";
-        const [rows] = await pool.execute<UserRow[]>(query, [email]);
-        return rows[0] ?? null;
+        const user = prisma.user_table.findUnique({
+            where: {email}
+        });
+        return user;
     }
 
     static async findById(user_id: number): Promise<IUser | null> {
-        const query = "SELECT * FROM users WHERE user_id = ? LIMIT 1";
-        const [rows] = await pool.execute<UserRow[]>(query, [user_id]);
-        return rows[0] ?? null;
+        const user = prisma.user_table.findUnique({
+            where: {user_id}
+        });
+        return user;
     }
     
-
-    static async create(userData: Omit<IUser, 'user_id' | 'auth_token' | 'created_on' | 'updated_on'>): Promise<IUser | null> {
-        const query = "INSERT INTO users (email, password, role_id, mobile_no) VALUES (?, ?, ?, ?)";
-        const {email, password, role_id, mobile_no} = userData;
-        const [result] = await pool.execute<ResultSetHeader>(query, [email, password, role_id, mobile_no]);
-
-        return await this.findById(result.insertId);
+    static async create(userData: userCreateData): Promise<IUser | null> {
+        const newUser = prisma.user_table.create({
+            data: {
+                email: userData.email,
+                password: userData.password,
+                role_id: userData.role_id,
+                mobile_no: userData.mobile_no
+            }
+        });
+        return newUser;
     }
 }
 

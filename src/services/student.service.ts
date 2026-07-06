@@ -1,17 +1,13 @@
-import TrainingApplication from "../models/training_application.model.js";
-import type { ITrainingApplication, TrainingApplicationCreateInput } from "../types/training_application.type.js";
+import Student from "../models/student.model.js";
+import type { IStudent, studentCreateData, studentRegisterInput } from "../types/student.type.js";
 import ApiError from "../utils/ApiError.js";
+import PasswordManager from "../utils/password.util.js";
 
-export const createTrainingApplicationService = async (input: TrainingApplicationCreateInput): Promise<ITrainingApplication> =>  {
-    const existingTrainingApplication = await TrainingApplication.findById(input.student_id, input.training_id);
-    if (existingTrainingApplication) {
-        throw new ApiError(409, "An application from this user already exists");
+export const registerStudentService = async (input: studentRegisterInput): Promise<IStudent> => {
+    input.password = await PasswordManager.hashPassword(input.password);
+    const newStudent = await Student.create(input); 
+    if (!newStudent) {
+        throw new ApiError(500, "Failed to create new student");
     }
-
-    const newTrainingApplication = await TrainingApplication.create(input);
-    if (!newTrainingApplication) {
-        throw new ApiError(500, "Failed to create application");
-    }
-
-    return newTrainingApplication;
+    return newStudent;
 }
