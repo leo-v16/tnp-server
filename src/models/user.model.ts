@@ -11,7 +11,10 @@ class User {
 
     static async findById(user_id: number): Promise<IUser | null> {
         const user = prisma.user_table.findUnique({
-            where: {user_id}
+            where: {user_id},
+            include: {
+                role_table: true
+            }
         });
         return user;
     }
@@ -29,7 +32,11 @@ class User {
     }
 
     static async getAll(): Promise<IUser[] | null> {
-        const userList = await prisma.user_table.findMany();
+        const userList = await prisma.user_table.findMany({
+            include: {
+                role_table: true
+            }
+        });
         return userList;
     }
 }
