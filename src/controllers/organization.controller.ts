@@ -1,6 +1,6 @@
-import { approveOrganizationService, getApprovedOrganizationService, getPendingOrganizationService, getRejectedOrganizationService, registerOrganizationService } from "../services/organization.service.js";
+import { approveOrganizationService, getApprovedOrganizationService, getOneOrganizationService, getPendingOrganizationService, getRejectedOrganizationService, registerOrganizationService } from "../services/organization.service.js";
 import type { Request, Response, NextFunction } from "express";
-import type { organizationApproveInput, organizationRegisterInput } from "../types/organization.type.js";
+import type { organizationApproveInput, organizationIdParamInput, organizationRegisterInput } from "../types/organization.type.js";
 import type { UserJwtPayload } from "../utils/jwt.util.js";
 import { success } from "zod";
 
@@ -79,6 +79,24 @@ export const getPendingOrganizationController = async (
 ) => {
     try {
         const organizationList = await getPendingOrganizationService();
+        res.status(200).json({
+            success: true,
+            message: "Successfully fetched list of approved organization",
+            data: organizationList
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getOneOrganizationController = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const organization_id = (req.params as organizationIdParamInput).organization_id;
+        const organizationList = await getOneOrganizationService(organization_id);
         res.status(200).json({
             success: true,
             message: "Successfully fetched list of approved organization",

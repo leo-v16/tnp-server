@@ -66,3 +66,11 @@ export const  getPendingOrganizationService = async (): Promise<IOrganization[]>
     }
     return organizationList;
 }
+
+export const  getOneOrganizationService = async (organization_id: number): Promise<IOrganization> => {
+    const organization = await Organization.findById(organization_id);
+    if (!organization) {
+        throw new ApiError(500, "Could not fetch organization list");
+    }
+    return organization;
+}

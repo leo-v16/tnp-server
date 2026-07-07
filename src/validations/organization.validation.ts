@@ -13,4 +13,10 @@ export const organizationApproveSchema = z.object({
     body: z.object({
         email: z.email("Enter valid email")
     }).strict()
-})
+});
+
+export const organizationIdParamSchema = z.object({
+    params: z.object({
+        organization_id: z.coerce.number("organization_id must be a number")
+    })
+});
