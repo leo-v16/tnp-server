@@ -23,7 +23,7 @@ export const loginUserController = async (req: Request<{}, {}, userLoginInput>, 
         return res.status(200).json({
             success: true,
             message: "User login successful",
-            data: loggedUser
+            data: {...loggedUser, password: undefined}
         });
     } catch (error) {
         next(error);
@@ -40,7 +40,7 @@ export const getUserController = async (
         res.status(200).json({
             success: true,
             message: "All user list provided",
-            data: userList
+            data: {...userList, password: undefined}
         });
     } catch(error) {
         next(error);
@@ -57,7 +57,7 @@ export const getOneUserController = async (
         res.status(200).json({
             success: true,
             message: "User details provided",
-            data: user
+            data: {...user, password: undefined}
         });
     } catch(error) {
         next(error);
