@@ -42,3 +42,27 @@ export const approveOrganizationService = async (input: organizationApproveInput
 
     return organization;
 }
+
+export const  getApprovedOrganizationService = async (): Promise<IOrganization[]> => {
+    const organizationList = await Organization.findApproved();
+    if (!organizationList) {
+        throw new ApiError(500, "Could not fetch organization list");
+    }
+    return organizationList;
+}
+
+export const  getRejectedOrganizationService = async (): Promise<IOrganization[]> => {
+    const organizationList = await Organization.findRejected();
+    if (!organizationList) {
+        throw new ApiError(500, "Could not fetch organization list");
+    }
+    return organizationList;
+}
+
+export const  getPendingOrganizationService = async (): Promise<IOrganization[]> => {
+    const organizationList = await Organization.findPending();
+    if (!organizationList) {
+        throw new ApiError(500, "Could not fetch organization list");
+    }
+    return organizationList;
+}

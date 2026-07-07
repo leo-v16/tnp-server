@@ -55,6 +55,38 @@ class Organization {
 
         return organization;
     }
+
+    static async findApproved(): Promise<IOrganization[] | null> {
+        return await prisma.organization_table.findMany({
+            where: {
+                approval_id: 1
+            },
+            include: {
+                user_table: true
+            }
+        });
+    }
+
+    static async findRejected(): Promise<IOrganization[] | null> {
+        return await prisma.organization_table.findMany({
+            where: {
+                approval_id: 2
+            },
+            include: {
+                user_table: true
+            }
+        });
+    }
+    static async findPending(): Promise<IOrganization[] | null> {
+        return await prisma.organization_table.findMany({
+            where: {
+                approval_id: 0
+            },
+            include: {
+                user_table: true
+            }
+        });
+    }
 }
 
 export default Organization;
