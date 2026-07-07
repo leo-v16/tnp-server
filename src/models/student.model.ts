@@ -1,6 +1,7 @@
 import Role from "../models/role.model.js";
 import type { IStudent, studentCreateData, studentUpdateData } from "../types/student.type.js";
 import prisma from "../config/db.prisma.js";
+import User from "./user.model.js";
 
 class Student {
     static async findById(user_id: number): Promise<IStudent | null> {
@@ -8,6 +9,18 @@ class Student {
             where: {user_id}
         });
         return student;
+    }
+
+    static async findByEmail(email: string): Promise<IStudent | null> {
+        const student = await prisma.user_table.findUnique({
+            where: {
+                email
+            },
+            include: {
+                student_table: true
+            }
+        });
+        return student?.student_table ?? null;
     }
 
     static async create(studentData: studentCreateData): Promise<IStudent | null> {
@@ -38,16 +51,28 @@ class Student {
         return newStudent;
     }
 
-    static async update(user_id: number, studentData: studentUpdateData): Promise<IStudent | null> {
-        const user = await prisma.student_table.update({
-            where: {
-                user_id: user_id,
-            },
-            data: studentData
+    static async getAll(): Promise<IStudent[] | null> {
+        const studentList = await prisma.student_table.findMany({
+            include: {
+                user_table: true
+            }
         });
-
-        return user;
+        return studentList;
     }
+
+    // static async update(user_id: number, studentData: studentUpdateData): Promise<IStudent | null> {
+        
+    //     const user = await prisma.user_table.update({
+    //         where: {
+    //             user_id: user_id,
+    //         },
+    //         data: {
+    //             email: studentData?.email 
+    //         }
+    //     });
+
+    //     return user;
+    // }
 }
 
 export default Student;

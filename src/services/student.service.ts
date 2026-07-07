@@ -1,6 +1,6 @@
 import Student from "../models/student.model.js";
 import User from "../models/user.model.js";
-import type { IStudent, studentCreateData, studentRegisterInput } from "../types/student.type.js";
+import type { IStudent, studentCreateData, studentRegisterInput, studentUpdateData, studentUpdateInput } from "../types/student.type.js";
 import ApiError from "../utils/ApiError.js";
 import type { UserJwtPayload } from "../utils/jwt.util.js";
 import PasswordManager from "../utils/password.util.js";
@@ -19,3 +19,26 @@ export const registerStudentService = async (input: studentRegisterInput, actor:
     }
     return newStudent;
 }
+
+// export const updateStudentService = async (input: studentUpdateInput, actor: UserJwtPayload): Promise<IStudent> => {
+//     const existingStudent = await Student.findByEmail(actor.auth_email);
+//     if (!existingStudent) {
+//         throw new ApiError(404, "Student not found");
+//     }
+//     const studentData: studentUpdateData = {
+//         email: input.email,
+//         mobile_no: input.mobile_no,
+//         has_backlog: input.has_backlog,
+//         cgpa: input.cgpa,
+//         tenth_divison_id: input.tenth_divison_id,
+//         twelfth_division_id: input.twelfth_division_id,
+//         category_id: input.category_id,
+//         resume_url: input.resume_url,
+//         image_url: input.image_url,
+//     }
+//      const updatedStudent = await Student.update(actor.auth_user_id, studentData);
+//     if (!updatedStudent) {
+//         throw new ApiError(500, "Failed to update student");
+//     }
+//     return updatedStudent;
+// }
