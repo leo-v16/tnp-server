@@ -16,3 +16,9 @@ export const userLoginSchema = z.object({
         role_id: z.number("Frontend must convert role text to role_id"),
     }).strict()
 });
+
+export const userIdParamSchema = z.object({
+    params: z.object({
+        user_id: z.coerce.number("user_id must be a number")
+    })
+});

@@ -1,6 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
-import { registerUserService, loginUserService } from "../services/user.service.js";
-import type { userLoginInput, userRegisterInput } from "../types/user.type.js";
+import { registerUserService, loginUserService, getUserService, getOneUserService } from "../services/user.service.js";
+import type { userIdParamInput, userLoginInput, userRegisterInput } from "../types/user.type.js";
+import User from "../models/user.model.js";
+import ApiError from "../utils/ApiError.js";
 
 export const registerUserController = async (req: Request<{}, {}, userRegisterInput>, res: Response, next: NextFunction) => {
     try {
@@ -39,6 +41,23 @@ export const getUserController = async (
             success: true,
             message: "All user list provided",
             data: userList
+        });
+    } catch(error) {
+        next(error);
+    }
+}
+
+export const getOneUserController = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const user = await getOneUserService(req.params as unknown as userIdParamInput);
+        res.status(200).json({
+            success: true,
+            message: "User details provided",
+            data: user
         });
     } catch(error) {
         next(error);

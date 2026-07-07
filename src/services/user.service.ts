@@ -1,9 +1,14 @@
 import { escapeId } from "mysql2";
 import User from "../models/user.model.js";
-import type { IUser, userLoginInput, userRegisterInput } from "../types/user.type.js";
+import type { IUser, userIdParamInput, userLoginInput, userRegisterInput } from "../types/user.type.js";
 import ApiError from "../utils/ApiError.js";
 import PasswordManager from "../utils/password.util.js";
 import { Jwt, type UserJwtPayload } from "../utils/jwt.util.js";
+import Role from "../models/role.model.js";
+import Student from "../models/student.model.js";
+import type { IStudent } from "../types/student.type.js";
+import type { IOrganization } from "../types/organization.type.js";
+import Organization from "../models/organization.model.js";
 
 export const registerUserService = async (input: userRegisterInput): Promise<IUser> => {
     const existingUser = await User.findByEmail(input.email);
@@ -21,7 +26,7 @@ export const registerUserService = async (input: userRegisterInput): Promise<IUs
     return newUser;
 }
 
-export const loginUserService = async (input: userLoginInput): Promise<IUser> => {
+export const loginUserService = async (input: userLoginInput): Promise<IUser & (IStudent | IOrganization)> => {
     const existingUser = await User.findByEmail(input.email);
     if (!existingUser) {
         throw new ApiError(404, "User with this email does not exist");
@@ -39,7 +44,17 @@ export const loginUserService = async (input: userLoginInput): Promise<IUser> =>
     } 
     const auth_token = Jwt.sign(payload);
 
-    return {...existingUser, auth_token: auth_token};
+    let extradata: IStudent | IOrganization | null = null;
+    switch (existingUser.role_id) {
+        case Role.Student:
+            extradata = await Student.findById(existingUser.user_id);
+            break;
+        case Role.Organization:
+            extradata = await Organization.findById(existingUser.user_id);
+            break;
+    }
+
+    return {...existingUser, auth_token: auth_token, ...extradata} as IUser & (IStudent | IOrganization);
 }
 
 export const getUserService = async (): Promise<IUser[]> => {
@@ -49,4 +64,21 @@ export const getUserService = async (): Promise<IUser[]> => {
     }
 
     return userList;
+}
+
+export const getOneUserService = async (input: userIdParamInput): Promise<IUser & (IStudent | IOrganization)> => {
+    const user = await User.findById(input.user_id);
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+    switch (user.role_id) {
+        case Role.Student:
+            const student = await Student.findById(user.user_id);
+            return {...user, ...student} as IUser & IStudent;
+        case Role.Organization:
+            const organization = await Organization.findById(user.user_id);
+            return {...user, ...organization} as IUser & IOrganization;
+        default:
+            throw new ApiError(400, "Unknown Role");
+    }
 }
