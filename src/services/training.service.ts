@@ -1,7 +1,8 @@
-import Organization from "../models/organization.model.js";
+import Role from "../models/role.model.js";
+import Student from "../models/student.model.js";
 import Training from "../models/training.model.js";
 import User from "../models/user.model.js";
-import type { ITraining, trainingCreateData, trainingCreateInput } from "../types/training.type.js";
+import type { ITraining, trainingCreateData, trainingCreateInput, TrainingEligibilityResult } from "../types/training.type.js";
 import ApiError from "../utils/ApiError.js";
 import type { UserJwtPayload } from "../utils/jwt.util.js";
 
@@ -12,7 +13,7 @@ export const createTrainingService = async (input: trainingCreateInput, actor: U
     }
 
     const trainingData: trainingCreateData = {
-        creator_id: existingOrganization.user_id,
+        creator_id: actor.user_id,
         title: input.title,
         description: input.description ?? null,
         min_cgpa: input.min_cgpa ?? null,
@@ -26,4 +27,56 @@ export const createTrainingService = async (input: trainingCreateInput, actor: U
         throw new ApiError(500, "Failed to create training");
     }
     return training;
+}
+
+export const getTrainingService = async (actor: UserJwtPayload): Promise<ITraining[]> => {
+    switch (actor.auth_role_id) {
+        case Role.Student:
+            const eligibleTraining = await Training.getEligibleById(actor.auth_user_id);
+            if (!eligibleTraining) {
+                throw new ApiError(500, "Could not find eligible trainings");
+            }
+            return eligibleTraining;
+        case Role.Organization | Role.Coordinator | Role.SuperAdmin:
+            const creatorTraining = await Training.findByCreatorId(actor.auth_user_id);
+            if (!creatorTraining) {
+                throw new ApiError(500, "Could not find eligible trainings");
+            }
+            return creatorTraining;
+        default:
+            throw new ApiError(404, "Invalid Role");
+    }
+}
+
+export const checkStudentTrainingEligibilitySerivce = async (training_id: number, actor: UserJwtPayload): Promise<TrainingEligibilityResult> => {
+    const training = await Training.findById(training_id);
+    if (!training) {
+        throw new ApiError(404, "Training does not exists");
+    }
+    if (!training.is_active) {
+        return {
+            isEligible: false,
+            reason: "Training is not active"
+        };
+    }
+    
+    const student = await Student.findById(actor.auth_user_id);
+    if (!student) {
+        throw new ApiError(404, "Student does not exists");
+    }
+
+
+    if (training.min_cgpa !== null) {
+        if (student.cgpa === null) {
+            return {
+                isEligible: false,
+                reason: "Training requires minimum cgpa, but student has not set their cgpa"
+            };
+        }
+    }
+
+    return {
+        isEligible: true,
+        reason: "Student is Eligible"
+    }
 }

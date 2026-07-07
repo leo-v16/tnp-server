@@ -2,7 +2,6 @@ import type { IUser, userCreateData } from "../types/user.type.js";
 import prisma from "../config/db.prisma.js";
 
 class User {
-
     static async findByEmail(email: string): Promise<IUser | null> {
         const user = prisma.user_table.findUnique({
             where: {email}
@@ -18,7 +17,7 @@ class User {
     }
     
     static async create(userData: userCreateData): Promise<IUser | null> {
-        const newUser = prisma.user_table.create({
+        const newUser = await prisma.user_table.create({
             data: {
                 email: userData.email,
                 password: userData.password,
@@ -27,6 +26,11 @@ class User {
             }
         });
         return newUser;
+    }
+
+    static async getAll(): Promise<IUser[] | null> {
+        const userList = await prisma.user_table.findMany();
+        return userList;
     }
 }
 

@@ -27,3 +27,20 @@ export const loginUserController = async (req: Request<{}, {}, userLoginInput>, 
         next(error);
     }
 }
+
+export const getUserController = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const userList = await getUserService();
+        res.status(200).json({
+            success: true,
+            message: "All user list provided",
+            data: userList
+        });
+    } catch(error) {
+        next(error);
+    }
+}

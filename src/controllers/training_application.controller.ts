@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import type { TrainingApplicationCreateInput } from "../types/training_application.type.js";
-import { createTrainingApplicationService } from "../services/training_application.service.js";
+import {createTrainingApplicationService, viewTrainingApplicationService } from "../services/training_application.service.js";
 import type { UserJwtPayload } from "../utils/jwt.util.js";
 
 export const createTrainingApplicationController = async (
@@ -16,6 +16,24 @@ export const createTrainingApplicationController = async (
             data: newTrainingApplication
         });
     } catch(error) {
+        next(error);
+    }
+}
+
+export const viewTrainingApplicationController = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const appliedTrainings = await viewTrainingApplicationService(req.user as UserJwtPayload);
+
+        res.status(200).json({
+            success: true,
+            message: "Training Application fetch successfull",
+            data: appliedTrainings
+        });
+    } catch (error) {
         next(error);
     }
 }

@@ -41,3 +41,12 @@ export const loginUserService = async (input: userLoginInput): Promise<IUser> =>
 
     return {...existingUser, auth_token: auth_token};
 }
+
+export const getUserService = async (): Promise<IUser[]> => {
+    const userList = await User.getAll();
+    if (!userList) {
+        throw new ApiError(500, "Unable to get user list");
+    }
+
+    return userList;
+}

@@ -6,3 +6,5 @@ export interface IDepartment extends department_table {};
 //     dept_name: string,
 //     is_active: boolean,
 // }
+
+export type CreateDepartmentData = Omit<IDepartment, 'department_id'>;
