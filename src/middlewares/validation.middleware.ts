@@ -8,9 +8,9 @@ export const validate = (schema: ZodType<any, any, any>) => (req: Request, res: 
             query: req.query,
             params: req.params
         });
-        req.body = parsed.body;
-        req.query = parsed.query;
-        req.params = parsed.params;
+        // req.body = parsed.body;
+        // req.query = parsed.query;
+        // req.params = parsed.params;
         next();
     } catch (error) {
         res.status(400).json({

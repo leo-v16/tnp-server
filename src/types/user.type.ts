@@ -1,6 +1,7 @@
 import z from "zod";
 import { userIdParamSchema, userLoginSchema, type userRegisterSchema } from "../validations/user.validation.js";
 import {type user_table} from "@prisma/client";
+import type { ParamsDictionary } from "express-serve-static-core";  
 
 export interface IUser extends user_table{};
 
@@ -19,4 +20,4 @@ export type userCreateData = Pick<IUser, 'email' | 'password' | 'role_id' | 'mob
 
 export type userRegisterInput = z.infer<typeof userRegisterSchema>['body'];
 export type userLoginInput = z.infer<typeof userLoginSchema>['body'];
-export type userIdParamInput = z.infer<typeof userIdParamSchema>['params'];
+export type userIdParamInput = z.infer<typeof userIdParamSchema>['params'] & ParamsDictionary;

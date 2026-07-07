@@ -48,12 +48,12 @@ export const getUserController = async (
 }
 
 export const getOneUserController = async (
-    req: Request,
+    req: Request<userIdParamInput>,
     res: Response,
     next: NextFunction
 ) => {
     try {
-        const user = await getOneUserService(req.params as unknown as userIdParamInput);
+        const user = await getOneUserService(req.params as userIdParamInput);
         res.status(200).json({
             success: true,
             message: "User details provided",
