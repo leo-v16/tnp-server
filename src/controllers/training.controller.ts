@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
-import type { trainingCreateInput } from "../types/training.type.js";
-import { createTrainingService, getTrainingService } from "../services/training.service.js";
+import type { trainingCreateInput, trainingIdParamInput } from "../types/training.type.js";
+import { createTrainingService, getOneTrainingService, getTrainingService } from "../services/training.service.js";
 import type { UserJwtPayload } from "../utils/jwt.util.js";
 
 export const createTrainingController = async (
@@ -30,6 +30,24 @@ export const getTrainingController = async (
         res.status(201).json({
             success: true,
             message: "Successfully fetched all trainings",
+            data: trainingList
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getOneTrainingController = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const training_id = (req.params as trainingIdParamInput).training_id;
+        const trainingList = await getOneTrainingService(training_id, req.user as UserJwtPayload);
+        res.status(201).json({
+            success: true,
+            message: "Successfully fetched training",
             data: trainingList
         });
     } catch (error) {

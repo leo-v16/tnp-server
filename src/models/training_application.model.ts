@@ -27,6 +27,17 @@ class TrainingApplication {
         const appliedTraining = await prisma.training_application_table.findMany({
             where: {
                 student_id
+            },
+            include: {
+                training_table: {
+                    include: {
+                        user_table: {
+                            include: {
+                                organization_table: true
+                            }
+                        }
+                    }
+                }
             }
         });
 

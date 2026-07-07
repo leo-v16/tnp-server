@@ -40,7 +40,26 @@ export const getTrainingService = async (actor: UserJwtPayload): Promise<ITraini
         case Role.Organization | Role.Coordinator | Role.SuperAdmin:
             const creatorTraining = await Training.findByCreatorId(actor.auth_user_id);
             if (!creatorTraining) {
-                throw new ApiError(500, "Could not find eligible trainings");
+                throw new ApiError(500, "Could not find trainings");
+            }
+            return creatorTraining;
+        default:
+            throw new ApiError(404, "Invalid Role");
+    }
+}
+
+export const getOneTrainingService = async (trainind_id: number, actor: UserJwtPayload): Promise<ITraining> => {
+    switch (actor.auth_role_id) {
+        case Role.Student:
+            const eligibleTraining = await Training.getOneEligibleById(trainind_id, actor.auth_user_id);
+            if (!eligibleTraining) {
+                throw new ApiError(500, "Could not find eligible training");
+            }
+            return eligibleTraining;
+        case Role.Organization | Role.Coordinator | Role.SuperAdmin:
+            const creatorTraining = await Training.findById(trainind_id);
+            if (!creatorTraining) {
+                throw new ApiError(500, "Could not find training");
             }
             return creatorTraining;
         default:

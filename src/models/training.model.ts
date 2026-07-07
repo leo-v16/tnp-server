@@ -17,6 +17,28 @@ class Training {
         });
         return training;
     }
+    
+    static async getOneEligibleById(training_id: number, student_id: number): Promise<ITraining | null> {
+        const student = await Student.findById(student_id);
+        const trainingList = await prisma.training_table.findFirst({
+            where: {
+                training_id: training_id,
+                is_active: true,
+                OR: [
+                    {
+                        min_cgpa: null,
+                    },
+                    {
+                        min_cgpa: {
+                            lte: student?.cgpa || new Prisma.Decimal(0)
+                        }
+                    }
+                ] 
+            }
+        });
+
+        return trainingList;
+    }
 
     static async getEligibleById(student_id: number): Promise<ITraining[] | null> {
         const student = await Student.findById(student_id);

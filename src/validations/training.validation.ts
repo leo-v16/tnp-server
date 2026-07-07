@@ -13,3 +13,9 @@ export const trainingCreateSchema = z.object({
         is_active: z.boolean().optional(),
     }).strict()
 })
+
+export const trainingIdParamSchema = z.object({
+    params: z.object({
+        training_id: z.coerce.number("training_id must be a number")
+    })
+});
