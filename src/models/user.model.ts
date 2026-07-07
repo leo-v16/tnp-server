@@ -4,7 +4,10 @@ import prisma from "../config/db.prisma.js";
 class User {
     static async findByEmail(email: string): Promise<IUser | null> {
         const user = prisma.user_table.findUnique({
-            where: {email}
+            where: {email},
+            include: {
+                role_table: true
+            }
         });
         return user;
     }
