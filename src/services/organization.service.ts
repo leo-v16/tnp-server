@@ -1,6 +1,6 @@
 import Organization from "../models/organization.model.js";
 import User from "../models/user.model.js";
-import type { IOrganization, organizationApproveInput, organizationRegisterInput, organizationUpdateData } from "../types/organization.type.js";
+import type { IOrganization, organizationRegisterInput, organizationStatusInput, organizationUpdateData } from "../types/organization.type.js";
 import PasswordManager from "../utils/password.util.js";
 import ApiError from "../utils/ApiError.js";
 import type { UserJwtPayload } from "../utils/jwt.util.js";
@@ -21,7 +21,7 @@ export const registerOrganizationService = async (input: organizationRegisterInp
     return newOganization;
 }
 
-export const approveOrganizationService = async (input: organizationApproveInput, actor: UserJwtPayload): Promise<IOrganization> => {
+export const approveOrganizationService = async (input: organizationStatusInput, actor: UserJwtPayload): Promise<IOrganization> => {
     const existingUser = await User.findByEmail(actor.auth_email);
     if (!existingUser) {
         throw new ApiError(404, "User with this email does not exist");
@@ -34,6 +34,28 @@ export const approveOrganizationService = async (input: organizationApproveInput
 
     const organizationData: organizationUpdateData = {
         approval_id: 1
+    }
+    const organization = await Organization.update(existingOrganization.user_id, organizationData);
+    if (!organization) {
+        throw new ApiError(500, "Failed to approve(update) organization");
+    }
+
+    return organization;
+}
+
+export const rejectOrganizationService = async (input: organizationStatusInput, actor: UserJwtPayload): Promise<IOrganization> => {
+    const existingUser = await User.findByEmail(actor.auth_email);
+    if (!existingUser) {
+        throw new ApiError(404, "User with this email does not exist");
+    } 
+
+    const existingOrganization = await User.findByEmail(input.email);
+    if (!existingOrganization) {
+        throw new ApiError(404, "Organization with this email does not exist");
+    }
+
+    const organizationData: organizationUpdateData = {
+        approval_id: 2
     }
     const organization = await Organization.update(existingOrganization.user_id, organizationData);
     if (!organization) {

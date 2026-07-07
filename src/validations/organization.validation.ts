@@ -9,7 +9,7 @@ export const organizationRegisterSchema = z.object({
     }).strict()
 });
 
-export const organizationApproveSchema = z.object({
+export const organizationStatusSchema = z.object({
     body: z.object({
         email: z.email("Enter valid email")
     }).strict()
