@@ -8,7 +8,16 @@ import Training from "./training.model.js";
 class Student {
     static async findById(user_id: number): Promise<IStudent | null> {
         const student = await prisma.student_table.findUnique({
-            where: {user_id}
+            where: {user_id},
+            include: {
+                training_application_table: true,
+                department_table: true,
+                student_skill_table: true,
+                user_table: true,
+                gender_table: true,
+                category_table: true,
+                semester_table: true,
+            }
         });
         return student;
     }
@@ -156,6 +165,22 @@ class Student {
         })
 
         return studentList;
+    }
+
+    static async getCountByDepartmentId(department_id: number): Promise<number | null> {
+        return await prisma.student_table.count({
+            where: {
+                department_id
+            }
+        })
+    }
+
+    static async findByDepartmentId(department_id: number): Promise<IStudent[] | null> {
+        return await prisma.student_table.findMany({
+            where: {
+                department_id
+            }
+        });
     }
 }
 

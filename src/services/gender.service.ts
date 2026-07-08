@@ -1,12 +1,13 @@
 import Department from "../models/department.model.js";
-import type { IDepartment } from "../types/department.type.js";
+import Gender from "../models/gender.model.js";
+import type { IGender } from "../types/gender.type.js";
 import ApiError from "../utils/ApiError.js";
 
-export const getAllGenderService = async (): Promise<IDepartment[]> => {
-    const departmentList = await Department.getAll();
-    if (!departmentList) {
+export const getAllGenderService = async (): Promise<IGender[]> => {
+    const genderList = await Gender.findAll();
+    if (!genderList) {
         throw new ApiError(500, "Could not fetch department");
     }
 
-    return departmentList;
+    return genderList;
 }

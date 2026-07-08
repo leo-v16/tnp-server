@@ -1,6 +1,7 @@
 import prisma from "../config/db.prisma.js";
 import type { IOrganization, organizationCreateData, organizationUpdateData } from "../types/organization.type.js";
 import Role from "./role.model.js";
+import Student from "./student.model.js";
 
 class Organization {
     static async findById(user_id: number): Promise<IOrganization | null> {
@@ -77,6 +78,7 @@ class Organization {
             }
         });
     }
+
     static async findPending(): Promise<IOrganization[] | null> {
         return await prisma.organization_table.findMany({
             where: {
@@ -87,6 +89,56 @@ class Organization {
             }
         });
     }
+
+    static async getDashboard(department_id: number) {
+        const studentInDepartmentList = await prisma.student_table.findMany({
+            where: {
+                department_id
+            },
+            include: {
+                user_table: true,
+                training_application_table: true,
+                department_table: true
+            }
+        });
+
+        const studentInDepartmentCount = await Student.getCountByDepartmentId(department_id);
+
+        const approvedTrainingApplicationInDepartmentList = await prisma.training_application_table.findMany({
+            where: {
+                status_id: 1,
+                student_table: {
+                    department_id: department_id
+                }
+            },
+            include: {
+                student_table: {
+                    include: {
+                        user_table: true
+                    },
+                }
+            }
+        });
+
+        const approvedTrainingApplicationInDepartmentCount = await prisma.training_application_table.count({
+            where: {
+                status_id: 1,
+                student_table: {
+                    department_id
+                }
+            }
+        });
+
+        const trainingApplicationInDepartmentCount = await prisma.training_application_table.count({
+            where: {
+                student_table: {
+                    department_id
+                }
+            }
+        });
+
+        
+    } 
 }
 
 export default Organization;

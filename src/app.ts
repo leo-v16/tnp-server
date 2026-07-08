@@ -11,6 +11,7 @@ import skillRoute from "./routes/skill.route.js";
 import categoryRoute from "./routes/category.route.js";
 import divisionRoute from "./routes/division.route.js";
 import genderRoute from "./routes/gender.route.js";
+import semesterRoute from "./routes/semester.route.js";
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use("/skill", skillRoute);
 app.use("/category", categoryRoute);
 app.use("/division", divisionRoute);
 app.use("/gender", genderRoute);
+app.use("/semster", semesterRoute);
 
 app.use(errorHandler);
 

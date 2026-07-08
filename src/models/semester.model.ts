@@ -11,7 +11,7 @@ class Semester {
         return semester;
     }
 
-    static async findAll(): Promise<ISemester[] | null> {
+    static async getAll(): Promise<ISemester[] | null> {
         const semesterList = await prisma.semester_table.findMany();
         return semesterList;
     }
