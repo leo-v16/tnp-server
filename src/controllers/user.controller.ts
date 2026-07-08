@@ -18,10 +18,11 @@ export const registerUserController = async (req: Request<{}, {}, UserRegisterIn
 export const loginUserController = async (req: Request<{}, {}, UserLoginInput>, res: Response, next: NextFunction) => {
     try {
         const loggedUser = await loginUserService(req.body);
+        const { password, ...sanitizedUser } = loggedUser;
         return res.status(200).json({
             success: true,
             message: "User login successful",
-            data: {...loggedUser, password: undefined}
+            data: sanitizedUser
         });
     } catch (error) {
         next(error);
@@ -35,10 +36,11 @@ export const getUserController = async (
 ) => {
     try {
         const userList = await getUserService();
+        const sanitizedUsers = userList.map(({ password, ...user }) => user);
         res.status(200).json({
             success: true,
             message: "All user list provided",
-            data: {...userList, password: undefined}
+            data: sanitizedUsers
         });
     } catch(error) {
         next(error);
@@ -52,10 +54,11 @@ export const getOneUserController = async (
 ) => {
     try {
         const user = await getOneUserService(req.params as UserIdParamInput);
+        const { password, ...sanitizedUser } = user;
         res.status(200).json({
             success: true,
             message: "User details provided",
-            data: {...user, password: undefined}
+            data: sanitizedUser
         });
     } catch(error) {
         next(error);

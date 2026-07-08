@@ -42,7 +42,9 @@ export const viewTrainingApplicationService = async (user: UserJwtPayload): Prom
         case Role.Student:
             trainingApplication = await TrainingApplication.findByStudentId(user.auth_user_id);
             break;
-        case Role.Organization | Role.Coordinator | Role.Organization:
+        case Role.Organization:
+        case Role.Coordinator:
+        case Role.SuperAdmin:
             trainingApplication = await TrainingApplication.findByCreatorId(user.auth_user_id);
             break;
     }
@@ -57,21 +59,24 @@ export const viewTrainingApplicationService = async (user: UserJwtPayload): Prom
 export const approveTrainingApplicationService = async (student_id: number, training_id: number, user: UserJwtPayload): Promise<ITrainingApplication> => {
     const student = await Student.findById(student_id);
     if (!student) {
-        throw new ApiError(404, "User with this email does not exist");
+        throw new ApiError(404, "Student does not exist");
     }
 
     const trainingApplication = await TrainingApplication.findById(student_id, training_id);
     if (!trainingApplication) {
-        throw new ApiError(404, "Training with this id does not exist");
+        throw new ApiError(404, "Training application does not exist");
     }
 
     const training = await Training.findById(trainingApplication.training_id);
     if (!training) {
-        throw new ApiError(404, "Training wiht this id does not exist");
+        throw new ApiError(404, "Training with this ID does not exist");
     }
 
-    if (training.creator_id !== user.auth_user_id) {
-        throw new ApiError(400, "Can't approve trainings application whose training you haven't created");
+    const isCreator = training.creator_id === user.auth_user_id;
+    const isAdminOrCoordinator = user.auth_role_id === Role.SuperAdmin || user.auth_role_id === Role.Coordinator;
+
+    if (!isCreator && !isAdminOrCoordinator) {
+        throw new ApiError(403, "You do not have permission to approve applications for this training");
     }
 
     const approvedTraining = await TrainingApplication.approve(student_id, training_id);

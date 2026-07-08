@@ -28,13 +28,20 @@ export const registerUserService = async (input: UserRegisterInput): Promise<IUs
 
 export const loginUserService = async (input: UserLoginInput): Promise<IUser & (IStudent | IOrganization)> => {
     const existingUser = await User.findByEmail(input.email);
-    if (!existingUser) {
-        throw new ApiError(404, "User with this email does not exist");
+    if (!existingUser || existingUser.role_id !== input.role_id) {
+        throw new ApiError(401, "Invalid email, password, or role");
     }
 
-    const verfied = await PasswordManager.verifyPassword(input.password, existingUser.password);
-    if (!verfied) {
-        throw new ApiError(401, "Incorrect password");
+    if (input.role_id === Role.Organization) {
+        const organization = await Organization.findById(existingUser.user_id);
+        if (!organization || organization.approval_id !== 1) {
+            throw new ApiError(403, "Organization account is pending approval or has been rejected");
+        }
+    }
+
+    const verified = await PasswordManager.verifyPassword(input.password, existingUser.password);
+    if (!verified) {
+        throw new ApiError(401, "Invalid email, password, or role");
     }
 
     const payload: UserJwtPayload = {

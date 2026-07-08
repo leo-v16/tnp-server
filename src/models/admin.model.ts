@@ -19,7 +19,7 @@ class Admin {
             departmentCount: totalDepartmentCount,
             organizationCount: totalOrganizationCount,
             trainingCount: totalTrainingCount,
-            trainingPercentage: (approvedTrainingApplicationCount/trainingApplicationCount) * 100
+            trainingPercentage: trainingApplicationCount > 0 ? (approvedTrainingApplicationCount / trainingApplicationCount) * 100 : 0
         }
     }
 }

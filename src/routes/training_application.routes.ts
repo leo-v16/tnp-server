@@ -8,8 +8,8 @@ import Role from "../models/role.model.js";
 const trainingApplicationRouter = Router();
 
 trainingApplicationRouter
-.post("/create", authenticate(Role.Student), validate(trainingApplicationCreateSchema), createTrainingApplicationController)
-.post("/approve/:student_id/:training_id", authenticate([Role.Organization, Role.Coordinator, Role.SuperAdmin]), validate(trainingApplicationIdParamSchema) ,approveTrainingApplicationController)
-.get("/view", authenticate([Role.Student, Role.Organization, Role.Coordinator, Role.SuperAdmin]), viewTrainingApplicationController)
+.post("/", authenticate(Role.Student), validate(trainingApplicationCreateSchema), createTrainingApplicationController)
+.patch("/:training_id/students/:student_id/status", authenticate([Role.Organization, Role.Coordinator, Role.SuperAdmin]), validate(trainingApplicationIdParamSchema) ,approveTrainingApplicationController)
+.get("/", authenticate([Role.Student, Role.Organization, Role.Coordinator, Role.SuperAdmin]), viewTrainingApplicationController)
 
 export default trainingApplicationRouter;

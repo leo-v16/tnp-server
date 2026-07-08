@@ -21,78 +21,48 @@ export const registerOrganizationService = async (input: OrganizationRegisterInp
     return newOganization;
 }
 
-export const approveOrganizationService = async (input: OrganizationStatusInput, actor: UserJwtPayload): Promise<IOrganization> => {
+export const updateOrganizationStatusService = async (organization_id: number, approval_id: number, actor: UserJwtPayload): Promise<IOrganization> => {
     const existingUser = await User.findByEmail(actor.auth_email);
     if (!existingUser) {
-        throw new ApiError(404, "User with this email does not exist");
+        throw new ApiError(404, "User does not exist");
     } 
 
-    const existingOrganization = await User.findByEmail(input.email);
+    const existingOrganization = await Organization.findById(organization_id);
     if (!existingOrganization) {
-        throw new ApiError(404, "Organization with this email does not exist");
+        throw new ApiError(404, "Organization does not exist");
     }
 
     const organizationData: OrganizationUpdateData = {
-        approval_id: 1
+        approval_id
     }
-    const organization = await Organization.update(existingOrganization.user_id, organizationData);
+    const organization = await Organization.update(organization_id, organizationData);
     if (!organization) {
-        throw new ApiError(500, "Failed to approve(update) organization");
+        throw new ApiError(500, "Failed to update organization status");
     }
 
     return organization;
 }
 
-export const rejectOrganizationService = async (input: OrganizationStatusInput, actor: UserJwtPayload): Promise<IOrganization> => {
-    const existingUser = await User.findByEmail(actor.auth_email);
-    if (!existingUser) {
-        throw new ApiError(404, "User with this email does not exist");
-    } 
-
-    const existingOrganization = await User.findByEmail(input.email);
-    if (!existingOrganization) {
-        throw new ApiError(404, "Organization with this email does not exist");
+export const getOrganizationsService = async (status?: "approved" | "pending" | "rejected"): Promise<IOrganization[]> => {
+    let organizationList: IOrganization[] | null = null;
+    if (status === "pending") {
+        organizationList = await Organization.findPending();
+    } else if (status === "rejected") {
+        organizationList = await Organization.findRejected();
+    } else {
+        organizationList = await Organization.findApproved();
     }
 
-    const organizationData: OrganizationUpdateData = {
-        approval_id: 2
-    }
-    const organization = await Organization.update(existingOrganization.user_id, organizationData);
-    if (!organization) {
-        throw new ApiError(500, "Failed to approve(update) organization");
-    }
-
-    return organization;
-}
-
-export const  getApprovedOrganizationService = async (): Promise<IOrganization[]> => {
-    const organizationList = await Organization.findApproved();
     if (!organizationList) {
         throw new ApiError(500, "Could not fetch organization list");
     }
     return organizationList;
 }
 
-export const  getRejectedOrganizationService = async (): Promise<IOrganization[]> => {
-    const organizationList = await Organization.findRejected();
-    if (!organizationList) {
-        throw new ApiError(500, "Could not fetch organization list");
-    }
-    return organizationList;
-}
-
-export const  getPendingOrganizationService = async (): Promise<IOrganization[]> => {
-    const organizationList = await Organization.findPending();
-    if (!organizationList) {
-        throw new ApiError(500, "Could not fetch organization list");
-    }
-    return organizationList;
-}
-
-export const  getOneOrganizationService = async (organization_id: number): Promise<IOrganization> => {
+export const getOneOrganizationService = async (organization_id: number): Promise<IOrganization> => {
     const organization = await Organization.findById(organization_id);
     if (!organization) {
-        throw new ApiError(500, "Could not fetch organization list");
+        throw new ApiError(404, "Organization not found");
     }
     return organization;
 }

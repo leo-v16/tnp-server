@@ -8,8 +8,8 @@ import { createTrainingController, getOneTrainingController, getTrainingControll
 const trainingRouter = Router();
 
 trainingRouter
-.post("/create", authenticate([Role.Organization, Role.SuperAdmin, Role.Coordinator]), validate(trainingCreateSchema), createTrainingController)
+.post("/", authenticate([Role.Organization, Role.SuperAdmin, Role.Coordinator]), validate(trainingCreateSchema), createTrainingController)
 .get("/", authenticate([Role.Student, Role.Organization, Role.Coordinator, Role.SuperAdmin]), getTrainingController)
-.get("/:training_id", authenticate([Role.Student, Role.Organization, Role.Coordinator, Role.SuperAdmin]), validate(trainingIdParamSchema),getOneTrainingController)
+.get("/:training_id", authenticate([Role.Student, Role.Organization, Role.Coordinator, Role.SuperAdmin]), validate(trainingIdParamSchema), getOneTrainingController)
 
 export default trainingRouter;

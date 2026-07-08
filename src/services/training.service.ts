@@ -2,14 +2,21 @@ import Role from "../models/role.model.js";
 import Student from "../models/student.model.js";
 import Training from "../models/training.model.js";
 import User from "../models/user.model.js";
+import Organization from "../models/organization.model.js";
 import type { ITraining, TrainingCreateData, TrainingCreateInput, TrainingEligibilityResult } from "../types/training.type.js";
 import ApiError from "../utils/ApiError.js";
 import type { UserJwtPayload } from "../utils/jwt.util.js";
 
 export const createTrainingService = async (input: TrainingCreateInput, actor: UserJwtPayload): Promise<ITraining> => {
-    const existingOrganization = await User.findByEmail(actor.auth_email);
-    if (!existingOrganization) {
-        throw new ApiError(404, "Organization with this email does not exist");
+    const creator = await User.findByEmail(actor.auth_email);
+    if (!creator) {
+        throw new ApiError(404, "User does not exist");
+    }
+    if (actor.auth_role_id === Role.Organization) {
+        const org = await Organization.findById(actor.auth_user_id);
+        if (!org || org.approval_id !== 1) {
+            throw new ApiError(403, "Organization account is not approved or has been rejected");
+        }
     }
 
     const trainingData: TrainingCreateData = {
@@ -37,7 +44,9 @@ export const getTrainingService = async (actor: UserJwtPayload): Promise<ITraini
                 throw new ApiError(500, "Could not find eligible trainings");
             }
             return eligibleTraining;
-        case Role.Organization | Role.Coordinator | Role.SuperAdmin:
+        case Role.Organization:
+        case Role.Coordinator:
+        case Role.SuperAdmin:
             const creatorTraining = await Training.findByCreatorId(actor.auth_user_id);
             if (!creatorTraining) {
                 throw new ApiError(500, "Could not find trainings");
@@ -56,7 +65,9 @@ export const getOneTrainingService = async (trainind_id: number, actor: UserJwtP
                 throw new ApiError(500, "Could not find eligible training");
             }
             return eligibleTraining;
-        case Role.Organization | Role.Coordinator | Role.SuperAdmin:
+        case Role.Organization:
+        case Role.Coordinator:
+        case Role.SuperAdmin:
             const creatorTraining = await Training.findById(trainind_id);
             if (!creatorTraining) {
                 throw new ApiError(500, "Could not find training");
@@ -70,7 +81,7 @@ export const getOneTrainingService = async (trainind_id: number, actor: UserJwtP
 export const checkStudentTrainingEligibilitySerivce = async (training_id: number, actor: UserJwtPayload): Promise<TrainingEligibilityResult> => {
     const training = await Training.findById(training_id);
     if (!training) {
-        throw new ApiError(404, "Training does not exists");
+        throw new ApiError(404, "Training does not exist");
     }
     if (!training.is_active) {
         return {
@@ -81,7 +92,7 @@ export const checkStudentTrainingEligibilitySerivce = async (training_id: number
     
     const student = await Student.findById(actor.auth_user_id);
     if (!student) {
-        throw new ApiError(404, "Student does not exists");
+        throw new ApiError(404, "Student does not exist");
     }
 
 

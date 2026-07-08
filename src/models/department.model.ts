@@ -54,7 +54,7 @@ class Department {
             studentCount: studentInDepartmentCount ?? 0,
             organizationList: allOrganizationList ?? [],
             applicationCount: trainingApplicationInDepartmentCount,
-            trainingPercentage: (trainingApplicationInDepartmentCount/approvedTrainingApplicationInDepartmentCount) * 100,
+            trainingPercentage: trainingApplicationInDepartmentCount > 0 ? (approvedTrainingApplicationInDepartmentCount / trainingApplicationInDepartmentCount) * 100 : 0,
         }
     } 
 

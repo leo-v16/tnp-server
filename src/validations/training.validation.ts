@@ -6,16 +6,16 @@ export const trainingCreateSchema = z.object({
         title: z.string(),
         description: z.string().optional(),
         min_cgpa: z.number().optional().transform((val) => (val !== undefined ? new Prisma.Decimal(val): undefined)),
-        end_date: z.date().optional(),
-        start_date: z.date().optional(),
+        end_date: z.coerce.date().optional(),
+        start_date: z.coerce.date().optional(),
         image_url: z.string().optional(),
-        last_date_of_submission: z.date().optional(),
+        last_date_of_submission: z.coerce.date().optional(),
         is_active: z.boolean().optional(),
     }).strict()
 })
 
 export const trainingIdParamSchema = z.object({
     params: z.object({
-        training_id: z.coerce.number("training_id must be a number")
+        training_id: z.coerce.number({ message: "training_id must be a number" })
     })
 });

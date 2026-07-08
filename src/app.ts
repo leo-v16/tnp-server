@@ -6,31 +6,31 @@ import trainingApplicationRouter from "./routes/training_application.routes.js";
 import studentRouter from "./routes/student.routes.js";
 import trainingRouter from "./routes/training.routes.js";
 import organizationRouter from "./routes/organization.routes.js";
-import departmentRoute from "./routes/department.route.js";
-import skillRoute from "./routes/skill.route.js";
-import categoryRoute from "./routes/category.route.js";
-import divisionRoute from "./routes/division.route.js";
-import genderRoute from "./routes/gender.route.js";
-import semesterRoute from "./routes/semester.route.js";
-import adminRoute from "./routes/admin.route.js";
+import departmentRoute from "./routes/department.routes.js";
+import skillRoute from "./routes/skill.routes.js";
+import categoryRoute from "./routes/category.routes.js";
+import divisionRoute from "./routes/division.routes.js";
+import genderRoute from "./routes/gender.routes.js";
+import semesterRoute from "./routes/semester.routes.js";
+import adminRoute from "./routes/admin.routes.js";
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-app.use("/user", userRouter);
-app.use("/training-application", trainingApplicationRouter);
-app.use("/student", studentRouter);
-app.use("/training", trainingRouter);
-app.use("/organization", organizationRouter);
-app.use("/department", departmentRoute);
-app.use("/skill", skillRoute);
-app.use("/category", categoryRoute);
-app.use("/division", divisionRoute);
-app.use("/gender", genderRoute);
-app.use("/semester", semesterRoute);
-app.use("/admin", adminRoute);
+app.use("/users", userRouter);
+app.use("/training-applications", trainingApplicationRouter);
+app.use("/students", studentRouter);
+app.use("/trainings", trainingRouter);
+app.use("/organizations", organizationRouter);
+app.use("/departments", departmentRoute);
+app.use("/skills", skillRoute);
+app.use("/categories", categoryRoute);
+app.use("/divisions", divisionRoute);
+app.use("/genders", genderRoute);
+app.use("/semesters", semesterRoute);
+app.use("/admins", adminRoute);
 
 app.use(errorHandler);
 

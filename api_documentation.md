@@ -81,45 +81,45 @@ The database utilizes specific static integer IDs for roles:
 
 | Namespace | Endpoint | Method | Authentication | Purpose |
 | :--- | :--- | :--- | :--- | :--- |
-| **User** | `/user/register` | `POST` | Public | Register a base user (Admin, Student, Org, Coordinator) |
-| | `/user/login` | `POST` | Public | Login and obtain JWT token + Profile Details |
-| | `/user/` | `GET` | `SuperAdmin` | Retrieve list of all users |
-| | `/user/:user_id` | `GET` | `SuperAdmin` | Retrieve single user with detailed profile |
-| **Student** | `/student/register` | `POST` | `SuperAdmin` | Register student profile (Transactional with user table) |
-| | `/student/update` | `PUT` | `Student` | Update own student profile details |
-| | `/student/update/:user_id` | `PUT` | `SuperAdmin` | Admin-level student profile update |
-| | `/student/` | `GET` | `SuperAdmin` | Retrieve list of all students |
-| | `/student/dashboard` | `GET` | `Student` | Retrieve applied & eligible trainings for student |
-| **Org** | `/organization/register` | `POST` | Public | Register organization and request approval |
-| | `/organization/approve` | `POST` | `SuperAdmin` | Approve organization status (approval_id = 1) |
-| | `/organization/reject` | `POST` | `SuperAdmin` | Reject organization status (approval_id = 2) |
-| | `/organization/approved`| `GET` | `SuperAdmin` | Retrieve list of approved organizations |
-| | `/organization/pending` | `GET` | `SuperAdmin` | Retrieve list of pending organizations (approval_id = 0) |
-| | `/organization/rejected`| `GET` | `SuperAdmin` | Retrieve list of rejected organizations |
-| | `/organization/:organization_id` | `GET` | Public | Retrieve single organization detail |
-| **Training**| `/training/create` | `POST` | `Org`, `SuperAdmin`, `Coordinator` | Create a new training program |
-| | `/training/` | `GET` | All Authenticated | Get list of trainings (filtered by role eligibility) |
-| | `/training/:training_id` | `GET` | All Authenticated | Get details of a single training program |
-| **App** | `/training-application/create` | `POST` | `Student` | Apply for a training program |
-| | `/training-application/approve/:student_id/:training_id`| `POST` | `Org`, `Coordinator`, `SuperAdmin` | Approve student's training application |
-| | `/training-application/view` | `GET` | All Authenticated | View training applications submitted/received |
-| **Admin** | `/admin/dashboard` | `GET` | `SuperAdmin` | Retrieve system-wide metrics (Student count, etc.) |
-| **Metadata**| `/department/` | `GET` | Public | List all departments |
-| | `/department/dashboard` | `GET` | `Coordinator` | Department dashboard metrics (See Warnings) |
-| | `/category/` | `GET` | Public | List student/placement categories |
-| | `/division/` | `GET` | Public | List educational divisions (First, Second, etc.) |
-| | `/gender/` | `GET` | Public | List genders |
-| | `/semester/` | `GET` | Public | List academic semesters |
-| | `/skill/` | `GET` | Public | List student skills |
+| **User** | `/users/register` | `POST` | Public | Register a base user (Admin, Student, Org, Coordinator) |
+| | `/users/login` | `POST` | Public | Login and obtain JWT token + Profile Details |
+| | `/users/` | `GET` | `SuperAdmin` | Retrieve list of all users |
+| | `/users/:user_id` | `GET` | `SuperAdmin` | Retrieve single user with detailed profile |
+| **Student** | `/students` | `POST` | `SuperAdmin` | Register student profile (Transactional with user table) |
+| | `/students/me` | `PUT` | `Student` | Update own student profile details |
+| | `/students/me/:user_id` | `PUT` | `SuperAdmin` | Admin-level student profile update |
+| | `/students/` | `GET` | `SuperAdmin` | Retrieve list of all students |
+| | `/students/me/dashboard` | `GET` | `Student` | Retrieve applied & eligible trainings for student |
+| **Org** | `/organizations` | `POST` | Public | Register organization and request approval |
+| | `/organizations/:organization_id/status` | `POST` | `SuperAdmin` | Approve organization status (approval_id = 1) |
+| | `/organizations/:organization_id/status` | `POST` | `SuperAdmin` | Reject organization status (approval_id = 2) |
+| | `/organizations?status=approved`| `GET` | `SuperAdmin` | Retrieve list of approved organizations |
+| | `/organizations?status=pending` | `GET` | `SuperAdmin` | Retrieve list of pending organizations (approval_id = 0) |
+| | `/organizations?status=rejected`| `GET` | `SuperAdmin` | Retrieve list of rejected organizations |
+| | `/organizations/:organization_id` | `GET` | Public | Retrieve single organization detail |
+| **Training**| `/trainings` | `POST` | `Org`, `SuperAdmin`, `Coordinator` | Create a new training program |
+| | `/trainings/` | `GET` | All Authenticated | Get list of trainings (filtered by role eligibility) |
+| | `/trainings/:training_id` | `GET` | All Authenticated | Get details of a single training program |
+| **App** | `/training-applications` | `POST` | `Student` | Apply for a training program |
+| | `/training-applications/:training_id/students/:student_id/status`| `POST` | `Org`, `Coordinator`, `SuperAdmin` | Approve student's training application |
+| | `/training-applications` | `GET` | All Authenticated | View training applications submitted/received |
+| **Admin** | `/admins/dashboard` | `GET` | `SuperAdmin` | Retrieve system-wide metrics (Student count, etc.) |
+| **Metadata**| `/departments/` | `GET` | Public | List all departments |
+| | `/departments/dashboard` | `GET` | `Coordinator` | Department dashboard metrics (See Warnings) |
+| | `/categories/` | `GET` | Public | List student/placement categories |
+| | `/divisions/` | `GET` | Public | List educational divisions (First, Second, etc.) |
+| | `/genders/` | `GET` | Public | List genders |
+| | `/semesters/` | `GET` | Public | List academic semesters |
+| | `/skills/` | `GET` | Public | List student skills |
 
 ---
 
 ## 5. Detailed Endpoint Documentation
 
-### User Namespace (`/user`)
+### User Namespace (`/users`)
 
 #### 1. User Register
-* **Path**: `POST /user/register`
+* **Path**: `POST /users/register`
 * **Auth**: None
 * **Body Requirements (Strict)**:
   ```json
@@ -147,7 +147,7 @@ The database utilizes specific static integer IDs for roles:
   ```
 
 #### 2. User Login
-* **Path**: `POST /user/login`
+* **Path**: `POST /users/login`
 * **Auth**: None
 * **Body Requirements (Strict)**:
   ```json
@@ -182,7 +182,7 @@ The database utilizes specific static integer IDs for roles:
   ```
 
 #### 3. Get All Users
-* **Path**: `GET /user/`
+* **Path**: `GET /users/`
 * **Auth**: `SuperAdmin` (Role 1)
 * **Success Response (Status: 200 OK)**:
   ```json
@@ -202,7 +202,7 @@ The database utilizes specific static integer IDs for roles:
   ```
 
 #### 4. Get One User Detail
-* **Path**: `GET /user/:user_id`
+* **Path**: `GET /users/:user_id`
 * **Auth**: `SuperAdmin` (Role 1)
 * **Path Params**: `user_id` (numeric)
 * **Success Response (Status: 200 OK)**:
@@ -225,10 +225,10 @@ The database utilizes specific static integer IDs for roles:
 
 ---
 
-### Student Namespace (`/student`)
+### Student Namespace (`/students`)
 
 #### 1. Register Student Profile
-* **Path**: `POST /student/register`
+* **Path**: `POST /students`
 * **Auth**: `SuperAdmin` (Role 1)
 * **Body Requirements (Strict)**:
   ```json
@@ -262,7 +262,7 @@ The database utilizes specific static integer IDs for roles:
   ```
 
 #### 2. Update Student Profile (Self)
-* **Path**: `PUT /student/update`
+* **Path**: `PUT /students/me`
 * **Auth**: `Student` (Role 2)
 * **Body Requirements (Optional properties)**:
   ```json
@@ -288,12 +288,12 @@ The database utilizes specific static integer IDs for roles:
   ```
 
 #### 3. Update Student Profile as Admin
-* **Path**: `PUT /student/update/:user_id`
+* **Path**: `PUT /students/me/:user_id`
 * **Auth**: `SuperAdmin` (Role 1)
 * **Body Requirements (Optional properties)**: Same as Student self update, but also allows `roll_no`, `name`, `age`, `gender_id`, `department_id`, `semester_id`, and `is_graduate` (boolean).
 
 #### 4. List All Students
-* **Path**: `GET /student/`
+* **Path**: `GET /students/`
 * **Auth**: `SuperAdmin` (Role 1)
 * **Success Response (Status: 200 OK)**:
   ```json
@@ -312,7 +312,7 @@ The database utilizes specific static integer IDs for roles:
   ```
 
 #### 5. Student Dashboard
-* **Path**: `GET /student/dashboard`
+* **Path**: `GET /students/me/dashboard`
 * **Auth**: `Student` (Role 2)
 * **Success Response (Status: 200 OK)**:
   ```json
@@ -348,10 +348,10 @@ The database utilizes specific static integer IDs for roles:
 
 ---
 
-### Organization Namespace (`/organization`)
+### Organization Namespace (`/organizations`)
 
 #### 1. Register Organization
-* **Path**: `POST /organization/register`
+* **Path**: `POST /organizations`
 * **Auth**: None
 * **Body Requirements (Strict)**:
   ```json
@@ -377,7 +377,7 @@ The database utilizes specific static integer IDs for roles:
   ```
 
 #### 2. Approve Organization
-* **Path**: `POST /organization/approve`
+* **Path**: `POST /organizations/:organization_id/status`
 * **Auth**: `SuperAdmin` (Role 1)
 * **Body Requirements**:
   ```json
@@ -399,7 +399,7 @@ The database utilizes specific static integer IDs for roles:
   ```
 
 #### 3. Reject Organization
-* **Path**: `POST /organization/reject`
+* **Path**: `POST /organizations/:organization_id/status`
 * **Auth**: `SuperAdmin` (Role 1)
 * **Body Requirements**:
   ```json
@@ -422,9 +422,9 @@ The database utilizes specific static integer IDs for roles:
 
 #### 4. Get Organizations (Approved / Pending / Rejected)
 * **Paths**:
-  - `GET /organization/approved`
-  - `GET /organization/pending`
-  - `GET /organization/rejected`
+  - `GET /organizations?status=approved`
+  - `GET /organizations?status=pending`
+  - `GET /organizations?status=rejected`
 * **Auth**: `SuperAdmin` (Role 1)
 * **Success Response (Status: 200 OK)**:
   ```json
@@ -443,7 +443,7 @@ The database utilizes specific static integer IDs for roles:
   ```
 
 #### 5. Get Single Organization
-* **Path**: `GET /organization/:organization_id`
+* **Path**: `GET /organizations/:organization_id`
 * **Auth**: None
 * **Path Params**: `organization_id` (numeric)
 * **Success Response (Status: 200 OK)**:
@@ -462,10 +462,10 @@ The database utilizes specific static integer IDs for roles:
 
 ---
 
-### Training Namespace (`/training`)
+### Training Namespace (`/trainings`)
 
 #### 1. Create Training
-* **Path**: `POST /training/create`
+* **Path**: `POST /trainings`
 * **Auth**: `Organization` (Role 4), `Coordinator` (Role 3), `SuperAdmin` (Role 1)
 * **Body Requirements (Strict)**:
   ```json
@@ -500,7 +500,7 @@ The database utilizes specific static integer IDs for roles:
   ```
 
 #### 2. Get All Trainings
-* **Path**: `GET /training/`
+* **Path**: `GET /trainings/`
 * **Auth**: `Student` (Role 2), `Org` (Role 4), `Coordinator` (Role 3), `SuperAdmin` (Role 1)
 * **Behavior**:
   - **For Students**: Only returns active trainings for which they meet eligibility requirements (e.g. `min_cgpa` threshold <= student's `cgpa`).
@@ -522,7 +522,7 @@ The database utilizes specific static integer IDs for roles:
   ```
 
 #### 3. Get Single Training Details
-* **Path**: `GET /training/:training_id`
+* **Path**: `GET /trainings/:training_id`
 * **Auth**: `Student` (Role 2), `Org` (Role 4), `Coordinator` (Role 3), `SuperAdmin` (Role 1)
 * **Path Params**: `training_id` (numeric)
 * **Behavior**: Similar role filtering logic applies.
@@ -543,10 +543,10 @@ The database utilizes specific static integer IDs for roles:
 
 ---
 
-### Training Applications (`/training-application`)
+### Training Applications (`/training-applications`)
 
 #### 1. Submit Application
-* **Path**: `POST /training-application/create`
+* **Path**: `POST /training-applications`
 * **Auth**: `Student` (Role 2)
 * **Body Requirements (Strict)**:
   ```json
@@ -570,7 +570,7 @@ The database utilizes specific static integer IDs for roles:
   ```
 
 #### 2. Approve Application
-* **Path**: `POST /training-application/approve/:student_id/:training_id`
+* **Path**: `POST /training-applications/:training_id/students/:student_id/status`
 * **Auth**: `Organization` (Role 4), `Coordinator` (Role 3), `SuperAdmin` (Role 1)
 * **Path Params**: 
   - `student_id`: number (Target student profile ID)
@@ -589,7 +589,7 @@ The database utilizes specific static integer IDs for roles:
   ```
 
 #### 3. View Applications
-* **Path**: `GET /training-application/view`
+* **Path**: `GET /training-applications`
 * **Auth**: `Student` (Role 2), `Org` (Role 4), `Coordinator` (Role 3), `SuperAdmin` (Role 1)
 * **Behavior**:
   - **For Students**: Returns their personal submitted applications.
@@ -612,10 +612,10 @@ The database utilizes specific static integer IDs for roles:
 
 ---
 
-### SuperAdmin Namespace (`/admin`)
+### SuperAdmin Namespace (`/admins`)
 
 #### 1. Admin Dashboard
-* **Path**: `GET /admin/dashboard`
+* **Path**: `GET /admins/dashboard`
 * **Auth**: `SuperAdmin` (Role 1)
 * **Success Response (Status: 200 OK)**:
   ```json
@@ -639,17 +639,17 @@ The database utilizes specific static integer IDs for roles:
 All metadata lists return simple reference objects: `{ <id_name>: number, <value_name>: string }`.
 
 #### 1. Category Table
-* **Path**: `GET /category/`
+* **Path**: `GET /categories/`
 * **Auth**: Public
 * **Data Fields**: `category_id`, `category` (e.g. Unreserved, OBC, SC, ST)
 
 #### 2. Department Table
-* **Path**: `GET /department/`
+* **Path**: `GET /departments/`
 * **Auth**: Public
 * **Data Fields**: `department_id`, `dept_name`, `is_active`
 
 #### 3. Department Dashboard
-* **Path**: `GET /department/dashboard`
+* **Path**: `GET /departments/dashboard`
 * **Auth**: `Coordinator` (Role 3)
 * **Warning**: *See developer warnings section regarding severe logic issues with this endpoint.*
 * **Success Response (Status: 200 OK)**:
@@ -667,22 +667,22 @@ All metadata lists return simple reference objects: `{ <id_name>: number, <value
   ```
 
 #### 4. Division Table
-* **Path**: `GET /division/`
+* **Path**: `GET /divisions/`
 * **Auth**: Public
 * **Data Fields**: `division_id`, `division` (e.g. Distinction, First, Second)
 
 #### 5. Gender Table
-* **Path**: `GET /gender/`
+* **Path**: `GET /genders/`
 * **Auth**: Public
 * **Data Fields**: `gender_id`, `gender` (e.g. Male, Female, Other)
 
 #### 6. Semester Table
-* **Path**: `GET /semester/`
+* **Path**: `GET /semesters/`
 * **Auth**: Public
 * **Data Fields**: `semester_id`, `semester` (e.g. Sem 1, Sem 2...)
 
 #### 7. Skill Table
-* **Path**: `GET /skill/`
+* **Path**: `GET /skills/`
 * **Auth**: Public
 * **Data Fields**: `skill_id`, `skill` (e.g. TypeScript, React, Python)
 
@@ -693,7 +693,7 @@ All metadata lists return simple reference objects: `{ <id_name>: number, <value
 During review of the backend code, **two remaining logical bugs** were identified. Front-end developers should be aware of these as they will result in runtime errors and API failures:
 
 ### 1. Coordinator Department Dashboard Maps User ID to Department ID
-* **Endpoint**: `GET /department/dashboard`
+* **Endpoint**: `GET /departments/dashboard`
 * **Issue**: The controller calls `Department.getDashboard(actor.auth_user_id)`, passing the coordinator's **user_id** as the **department_id**.
 * **Impact**: If a coordinator has user ID 15, the dashboard tries to query metrics for department ID 15. If department 15 does not exist, or if the coordinator belongs to department 2, the data returned will be incorrect or blank.
 * **Suggested Fix**: Coordinators should have a department profile reference, or the department_id should be supplied as a path parameter.
