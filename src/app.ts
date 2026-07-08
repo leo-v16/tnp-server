@@ -12,6 +12,7 @@ import categoryRoute from "./routes/category.route.js";
 import divisionRoute from "./routes/division.route.js";
 import genderRoute from "./routes/gender.route.js";
 import semesterRoute from "./routes/semester.route.js";
+import adminRoute from "./routes/admin.route.js";
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use("/category", categoryRoute);
 app.use("/division", divisionRoute);
 app.use("/gender", genderRoute);
 app.use("/semester", semesterRoute);
+app.use("/admin", adminRoute);
 
 app.use(errorHandler);
 
