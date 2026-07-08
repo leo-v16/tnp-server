@@ -44,13 +44,13 @@ export const updateStudentService = async (input: studentUpdateInput, actor: Use
     return updatedStudent;
 }
 
-export const updateStudentAdminService = async (input: studentUpdateAdminInput, actor: UserJwtPayload): Promise<IStudent> => {
-    const existingStudent = await Student.findByEmail(actor.auth_email);
+export const updateStudentAdminService = async (student_id: number, input: studentUpdateAdminInput, actor: UserJwtPayload): Promise<IStudent> => {
+    const existingStudent = await Student.findById(student_id);
     if (!existingStudent) {
         throw new ApiError(404, "Student not found");
     }
 
-     const updatedStudent = await Student.updateAdmin(actor.auth_user_id, input);
+    const updatedStudent = await Student.updateAdmin(student_id, input);
     if (!updatedStudent) {
         throw new ApiError(500, "Failed to update student");
     }

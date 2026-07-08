@@ -144,14 +144,14 @@ class Student {
         });
 
         const studentList = await prisma.$transaction(async (tx)=> {
-            const user = await prisma.user_table.update({
+            const user = await tx.user_table.update({
                 where: {
                     user_id: user_id,
                 },
                 data: userData
             });
             
-            const student = await prisma.student_table.update({
+            const student = await tx.student_table.update({
                 where: {
                     user_id: user.user_id
                 },

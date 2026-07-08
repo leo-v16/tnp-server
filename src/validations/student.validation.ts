@@ -49,3 +49,9 @@ export const studentUpdateSchema = z.object({
         image_url: z.string("image_url must be of type string").optional()
     }).strict()
 });
+
+export const studentIdParamSchema = z.object({
+    params: z.object({
+        user_id: z.coerce.number("user_id must be a number")
+    })
+});

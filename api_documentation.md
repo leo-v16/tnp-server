@@ -87,7 +87,7 @@ The database utilizes specific static integer IDs for roles:
 | | `/user/:user_id` | `GET` | `SuperAdmin` | Retrieve single user with detailed profile |
 | **Student** | `/student/register` | `POST` | `SuperAdmin` | Register student profile (Transactional with user table) |
 | | `/student/update` | `PUT` | `Student` | Update own student profile details |
-| | `/student/update/:id` | `PUT` | `SuperAdmin` | Admin-level student profile update (See Warnings section) |
+| | `/student/update/:user_id` | `PUT` | `SuperAdmin` | Admin-level student profile update |
 | | `/student/` | `GET` | `SuperAdmin` | Retrieve list of all students |
 | | `/student/dashboard` | `GET` | `Student` | Retrieve applied & eligible trainings for student |
 | **Org** | `/organization/register` | `POST` | Public | Register organization and request approval |
@@ -288,9 +288,8 @@ The database utilizes specific static integer IDs for roles:
   ```
 
 #### 3. Update Student Profile as Admin
-* **Path**: `PUT /student/update/:id`
+* **Path**: `PUT /student/update/:user_id`
 * **Auth**: `SuperAdmin` (Role 1)
-* **Warning**: *See developer warnings section regarding severe logic issues with this endpoint.*
 * **Body Requirements (Optional properties)**: Same as Student self update, but also allows `roll_no`, `name`, `age`, `gender_id`, `department_id`, `semester_id`, and `is_graduate` (boolean).
 
 #### 4. List All Students
@@ -691,20 +690,14 @@ All metadata lists return simple reference objects: `{ <id_name>: number, <value
 
 ## 6. Critical Integration & Backend Bug Warnings
 
-During review of the backend code, **three remaining logical bugs** were identified. Front-end developers should be aware of these as they will result in runtime errors and API failures:
+During review of the backend code, **two remaining logical bugs** were identified. Front-end developers should be aware of these as they will result in runtime errors and API failures:
 
-### 1. Admin Student-Update Route Always Fails (404)
-* **Endpoint**: `PUT /student/update/:id`
-* **Issue**: The route expects a parameter `:id`, but the controller and service (`updateStudentAdminService`) completely ignore it. Instead, the backend retrieves the student profile using the email of the *authenticating actor* (`actor.auth_email`). Since the actor is a `SuperAdmin` (and does not exist in the `student_table`), the database query returns null.
-* **Impact**: Admin attempting to update any student profile will always receive `404 Student not found`.
-* **Suggested Fix**: Modify `updateStudentAdminService` to take the target `student_id` (from `req.params.id`) and execute update operations on that ID.
-
-### 2. Coordinator Department Dashboard Maps User ID to Department ID
+### 1. Coordinator Department Dashboard Maps User ID to Department ID
 * **Endpoint**: `GET /department/dashboard`
 * **Issue**: The controller calls `Department.getDashboard(actor.auth_user_id)`, passing the coordinator's **user_id** as the **department_id**.
 * **Impact**: If a coordinator has user ID 15, the dashboard tries to query metrics for department ID 15. If department 15 does not exist, or if the coordinator belongs to department 2, the data returned will be incorrect or blank.
 * **Suggested Fix**: Coordinators should have a department profile reference, or the department_id should be supplied as a path parameter.
 
-### 3. Placements Module is Completely Missing
+### 2. Placements Module is Completely Missing
 * **Issue**: While the Database schema contains tables for placements (`placement_table`, `placement_application_table`, `placement_category_table`, etc.) and the codebase has corresponding model files, **no placement routes** are imported, configured, or mounted in `src/app.ts`.
 * **Impact**: The Placement features are currently non-functional and inaccessible from the frontend.

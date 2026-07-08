@@ -1,9 +1,10 @@
 import { type student_table } from "@prisma/client";
 import type z from "zod";
-import type { studentRegisterSchema, studentUpdateAdminSchema, studentUpdateSchema } from "../validations/student.validation.js";
+import type { studentIdParamSchema, studentRegisterSchema, studentUpdateAdminSchema, studentUpdateSchema } from "../validations/student.validation.js";
 import type { userCreateData } from "./user.type.js";
 import type { ITrainingApplication } from "./training_application.type.js";
 import type { ITraining } from "./training.type.js";
+import type { ParamsDictionary } from "express-serve-static-core";
 
 export interface IStudent extends student_table {};
 
@@ -36,3 +37,5 @@ export type studentDashboardOutput = {
     appliedTrainings: ITrainingApplication[],
     eligibleTrainings: ITraining[]
 };
+
+export type studentIdParamInput = z.infer<typeof studentIdParamSchema>['params'] & ParamsDictionary;

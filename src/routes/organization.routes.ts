@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { validate } from "../middlewares/validation.middleware.js";
-import { organizationRegisterSchema, organizationStatusSchema } from "../validations/organization.validation.js";
+import { organizationIdParamSchema, organizationRegisterSchema, organizationStatusSchema } from "../validations/organization.validation.js";
 import { approveOrganizationController, getApprovedOrganizationController, getOneOrganizationController, getPendingOrganizationController, getRejectedOrganizationController, registerOrganizationController, rejectOrganizationController } from "../controllers/organization.controller.js";
 import { authenticate } from "../middlewares/auth.middleware.js";
 import Role from "../models/role.model.js";
@@ -14,6 +14,6 @@ organizationRouter
 .get("/approved", authenticate(Role.SuperAdmin), getApprovedOrganizationController)
 .get("/pending", authenticate(Role.SuperAdmin), getPendingOrganizationController)
 .get("/rejected", authenticate(Role.SuperAdmin), getRejectedOrganizationController)
-.get("/:organization_id", getOneOrganizationController)
+.get("/:organization_id", validate(organizationIdParamSchema), getOneOrganizationController)
 
 export default organizationRouter;

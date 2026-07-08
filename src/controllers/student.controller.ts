@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import type { studentRegisterInput, studentUpdateInput } from "../types/student.type.js";
+import type { studentIdParamInput, studentRegisterInput, studentUpdateInput } from "../types/student.type.js";
 import { registerStudentService, studentDashboardService, updateStudentAdminService, updateStudentService } from "../services/student.service.js";
 import type { UserJwtPayload } from "../utils/jwt.util.js";
 import type { studentUpdateSchema } from "../validations/student.validation.js";
@@ -45,7 +45,8 @@ export const studentUpdateAdminController = async (
     next: NextFunction
 ) => {
     try {
-        const newStudent = await updateStudentAdminService(req.body, req.user as UserJwtPayload);
+        const { user_id: student_id } = req.params as studentIdParamInput;
+        const newStudent = await updateStudentAdminService(student_id, req.body, req.user as UserJwtPayload);
         res.status(200).json({
             success: true,
             message: `Student with roll: ${newStudent.roll_no} updated`,
