@@ -23,6 +23,10 @@ class Organization {
         return user?.organization_table ?? null;
     }
 
+    static async findAll(): Promise<IOrganization[] | null> {
+        return await prisma.organization_table.findMany();
+    }
+
     static async create(organizationData: organizationCreateData): Promise<IOrganization | null> {
         const newOrganization = await prisma.$transaction(async (tx) => {
             const user = await tx.user_table.create({
@@ -90,55 +94,6 @@ class Organization {
         });
     }
 
-    static async getDashboard(department_id: number) {
-        const studentInDepartmentList = await prisma.student_table.findMany({
-            where: {
-                department_id
-            },
-            include: {
-                user_table: true,
-                training_application_table: true,
-                department_table: true
-            }
-        });
-
-        const studentInDepartmentCount = await Student.getCountByDepartmentId(department_id);
-
-        const approvedTrainingApplicationInDepartmentList = await prisma.training_application_table.findMany({
-            where: {
-                status_id: 1,
-                student_table: {
-                    department_id: department_id
-                }
-            },
-            include: {
-                student_table: {
-                    include: {
-                        user_table: true
-                    },
-                }
-            }
-        });
-
-        const approvedTrainingApplicationInDepartmentCount = await prisma.training_application_table.count({
-            where: {
-                status_id: 1,
-                student_table: {
-                    department_id
-                }
-            }
-        });
-
-        const trainingApplicationInDepartmentCount = await prisma.training_application_table.count({
-            where: {
-                student_table: {
-                    department_id
-                }
-            }
-        });
-
-        
-    } 
 }
 
 export default Organization;

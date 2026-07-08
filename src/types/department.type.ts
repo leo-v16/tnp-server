@@ -1,4 +1,5 @@
 import type { department_table } from "@prisma/client";
+import type { IOrganization } from "./organization.type.js";
 
 export interface IDepartment extends department_table {};
 // export interface IDepartment {
@@ -8,3 +9,11 @@ export interface IDepartment extends department_table {};
 // }
 
 export type CreateDepartmentData = Omit<IDepartment, 'department_id'>;
+
+
+export type departmentDashboardOutput = {
+    studentCount: number,
+    organizationList: IOrganization[],
+    applicationCount: number,
+    trainingPercentage: number,
+}

@@ -28,7 +28,7 @@ app.use("/skill", skillRoute);
 app.use("/category", categoryRoute);
 app.use("/division", divisionRoute);
 app.use("/gender", genderRoute);
-app.use("/semster", semesterRoute);
+app.use("/semester", semesterRoute);
 
 app.use(errorHandler);
 
