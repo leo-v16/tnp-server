@@ -10,7 +10,7 @@ export interface UserJwtPayload extends jwt.JwtPayload {
 
 export class Jwt {
     static sign(payload: UserJwtPayload): string {
-        return jwt.sign(payload, process.env.JWT_TOKEN || "", {expiresIn: "1h"});
+        return jwt.sign(payload, process.env.JWT_TOKEN || "", {expiresIn: "12h"});
     }
 
     static verify(token: string): UserJwtPayload {
