@@ -6,6 +6,11 @@ import trainingApplicationRouter from "./routes/training_application.routes.js";
 import studentRouter from "./routes/student.routes.js";
 import trainingRouter from "./routes/training.routes.js";
 import organizationRouter from "./routes/organization.routes.js";
+import departmentRoute from "./routes/department.route.js";
+import skillRoute from "./routes/skill.route.js";
+import categoryRoute from "./routes/category.route.js";
+import divisionRoute from "./routes/division.route.js";
+import genderRoute from "./routes/gender.route.js";
 
 const app = express();
 
@@ -17,6 +22,11 @@ app.use("/training-application", trainingApplicationRouter);
 app.use("/student", studentRouter);
 app.use("/training", trainingRouter);
 app.use("/organization", organizationRouter);
+app.use("/department", departmentRoute);
+app.use("/skill", skillRoute);
+app.use("/category", categoryRoute);
+app.use("/division", divisionRoute);
+app.use("/gender", genderRoute);
 
 app.use(errorHandler);
 

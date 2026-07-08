@@ -10,6 +10,11 @@ class Skill {
         });
         return skill;
     }
+
+    static async findAll(): Promise<ISkill[] | null> {
+        const skillList = await prisma.skill_table.findMany();
+        return skillList;
+    }
 }
 
 export default Skill;

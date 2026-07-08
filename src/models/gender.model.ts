@@ -11,6 +11,11 @@ class Gender {
         });
         return gender;
     }
+
+        static async findAll(): Promise<IGender[] | null> {
+        const genderList = await prisma.gender_table.findMany();
+        return genderList;
+    }
 }
 
 export default Gender;

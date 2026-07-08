@@ -10,6 +10,11 @@ class Semester {
         });
         return semester;
     }
+
+    static async findAll(): Promise<ISemester[] | null> {
+        const semesterList = await prisma.semester_table.findMany();
+        return semesterList;
+    }
 }
 
 export default Semester;

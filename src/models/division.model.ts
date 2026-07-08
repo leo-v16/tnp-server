@@ -10,6 +10,10 @@ class Division {
         });
         return division;
     }
+        static async getAll(): Promise<IDivision[] | null> {
+            const divisionList = await prisma.division_table.findMany();
+            return divisionList;
+        }
 }
 
 export default Division;

@@ -10,6 +10,11 @@ class Category {
         });
         return category;
     }
+
+    static async getAll(): Promise<ICategory[] | null> {
+        const categoryList = await prisma.category_table.findMany();
+        return categoryList;
+    }
 }
 
 export default Category;
