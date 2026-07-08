@@ -1,4 +1,6 @@
 import Role from "../models/role.model.js";
+import Student from "../models/student.model.js";
+import Training from "../models/training.model.js";
 import TrainingApplication from "../models/training_application.model.js";
 import User from "../models/user.model.js";
 import type { ITrainingApplication, TrainingApplicationCreateData, TrainingApplicationCreateInput } from "../types/training_application.type.js";
@@ -50,4 +52,32 @@ export const viewTrainingApplicationService = async (user: UserJwtPayload): Prom
     }
 
     return trainingApplication;
+}  
+
+export const approveTrainingApplicationService = async (student_id: number, training_id: number, user: UserJwtPayload): Promise<ITrainingApplication> => {
+    const student = await Student.findById(student_id);
+    if (!student) {
+        throw new ApiError(404, "User with this email does not exist");
+    }
+
+    const trainingApplication = await TrainingApplication.findById(student_id, training_id);
+    if (!trainingApplication) {
+        throw new ApiError(404, "Training with this id does not exist");
+    }
+
+    const training = await Training.findById(trainingApplication.training_id);
+    if (!training) {
+        throw new ApiError(404, "Training wiht this id does not exist");
+    }
+
+    if (training.creator_id !== user.auth_user_id) {
+        throw new ApiError(400, "Can't approve trainings application whose training you haven't created");
+    }
+
+    const approvedTraining = await TrainingApplication.approve(student_id, training_id);
+    if (!approvedTraining) {
+        throw new ApiError(500, `Could not approve Training Application`);
+    }
+
+    return approvedTraining;
 }  

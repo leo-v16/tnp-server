@@ -78,6 +78,22 @@ class TrainingApplication {
 
         return appliedTraining
     }
+
+    static async approve(student_id: number, training_id: number): Promise<ITrainingApplication | null> {
+        const approvedTraining = await prisma.training_application_table.update({
+            where: {
+                training_id_student_id: {
+                    student_id: student_id,
+                    training_id: training_id
+                }
+            },
+            data: {
+                status_id: 1
+            }
+        });
+
+        return approvedTraining;
+    }
 }
 
 export default TrainingApplication;
