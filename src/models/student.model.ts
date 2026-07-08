@@ -101,6 +101,47 @@ class Student {
 
         return studentList;
     }
+
+    static async updateAdmin(user_id: number, updateData: studentUpdateData): Promise<IStudent | null> {
+
+        const userData: Prisma.user_tableUpdateInput = Data.filterUndefined({
+            email: updateData.email,
+            mobile_no: updateData.mobile_no
+        });
+
+        const studentData: Prisma.student_tableUncheckedUpdateInput = Data.filterUndefined({
+            has_backlog: updateData.has_backlog,
+            cgpa: updateData.cgpa,
+            resume_url: updateData.resume_url,
+            image_url: updateData.image_url,
+            tenth_division_id: updateData.tenth_divison_id,
+            twelfth_division_id: updateData.twelfth_division_id,
+            category_id: updateData.category_id
+        });
+
+        const studentList = await prisma.$transaction(async (tx)=> {
+            const user = await prisma.user_table.update({
+                where: {
+                    user_id: user_id,
+                },
+                data: userData
+            });
+            
+            const student = await prisma.student_table.update({
+                where: {
+                    user_id: user.user_id
+                },
+                data: studentData,
+                include: {
+                    user_table: true
+                }
+            });
+
+            return student;
+        })
+
+        return studentList;
+    }
 }
 
 export default Student;

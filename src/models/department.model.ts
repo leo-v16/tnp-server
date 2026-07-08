@@ -11,6 +11,11 @@ class Department {
         return department;
     }
 
+    static async getAll(): Promise<IDepartment[] | null> {
+        const departmentList = await prisma.department_table.findMany();
+        return departmentList;
+    }
+
     // static async create(departmentData: CreateDepartmentData): Promise<IDepartment | null> {
     //     const newDepartment = await prisma.department_table.create({
     //         data: departmentData

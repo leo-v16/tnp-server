@@ -11,3 +11,5 @@ class Category {
         return category;
     }
 }
+
+export default Category;

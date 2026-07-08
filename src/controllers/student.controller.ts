@@ -39,6 +39,23 @@ export const updateStudentController = async (
     }
 }
 
+export const studentUpdateAdminController = async (
+    req: Request<{}, {}, studentUpdateInput>,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const newStudent = await updateStudentAdminService(req.body, req.user as UserJwtPayload);
+        res.status(200).json({
+            success: true,
+            message: `Student with roll: ${newStudent.roll_no} updated`,
+            data: newStudent
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
 export const getStudentController = async (
     req: Request,
     res: Response,
