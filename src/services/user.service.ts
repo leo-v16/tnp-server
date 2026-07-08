@@ -1,6 +1,6 @@
 import { escapeId } from "mysql2";
 import User from "../models/user.model.js";
-import type { IUser, userIdParamInput, userLoginInput, userRegisterInput } from "../types/user.type.js";
+import type { IUser, UserIdParamInput, UserLoginInput, UserRegisterInput } from "../types/user.type.js";
 import ApiError from "../utils/ApiError.js";
 import PasswordManager from "../utils/password.util.js";
 import { Jwt, type UserJwtPayload } from "../utils/jwt.util.js";
@@ -10,7 +10,7 @@ import type { IStudent } from "../types/student.type.js";
 import type { IOrganization } from "../types/organization.type.js";
 import Organization from "../models/organization.model.js";
 
-export const registerUserService = async (input: userRegisterInput): Promise<IUser> => {
+export const registerUserService = async (input: UserRegisterInput): Promise<IUser> => {
     const existingUser = await User.findByEmail(input.email);
     if (existingUser) {
         throw new ApiError(409, "User with this email already exists");
@@ -26,7 +26,7 @@ export const registerUserService = async (input: userRegisterInput): Promise<IUs
     return newUser;
 }
 
-export const loginUserService = async (input: userLoginInput): Promise<IUser & (IStudent | IOrganization)> => {
+export const loginUserService = async (input: UserLoginInput): Promise<IUser & (IStudent | IOrganization)> => {
     const existingUser = await User.findByEmail(input.email);
     if (!existingUser) {
         throw new ApiError(404, "User with this email does not exist");
@@ -58,7 +58,7 @@ export const loginUserService = async (input: userLoginInput): Promise<IUser & (
 }
 
 export const getUserService = async (): Promise<IUser[]> => {
-    const userList = await User.getAll();
+    const userList = await User.findAll();
     if (!userList) {
         throw new ApiError(500, "Unable to get user list");
     }
@@ -66,7 +66,7 @@ export const getUserService = async (): Promise<IUser[]> => {
     return userList;
 }
 
-export const getOneUserService = async (input: userIdParamInput): Promise<IUser & (IStudent | IOrganization)> => {
+export const getOneUserService = async (input: UserIdParamInput): Promise<IUser & (IStudent | IOrganization)> => {
     const user = await User.findById(input.user_id);
     if (!user) {
         throw new ApiError(404, "User not found");

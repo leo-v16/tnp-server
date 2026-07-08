@@ -10,7 +10,7 @@ class Division {
         });
         return division;
     }
-        static async getAll(): Promise<IDivision[] | null> {
+        static async findAll(): Promise<IDivision[] | null> {
             const divisionList = await prisma.division_table.findMany();
             return divisionList;
         }

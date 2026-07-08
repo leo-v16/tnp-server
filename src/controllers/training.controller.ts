@@ -1,10 +1,10 @@
 import type { Request, Response, NextFunction } from "express";
-import type { trainingCreateInput, trainingIdParamInput } from "../types/training.type.js";
 import { createTrainingService, getOneTrainingService, getTrainingService } from "../services/training.service.js";
 import type { UserJwtPayload } from "../utils/jwt.util.js";
+import type { TrainingCreateInput, TrainingIdParamInput } from "../types/training.type.js";
 
 export const createTrainingController = async (
-    req: Request<{}, {}, trainingCreateInput>,
+    req: Request<{}, {}, TrainingCreateInput>,
     res: Response,
     next: NextFunction
 ) => {
@@ -43,7 +43,7 @@ export const getOneTrainingController = async (
     next: NextFunction
 ) => {
     try {
-        const training_id = (req.params as trainingIdParamInput).training_id;
+        const training_id = (req.params as TrainingIdParamInput).training_id;
         const trainingList = await getOneTrainingService(training_id, req.user as UserJwtPayload);
         res.status(201).json({
             success: true,

@@ -1,12 +1,11 @@
 import type { Request, Response, NextFunction } from "express";
-import type { studentIdParamInput, studentRegisterInput, studentUpdateInput } from "../types/student.type.js";
 import { registerStudentService, studentDashboardService, updateStudentAdminService, updateStudentService } from "../services/student.service.js";
 import type { UserJwtPayload } from "../utils/jwt.util.js";
-import type { studentUpdateSchema } from "../validations/student.validation.js";
 import Student from "../models/student.model.js";
+import type { StudentIdParamInput, StudentRegisterInput, StudentUpdateAdminInput, StudentUpdateInput } from "../types/student.type.js";
 
 export const registerStudentController = async (
-    req: Request<{}, {}, studentRegisterInput>,
+    req: Request<{}, {}, StudentRegisterInput>,
     res: Response,
     next: NextFunction
 ) => {
@@ -23,7 +22,7 @@ export const registerStudentController = async (
 }
 
 export const updateStudentController = async (
-    req: Request<{}, {}, studentUpdateInput>,
+    req: Request<{}, {}, StudentUpdateInput>,
     res: Response,
     next: NextFunction
 ) => {
@@ -40,12 +39,12 @@ export const updateStudentController = async (
 }
 
 export const studentUpdateAdminController = async (
-    req: Request<{}, {}, studentUpdateInput>,
+    req: Request<{}, {}, StudentUpdateAdminInput>,
     res: Response,
     next: NextFunction
 ) => {
     try {
-        const { user_id: student_id } = req.params as studentIdParamInput;
+        const { user_id: student_id } = req.params as StudentIdParamInput;
         const newStudent = await updateStudentAdminService(student_id, req.body, req.user as UserJwtPayload);
         res.status(200).json({
             success: true,
@@ -63,7 +62,7 @@ export const getStudentController = async (
     next: NextFunction
 ) => {
     try {
-        const studentList = await Student.getAll();
+        const studentList = await Student.findAll();
         res.status(200).json({
             success: true,
             message: "Successfully fetched students",

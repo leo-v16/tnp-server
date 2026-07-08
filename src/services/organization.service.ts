@@ -1,11 +1,11 @@
 import Organization from "../models/organization.model.js";
 import User from "../models/user.model.js";
-import type { IOrganization, organizationRegisterInput, organizationStatusInput, organizationUpdateData } from "../types/organization.type.js";
+import type { IOrganization, OrganizationRegisterInput, OrganizationStatusInput, OrganizationUpdateData } from "../types/organization.type.js";
 import PasswordManager from "../utils/password.util.js";
 import ApiError from "../utils/ApiError.js";
 import type { UserJwtPayload } from "../utils/jwt.util.js";
 
-export const registerOrganizationService = async (input: organizationRegisterInput, actor: UserJwtPayload): Promise<IOrganization> => {
+export const registerOrganizationService = async (input: OrganizationRegisterInput, actor: UserJwtPayload): Promise<IOrganization> => {
     const existingUser = await User.findByEmail(input.email);
     if (existingUser) {
         throw new ApiError(409, "Organization with this email already exists");
@@ -21,7 +21,7 @@ export const registerOrganizationService = async (input: organizationRegisterInp
     return newOganization;
 }
 
-export const approveOrganizationService = async (input: organizationStatusInput, actor: UserJwtPayload): Promise<IOrganization> => {
+export const approveOrganizationService = async (input: OrganizationStatusInput, actor: UserJwtPayload): Promise<IOrganization> => {
     const existingUser = await User.findByEmail(actor.auth_email);
     if (!existingUser) {
         throw new ApiError(404, "User with this email does not exist");
@@ -32,7 +32,7 @@ export const approveOrganizationService = async (input: organizationStatusInput,
         throw new ApiError(404, "Organization with this email does not exist");
     }
 
-    const organizationData: organizationUpdateData = {
+    const organizationData: OrganizationUpdateData = {
         approval_id: 1
     }
     const organization = await Organization.update(existingOrganization.user_id, organizationData);
@@ -43,7 +43,7 @@ export const approveOrganizationService = async (input: organizationStatusInput,
     return organization;
 }
 
-export const rejectOrganizationService = async (input: organizationStatusInput, actor: UserJwtPayload): Promise<IOrganization> => {
+export const rejectOrganizationService = async (input: OrganizationStatusInput, actor: UserJwtPayload): Promise<IOrganization> => {
     const existingUser = await User.findByEmail(actor.auth_email);
     if (!existingUser) {
         throw new ApiError(404, "User with this email does not exist");
@@ -54,7 +54,7 @@ export const rejectOrganizationService = async (input: organizationStatusInput, 
         throw new ApiError(404, "Organization with this email does not exist");
     }
 
-    const organizationData: organizationUpdateData = {
+    const organizationData: OrganizationUpdateData = {
         approval_id: 2
     }
     const organization = await Organization.update(existingOrganization.user_id, organizationData);

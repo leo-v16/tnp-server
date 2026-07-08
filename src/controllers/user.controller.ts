@@ -1,10 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
 import { registerUserService, loginUserService, getUserService, getOneUserService } from "../services/user.service.js";
-import type { userIdParamInput, userLoginInput, userRegisterInput } from "../types/user.type.js";
-import User from "../models/user.model.js";
-import ApiError from "../utils/ApiError.js";
+import type { UserIdParamInput, UserLoginInput, UserRegisterInput } from "../types/user.type.js";
 
-export const registerUserController = async (req: Request<{}, {}, userRegisterInput>, res: Response, next: NextFunction) => {
+export const registerUserController = async (req: Request<{}, {}, UserRegisterInput>, res: Response, next: NextFunction) => {
     try {
         const newUser = await registerUserService(req.body);
         return res.status(201).json({
@@ -17,7 +15,7 @@ export const registerUserController = async (req: Request<{}, {}, userRegisterIn
     }
 }
 
-export const loginUserController = async (req: Request<{}, {}, userLoginInput>, res: Response, next: NextFunction) => {
+export const loginUserController = async (req: Request<{}, {}, UserLoginInput>, res: Response, next: NextFunction) => {
     try {
         const loggedUser = await loginUserService(req.body);
         return res.status(200).json({
@@ -48,12 +46,12 @@ export const getUserController = async (
 }
 
 export const getOneUserController = async (
-    req: Request<userIdParamInput>,
+    req: Request<UserIdParamInput>,
     res: Response,
     next: NextFunction
 ) => {
     try {
-        const user = await getOneUserService(req.params as userIdParamInput);
+        const user = await getOneUserService(req.params as UserIdParamInput);
         res.status(200).json({
             success: true,
             message: "User details provided",

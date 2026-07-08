@@ -1,8 +1,8 @@
 import prisma from "../config/db.prisma.js";
-import type { adminDashboardOutput } from "../types/admin.type.js";
+import type { AdminDashboardOutput } from "../types/admin.type.js";
 
 class Admin {
-    static async getDashboard(): Promise<adminDashboardOutput> {
+    static async getDashboard(): Promise<AdminDashboardOutput> {
         const totalStudentCount = await prisma.student_table.count();
         const totalDepartmentCount = await prisma.department_table.count();
         const totalOrganizationCount = await prisma.organization_table.count();

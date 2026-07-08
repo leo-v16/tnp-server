@@ -1,4 +1,4 @@
-export type adminDashboardOutput = {
+export type AdminDashboardOutput = {
     studentCount: number,
     departmentCount: number,
     organizationCount: number,

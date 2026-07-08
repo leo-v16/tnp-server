@@ -1,7 +1,5 @@
 import prisma from "../config/db.prisma.js";
 import type { ITrainingApplication, TrainingApplicationCreateData } from "../types/training_application.type.js";
-import Role from "./role.model.js";
-import User from "./user.model.js";
 
 class TrainingApplication {
     static async findById(student_id: number, training_id: number): Promise<ITrainingApplication | null> {

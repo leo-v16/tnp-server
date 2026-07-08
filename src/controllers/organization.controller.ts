@@ -1,11 +1,10 @@
 import { approveOrganizationService, getApprovedOrganizationService, getOneOrganizationService, getPendingOrganizationService, getRejectedOrganizationService, registerOrganizationService, rejectOrganizationService } from "../services/organization.service.js";
 import type { Request, Response, NextFunction } from "express";
-import type { organizationIdParamInput, organizationRegisterInput, organizationStatusInput } from "../types/organization.type.js";
 import type { UserJwtPayload } from "../utils/jwt.util.js";
-import { success } from "zod";
+import type { OrganizationIdParamInput, OrganizationRegisterInput, OrganizationStatusInput } from "../types/organization.type.js";
 
 export const registerOrganizationController = async (
-    req: Request<{}, {}, organizationRegisterInput>,
+    req: Request<{}, {}, OrganizationRegisterInput>,
     res: Response,
     next: NextFunction
 ) => {
@@ -22,7 +21,7 @@ export const registerOrganizationController = async (
 }
 
 export const approveOrganizationController = async (
-    req: Request<{}, {}, organizationStatusInput>,
+    req: Request<{}, {}, OrganizationStatusInput>,
     res: Response,
     next: NextFunction
 ) => {
@@ -39,7 +38,7 @@ export const approveOrganizationController = async (
 }
 
 export const rejectOrganizationController = async (
-    req: Request<{}, {}, organizationStatusInput>,
+    req: Request<{}, {}, OrganizationStatusInput>,
     res: Response,
     next: NextFunction
 ) => {
@@ -112,7 +111,7 @@ export const getOneOrganizationController = async (
     next: NextFunction
 ) => {
     try {
-        const organization_id = (req.params as organizationIdParamInput).organization_id;
+        const organization_id = (req.params as OrganizationIdParamInput).organization_id;
         const organizationList = await getOneOrganizationService(organization_id);
         res.status(200).json({
             success: true,

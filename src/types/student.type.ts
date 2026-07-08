@@ -1,7 +1,6 @@
-import { type student_table } from "@prisma/client";
+import { Prisma, type student_table } from "@prisma/client";
 import type z from "zod";
 import type { studentIdParamSchema, studentRegisterSchema, studentUpdateAdminSchema, studentUpdateSchema } from "../validations/student.validation.js";
-import type { userCreateData } from "./user.type.js";
 import type { ITrainingApplication } from "./training_application.type.js";
 import type { ITraining } from "./training.type.js";
 import type { ParamsDictionary } from "express-serve-static-core";
@@ -25,17 +24,21 @@ export interface IStudent extends student_table {};
 //     resume_url: string,
 // }
 
-export type studentCreateData = Pick<IStudent, 'roll_no' | 'name' | 'age' | 'department_id' | 'gender_id' | 'semester_id'> & Omit<userCreateData, 'role_id'>;
+// export type studentCreateData = Pick<IStudent, 'roll_no' | 'name' | 'age' | 'department_id' | 'gender_id' | 'semester_id'> & Omit<userCreateData, 'role_id'>;
 // export type studentCreateData = IStudent & userCreateData;
-export type studentUpdateData = z.infer<typeof studentUpdateSchema>['body'];
 
-export type studentRegisterInput = z.infer<typeof studentRegisterSchema>['body'];
-export type studentUpdateInput = z.infer<typeof studentUpdateSchema>['body'];
-export type studentUpdateAdminInput = z.infer<typeof studentUpdateAdminSchema>['body'];
+export type StudentCreateData = Omit<Prisma.student_tableCreateManyInput, 'user_id'> & Omit<Prisma.user_tableCreateManyInput, 'role_id'>;
+export type StudentRegisterInput = z.infer<typeof studentRegisterSchema>['body'];
 
-export type studentDashboardOutput = {
+export type StudentUpdateData = Prisma.student_tableUncheckedUpdateInput & Prisma.user_tableUncheckedUpdateInput;
+export type StudentUpdateInput = z.infer<typeof studentUpdateSchema>['body'];
+
+export type StudentUpdateAdminInput = z.infer<typeof studentUpdateAdminSchema>['body'];
+
+export type StudentIdParamInput = z.infer<typeof studentIdParamSchema>['params'] & ParamsDictionary;
+
+export type StudentDashboardOutput = {
     appliedTrainings: ITrainingApplication[],
     eligibleTrainings: ITraining[]
 };
 
-export type studentIdParamInput = z.infer<typeof studentIdParamSchema>['params'] & ParamsDictionary;

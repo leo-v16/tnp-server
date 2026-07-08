@@ -1,5 +1,4 @@
 import type { Request, Response, NextFunction } from "express";
-import { getAllDepartmentService } from "../services/department.service.js";
 import { getAllDivisonService } from "../services/division.service.js";
 
 export const getAllDivisionController = async (

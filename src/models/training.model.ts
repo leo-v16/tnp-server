@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import prisma from "../config/db.prisma.js";
-import type { ITraining, trainingCreateData } from "../types/training.type.js";
+import type { ITraining, TrainingCreateData } from "../types/training.type.js";
 import Student from "./student.model.js";
 
 class Training {
@@ -11,14 +11,14 @@ class Training {
         return training;
     }
 
-    static async create(trainingData: trainingCreateData): Promise<ITraining | null> {
-        const training = prisma.training_table.create({
+    static async create(trainingData: TrainingCreateData): Promise<ITraining | null> {
+        const newTraining = prisma.training_table.create({
             data: trainingData
         });
-        return training;
+        return newTraining;
     }
     
-    static async getOneEligibleById(training_id: number, student_id: number): Promise<ITraining | null> {
+    static async findOneEligibleById(training_id: number, student_id: number): Promise<ITraining | null> {
         const student = await Student.findById(student_id);
         const trainingList = await prisma.training_table.findFirst({
             where: {
@@ -40,7 +40,7 @@ class Training {
         return trainingList;
     }
 
-    static async getEligibleById(student_id: number): Promise<ITraining[] | null> {
+    static async findEligibleById(student_id: number): Promise<ITraining[] | null> {
         const student = await Student.findById(student_id);
         const trainingList = await prisma.training_table.findMany({
             where: {

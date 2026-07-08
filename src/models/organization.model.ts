@@ -1,5 +1,5 @@
 import prisma from "../config/db.prisma.js";
-import type { IOrganization, organizationCreateData, organizationUpdateData } from "../types/organization.type.js";
+import type { IOrganization, OrganizationCreateData, OrganizationUpdateData } from "../types/organization.type.js";
 import Role from "./role.model.js";
 import Student from "./student.model.js";
 
@@ -24,12 +24,13 @@ class Organization {
     }
 
     static async findAll(): Promise<IOrganization[] | null> {
-        return await prisma.organization_table.findMany();
+        const organizationList = await prisma.organization_table.findMany();
+        return organizationList;
     }
 
-    static async create(organizationData: organizationCreateData): Promise<IOrganization | null> {
+    static async create(organizationData: OrganizationCreateData): Promise<IOrganization | null> {
         const newOrganization = await prisma.$transaction(async (tx) => {
-            const user = await tx.user_table.create({
+            const newUser = await tx.user_table.create({
                 data: {
                     email: organizationData.email,
                     password: organizationData.password,
@@ -38,19 +39,19 @@ class Organization {
                 }
             });
 
-            const organization = await tx.organization_table.create({
+            const newOrganization = await tx.organization_table.create({
                 data: {
-                    user_id: user.user_id,
+                    user_id: newUser.user_id,
                     name: organizationData.name
                 }
             });
 
-            return organization;
+            return newOrganization;
         });
         return newOrganization;
     }
 
-    static async update(user_id: number, organizationData: organizationUpdateData): Promise<IOrganization | null> {
+    static async update(user_id: number, organizationData: OrganizationUpdateData): Promise<IOrganization | null> {
         const organization = await prisma.organization_table.update({
             where: {
                 user_id: user_id,
@@ -62,7 +63,7 @@ class Organization {
     }
 
     static async findApproved(): Promise<IOrganization[] | null> {
-        return await prisma.organization_table.findMany({
+        const organizationList = await prisma.organization_table.findMany({
             where: {
                 approval_id: 1
             },
@@ -70,10 +71,11 @@ class Organization {
                 user_table: true
             }
         });
+        return organizationList;
     }
 
     static async findRejected(): Promise<IOrganization[] | null> {
-        return await prisma.organization_table.findMany({
+        const organizationList = await prisma.organization_table.findMany({
             where: {
                 approval_id: 2
             },
@@ -81,10 +83,11 @@ class Organization {
                 user_table: true
             }
         });
+        return organizationList;
     }
 
     static async findPending(): Promise<IOrganization[] | null> {
-        return await prisma.organization_table.findMany({
+        const organizationList = await prisma.organization_table.findMany({
             where: {
                 approval_id: 0
             },
@@ -92,6 +95,7 @@ class Organization {
                 user_table: true
             }
         });
+        return organizationList;
     }
 
 }

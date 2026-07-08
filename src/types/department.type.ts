@@ -1,5 +1,7 @@
 import type { department_table } from "@prisma/client";
 import type { IOrganization } from "./organization.type.js";
+import type z from "zod";
+import type { departmentRegisterSchema } from "../validations/department.validation.js";
 
 export interface IDepartment extends department_table {};
 // export interface IDepartment {
@@ -11,9 +13,12 @@ export interface IDepartment extends department_table {};
 export type CreateDepartmentData = Omit<IDepartment, 'department_id'>;
 
 
-export type departmentDashboardOutput = {
+export type DepartmentDashboardOutput = {
     studentCount: number,
     organizationList: IOrganization[],
     applicationCount: number,
     trainingPercentage: number,
 }
+
+export type DepartmentRegisterInput = z.infer<typeof departmentRegisterSchema>['body'];
+export type DepartmentRegisterData = DepartmentRegisterInput;

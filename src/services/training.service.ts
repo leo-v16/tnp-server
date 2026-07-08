@@ -2,17 +2,17 @@ import Role from "../models/role.model.js";
 import Student from "../models/student.model.js";
 import Training from "../models/training.model.js";
 import User from "../models/user.model.js";
-import type { ITraining, trainingCreateData, trainingCreateInput, TrainingEligibilityResult } from "../types/training.type.js";
+import type { ITraining, TrainingCreateData, TrainingCreateInput, TrainingEligibilityResult } from "../types/training.type.js";
 import ApiError from "../utils/ApiError.js";
 import type { UserJwtPayload } from "../utils/jwt.util.js";
 
-export const createTrainingService = async (input: trainingCreateInput, actor: UserJwtPayload): Promise<ITraining> => {
+export const createTrainingService = async (input: TrainingCreateInput, actor: UserJwtPayload): Promise<ITraining> => {
     const existingOrganization = await User.findByEmail(actor.auth_email);
     if (!existingOrganization) {
         throw new ApiError(404, "Organization with this email does not exist");
     }
 
-    const trainingData: trainingCreateData = {
+    const trainingData: TrainingCreateData = {
         creator_id: actor.auth_user_id,
         title: input.title,
         description: input.description ?? null,
@@ -32,7 +32,7 @@ export const createTrainingService = async (input: trainingCreateInput, actor: U
 export const getTrainingService = async (actor: UserJwtPayload): Promise<ITraining[]> => {
     switch (actor.auth_role_id) {
         case Role.Student:
-            const eligibleTraining = await Training.getEligibleById(actor.auth_user_id);
+            const eligibleTraining = await Training.findEligibleById(actor.auth_user_id);
             if (!eligibleTraining) {
                 throw new ApiError(500, "Could not find eligible trainings");
             }
@@ -51,7 +51,7 @@ export const getTrainingService = async (actor: UserJwtPayload): Promise<ITraini
 export const getOneTrainingService = async (trainind_id: number, actor: UserJwtPayload): Promise<ITraining> => {
     switch (actor.auth_role_id) {
         case Role.Student:
-            const eligibleTraining = await Training.getOneEligibleById(trainind_id, actor.auth_user_id);
+            const eligibleTraining = await Training.findOneEligibleById(trainind_id, actor.auth_user_id);
             if (!eligibleTraining) {
                 throw new ApiError(500, "Could not find eligible training");
             }

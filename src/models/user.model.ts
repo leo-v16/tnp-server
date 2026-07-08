@@ -1,4 +1,4 @@
-import type { IUser, userCreateData } from "../types/user.type.js";
+import type { IUser, UserCreateData } from "../types/user.type.js";
 import prisma from "../config/db.prisma.js";
 
 class User {
@@ -22,7 +22,7 @@ class User {
         return user;
     }
     
-    static async create(userData: userCreateData): Promise<IUser | null> {
+    static async create(userData: UserCreateData): Promise<IUser | null> {
         const newUser = await prisma.user_table.create({
             data: {
                 email: userData.email,
@@ -34,7 +34,7 @@ class User {
         return newUser;
     }
 
-    static async getAll(): Promise<IUser[] | null> {
+    static async findAll(): Promise<IUser[] | null> {
         const userList = await prisma.user_table.findMany({
             include: {
                 role_table: true

@@ -1,5 +1,4 @@
 import prisma from "../config/db.prisma.js";
-import type { IDivision } from "../types/division.type.js";
 import type { IGender } from "../types/gender.type.js";
 
 class Gender {
@@ -12,7 +11,7 @@ class Gender {
         return gender;
     }
 
-        static async findAll(): Promise<IGender[] | null> {
+    static async findAll(): Promise<IGender[] | null> {
         const genderList = await prisma.gender_table.findMany();
         return genderList;
     }

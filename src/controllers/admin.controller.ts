@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { admintDashboardService } from "../services/admin.service.js";
+import { adminDashboardService } from "../services/admin.service.js";
 
 export const adminDashboardController = async (
     req: Request,
@@ -7,7 +7,7 @@ export const adminDashboardController = async (
     next: NextFunction
 ) => {
     try {
-        const adminDashboard = await admintDashboardService();
+        const adminDashboard = await adminDashboardService();
         res.status(200).json({
             success: true,
             message: `Fetched admin dashboard`,

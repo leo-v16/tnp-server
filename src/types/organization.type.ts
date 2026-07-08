@@ -1,5 +1,4 @@
-import type { organization_table } from "@prisma/client";
-import type { userCreateData } from "./user.type.js";
+import { Prisma, type organization_table } from "@prisma/client";
 import type z from "zod";
 import type { organizationIdParamSchema, organizationRegisterSchema, organizationStatusSchema } from "../validations/organization.validation.js";
 import type { ParamsDictionary } from "express-serve-static-core";
@@ -12,10 +11,11 @@ export interface IOrganization extends organization_table{};
 //     is_active: boolean,
 // }
 
-export type organizationCreateData = Pick<IOrganization, 'name'> & Pick<userCreateData, 'email' | 'mobile_no' | 'password'>;
-export type organizationUpdateData = Partial<Omit<IOrganization, 'user_id'>>;
+// export type OrganizationCreateData = Pick<IOrganization, 'name'> & Pick<userCreateData, 'email' | 'mobile_no' | 'password'>;
+export type OrganizationCreateData = Omit<Prisma.organization_tableCreateManyInput, 'user_id'> & Omit<Prisma.user_tableCreateManyInput, 'role_id'>;
+export type OrganizationUpdateData = Partial<Omit<IOrganization, 'user_id'>>;
 
-export type organizationRegisterInput = z.infer<typeof organizationRegisterSchema>['body'];
-export type organizationStatusInput = z.infer<typeof organizationStatusSchema>['body'];
+export type OrganizationRegisterInput = z.infer<typeof organizationRegisterSchema>['body'];
+export type OrganizationStatusInput = z.infer<typeof organizationStatusSchema>['body'];
 
-export type organizationIdParamInput = z.infer<typeof organizationIdParamSchema>['params'] & ParamsDictionary;
+export type OrganizationIdParamInput = z.infer<typeof organizationIdParamSchema>['params'] & ParamsDictionary;

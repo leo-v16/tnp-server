@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { departmentDashboardService, getAllDepartmentService } from "../services/department.service.js";
 import type { UserJwtPayload } from "../utils/jwt.util.js";
+import type { DepartmentRegisterInput } from "../types/department.type.js";
 
 export const getAllDepartmentController = async (
     req: Request,
@@ -30,6 +31,23 @@ export const departmentDashboardController = async (
             success: true,
             message: `Fetched depratment dashboard`,
             data: departmentDashboard
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const departmentRegisterController = async (
+    req: Request<{}, {}, DepartmentRegisterInput>,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        // const newDepartment = await departmentRegisterService(req.body, req.user as UserJwtPayload);
+        res.status(200).json({
+            success: true,
+            message: "Department ID has to be made autoincrement",
+            data: null
         });
     } catch (error) {
         next(error);

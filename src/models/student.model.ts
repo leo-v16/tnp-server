@@ -1,5 +1,5 @@
 import Role from "../models/role.model.js";
-import type { IStudent, studentCreateData, studentDashboardOutput, studentUpdateData } from "../types/student.type.js";
+import type { IStudent, StudentCreateData, StudentDashboardOutput, StudentUpdateData } from "../types/student.type.js";
 import prisma from "../config/db.prisma.js";
 import type { Prisma } from "@prisma/client";
 import Data from "../utils/data.util.js";
@@ -23,20 +23,22 @@ class Student {
     }
 
     static async findByEmail(email: string): Promise<IStudent | null> {
-        const student = await prisma.user_table.findUnique({
+        const student =  await prisma.student_table.findFirst({
             where: {
-                email
+                user_table: {
+                    email
+                }
             },
             include: {
-                student_table: true
+                user_table: true
             }
         });
-        return student?.student_table ?? null;
+        return student;
     }
 
-    static async create(studentData: studentCreateData): Promise<IStudent | null> {
+    static async create(studentData: StudentCreateData): Promise<IStudent | null> {
         const newStudent = await prisma.$transaction(async (tx) => {
-            const user = await tx.user_table.create({
+            const newUser = await tx.user_table.create({
                 data: {
                     email: studentData.email,
                     password: studentData.password,
@@ -45,9 +47,9 @@ class Student {
                 }
             });
 
-            const student = await tx.student_table.create({
+            const newStudent = await tx.student_table.create({
                 data: {
-                    user_id: user.user_id,
+                    user_id: newUser.user_id,
                     roll_no: studentData.roll_no, 
                     name: studentData.name, 
                     age: studentData.age, 
@@ -57,12 +59,12 @@ class Student {
                 }
             });
 
-            return student;
+            return newStudent;
         });
-        return newStudent;
+        return newStudent
     }
 
-    static async getAll(): Promise<IStudent[] | null> {
+    static async findAll(): Promise<IStudent[] | null> {
         const studentList = await prisma.student_table.findMany({
             include: {
                 user_table: true
@@ -71,9 +73,8 @@ class Student {
         return studentList;
     }
 
-    static async update(user_id: number, updateData: studentUpdateData): Promise<IStudent | null> {
-
-        const userData: Prisma.user_tableUpdateInput = Data.filterUndefined({
+    static async update(user_id: number, updateData: StudentUpdateData): Promise<IStudent | null> {
+        const userData: Prisma.user_tableUncheckedUpdateInput = Data.filterUndefined({
             email: updateData.email,
             mobile_no: updateData.mobile_no
         });
@@ -83,7 +84,7 @@ class Student {
             cgpa: updateData.cgpa,
             resume_url: updateData.resume_url,
             image_url: updateData.image_url,
-            tenth_division_id: updateData.tenth_divison_id,
+            tenth_division_id: updateData.tenth_division_id,
             twelfth_division_id: updateData.twelfth_division_id,
             category_id: updateData.category_id
         });
@@ -112,7 +113,7 @@ class Student {
         return studentList;
     }
 
-    static async getDashboard(user_id: number): Promise<studentDashboardOutput | null> {
+    static async getDashboard(user_id: number): Promise<StudentDashboardOutput | null> {
         const appliedTrainings = await prisma.training_application_table.findMany({
             where: {
                 student_id: user_id
@@ -122,12 +123,12 @@ class Student {
             }
         });
 
-        const eligibleTrainings = await Training.getEligibleById(user_id);
+        const eligibleTrainings = await Training.findEligibleById(user_id);
 
         return { appliedTrainings: appliedTrainings, eligibleTrainings: eligibleTrainings ?? []};
     }
 
-    static async updateAdmin(user_id: number, updateData: studentUpdateData): Promise<IStudent | null> {
+    static async updateAdmin(user_id: number, updateData: StudentUpdateData): Promise<IStudent | null> {
         const userData: Prisma.user_tableUpdateInput = Data.filterUndefined({
             email: updateData.email,
             mobile_no: updateData.mobile_no
@@ -138,12 +139,12 @@ class Student {
             cgpa: updateData.cgpa,
             resume_url: updateData.resume_url,
             image_url: updateData.image_url,
-            tenth_division_id: updateData.tenth_divison_id,
+            tenth_division_id: updateData.tenth_division_id,
             twelfth_division_id: updateData.twelfth_division_id,
             category_id: updateData.category_id
         });
 
-        const studentList = await prisma.$transaction(async (tx)=> {
+        return await prisma.$transaction(async (tx)=> {
             const user = await tx.user_table.update({
                 where: {
                     user_id: user_id,
@@ -163,24 +164,24 @@ class Student {
 
             return student;
         })
-
-        return studentList;
     }
 
-    static async getCountByDepartmentId(department_id: number): Promise<number | null> {
-        return await prisma.student_table.count({
-            where: {
-                department_id
-            }
-        })
-    }
-
-    static async findByDepartmentId(department_id: number): Promise<IStudent[] | null> {
-        return await prisma.student_table.findMany({
+    static async findCountByDepartmentId(department_id: number): Promise<number | null> {
+        const studentCount = await prisma.student_table.count({
             where: {
                 department_id
             }
         });
+        return studentCount;
+    }
+
+    static async findByDepartmentId(department_id: number): Promise<IStudent[] | null> {
+        const studentList =  await prisma.student_table.findMany({
+            where: {
+                department_id
+            }
+        });
+        return studentList;
     }
 }
 

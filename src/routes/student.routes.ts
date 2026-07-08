@@ -10,7 +10,7 @@ const studentRouter = Router();
 studentRouter
 .post("/register", authenticate([Role.SuperAdmin]), validate(studentRegisterSchema), registerStudentController)
 .put("/update", authenticate(Role.Student), validate(studentUpdateSchema), updateStudentController)
-.put("/update/:user_id", authenticate(Role.SuperAdmin), validate(studentUpdateAdminSchema.extend(studentIdParamSchema)), studentUpdateAdminController)
+.put("/update/:user_id", authenticate(Role.SuperAdmin), validate(studentUpdateAdminSchema.extend(studentIdParamSchema.shape)), studentUpdateAdminController)
 .get("/", authenticate(Role.SuperAdmin), getStudentController)
 .get("/dashboard", authenticate(Role.Student), studentDashboardController);
 
