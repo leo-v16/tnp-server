@@ -11,7 +11,7 @@ export const getAllCategoryController = async (
         const categoryList = await getAllCategoryService();
         res.status(200).json({
             success: true,
-            message: `Fetched all departments`,
+            message: `Fetched all category`,
             data: categoryList
         });
     } catch (error) {

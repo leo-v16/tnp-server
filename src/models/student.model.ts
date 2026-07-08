@@ -1,8 +1,9 @@
 import Role from "../models/role.model.js";
-import type { IStudent, studentCreateData, studentUpdateData } from "../types/student.type.js";
+import type { IStudent, studentCreateData, studentDashboardOutput, studentUpdateData } from "../types/student.type.js";
 import prisma from "../config/db.prisma.js";
 import type { Prisma } from "@prisma/client";
 import Data from "../utils/data.util.js";
+import Training from "./training.model.js";
 
 class Student {
     static async findById(user_id: number): Promise<IStudent | null> {
@@ -102,8 +103,22 @@ class Student {
         return studentList;
     }
 
-    static async updateAdmin(user_id: number, updateData: studentUpdateData): Promise<IStudent | null> {
+    static async getDashboard(user_id: number): Promise<studentDashboardOutput | null> {
+        const appliedTrainings = await prisma.training_application_table.findMany({
+            where: {
+                student_id: user_id
+            },
+            include: {
+                training_table: true
+            }
+        });
 
+        const eligibleTrainings = await Training.getEligibleById(user_id);
+
+        return { appliedTrainings: appliedTrainings, eligibleTrainings: eligibleTrainings ?? []};
+    }
+
+    static async updateAdmin(user_id: number, updateData: studentUpdateData): Promise<IStudent | null> {
         const userData: Prisma.user_tableUpdateInput = Data.filterUndefined({
             email: updateData.email,
             mobile_no: updateData.mobile_no

@@ -11,7 +11,7 @@ export const getAllGenderController = async (
         const genderList = await getAllGenderService();
         res.status(200).json({
             success: true,
-            message: `Fetched all departments`,
+            message: `Fetched all genders`,
             data: genderList
         });
     } catch (error) {

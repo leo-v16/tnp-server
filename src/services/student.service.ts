@@ -1,7 +1,7 @@
 import type { Prisma } from "@prisma/client";
 import Student from "../models/student.model.js";
 import User from "../models/user.model.js";
-import type { IStudent, studentCreateData, studentRegisterInput, studentUpdateAdminInput, studentUpdateData, studentUpdateInput } from "../types/student.type.js";
+import type { IStudent, studentCreateData, studentDashboardOutput, studentRegisterInput, studentUpdateAdminInput, studentUpdateData, studentUpdateInput } from "../types/student.type.js";
 import ApiError from "../utils/ApiError.js";
 import type { UserJwtPayload } from "../utils/jwt.util.js";
 import PasswordManager from "../utils/password.util.js";
@@ -55,4 +55,13 @@ export const updateStudentAdminService = async (input: studentUpdateAdminInput, 
         throw new ApiError(500, "Failed to update student");
     }
     return updatedStudent;
+}
+
+export const studentDashboardService = async (actor: UserJwtPayload): Promise<studentDashboardOutput> => {
+    const studentDashboard = await Student.getDashboard(actor.auth_user_id);
+    if (!studentDashboard) {
+        throw new ApiError(500, "Could not fetch dashbord");
+    }
+
+    return studentDashboard;
 }

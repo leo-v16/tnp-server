@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import type { studentRegisterInput, studentUpdateInput } from "../types/student.type.js";
-import { registerStudentService, updateStudentService } from "../services/student.service.js";
+import { registerStudentService, studentDashboardService, updateStudentAdminService, updateStudentService } from "../services/student.service.js";
 import type { UserJwtPayload } from "../utils/jwt.util.js";
 import type { studentUpdateSchema } from "../validations/student.validation.js";
 import Student from "../models/student.model.js";
@@ -66,6 +66,23 @@ export const getStudentController = async (
         res.status(200).json({
             success: true,
             message: "Successfully fetched students",
+            data: studentList
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const studentDashboardController = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const studentList = await studentDashboardService(req.user as UserJwtPayload);
+        res.status(200).json({
+            success: true,
+            message: "Successfully fetched dashboard",
             data: studentList
         })
     } catch (error) {

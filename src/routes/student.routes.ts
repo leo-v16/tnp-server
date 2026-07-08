@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { validate } from "../middlewares/validation.middleware.js";
 import { studentRegisterSchema, studentUpdateAdminSchema, studentUpdateSchema } from "../validations/student.validation.js";
-import { getStudentController, registerStudentController, studentUpdateAdminController, updateStudentController } from "../controllers/student.controller.js";
+import { getStudentController, registerStudentController, studentDashboardController, studentUpdateAdminController, updateStudentController } from "../controllers/student.controller.js";
 import { authenticate } from "../middlewares/auth.middleware.js";
 import Role from "../models/role.model.js";
 
@@ -12,5 +12,6 @@ studentRouter
 .put("/update", authenticate(Role.Student), validate(studentUpdateSchema), updateStudentController)
 .put("/update/:id", authenticate(Role.SuperAdmin), validate(studentUpdateAdminSchema), studentUpdateAdminController)
 .get("/", authenticate(Role.SuperAdmin), getStudentController)
+.get("/dashboard", authenticate(Role.Student), studentDashboardController);
 
 export default studentRouter;
