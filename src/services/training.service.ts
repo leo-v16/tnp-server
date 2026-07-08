@@ -13,7 +13,7 @@ export const createTrainingService = async (input: trainingCreateInput, actor: U
     }
 
     const trainingData: trainingCreateData = {
-        creator_id: actor.user_id,
+        creator_id: actor.auth_user_id,
         title: input.title,
         description: input.description ?? null,
         min_cgpa: input.min_cgpa ?? null,

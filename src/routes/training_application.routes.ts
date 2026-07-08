@@ -9,7 +9,7 @@ const trainingApplicationRouter = Router();
 
 trainingApplicationRouter
 .post("/create", authenticate(Role.Student), validate(trainingApplicationCreateSchema), createTrainingApplicationController)
-.post("/approve", authenticate([Role.Organization, Role.Coordinator, Role.SuperAdmin]), approveTrainingApplicationController)
+.post("/approve/:student_id/:training_id", authenticate([Role.Organization, Role.Coordinator, Role.SuperAdmin]), approveTrainingApplicationController)
 .get("/view", authenticate([Role.Student, Role.Organization, Role.Coordinator, Role.SuperAdmin]), viewTrainingApplicationController)
 
 export default trainingApplicationRouter;
