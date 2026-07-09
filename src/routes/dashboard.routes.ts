@@ -6,6 +6,6 @@ import { dashboardController } from "../controllers/dashboard.controller.js";
 const dashboardRoute = Router();
 
 dashboardRoute
-.get("/", authenticate([]), dashboardController)
+.get("/", authenticate([Role.Student, Role.Coordinator, Role.SuperAdmin]), dashboardController)
 
 export default dashboardRoute;
