@@ -25,6 +25,7 @@ export const loginUserController = async (
     next: NextFunction
 ) => {
     try {
+        console.log("RUNNING");
         const loggedUser = await loginUserService(req.body);
         const { password, ...sanitizedUser } = loggedUser;
         return res.status(200).json({

@@ -5,7 +5,7 @@ export const getAllDivisionController = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => {
+) => { 
     try {
         const divisionList = await getAllDivisonService();
         res.status(200).json({
