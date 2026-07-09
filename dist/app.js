@@ -13,6 +13,8 @@ import divisionRoute from "./routes/division.routes.js";
 import genderRoute from "./routes/gender.routes.js";
 import semesterRoute from "./routes/semester.routes.js";
 import adminRoute from "./routes/admin.routes.js";
+import placementRouter from "./routes/placement.routes.js";
+import placementApplicationRouter from "./routes/placement_application.routes.js";
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -28,6 +30,8 @@ app.use("/divisions", divisionRoute);
 app.use("/genders", genderRoute);
 app.use("/semesters", semesterRoute);
 app.use("/admins", adminRoute);
+app.use("/placements", placementRouter);
+app.use("/placement-applications", placementApplicationRouter);
 app.use(errorHandler);
 export default app;
 //# sourceMappingURL=app.js.map

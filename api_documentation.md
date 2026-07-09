@@ -612,6 +612,129 @@ The database utilizes specific static integer IDs for roles:
 
 ---
 
+### Placements Namespace (`/placements`)
+
+#### 1. Create Placement
+* **Path**: `POST /placements`
+* **Auth**: `Organization` (Role 4), `Coordinator` (Role 3), `SuperAdmin` (Role 1)
+* **Body Requirements**:
+  ```json
+  {
+    "title": "Software Engineer Intern",
+    "description": "Looking for talented software developers.",
+    "min_cgpa": 7.5,
+    "last_date_of_submission": "2026-08-31T00:00:00.000Z",
+    "is_active": true
+  }
+  ```
+* **Success Response (Status: 201 Created)**:
+  ```json
+  {
+    "success": true,
+    "message": "Successfully created placement",
+    "data": {
+      "placement_id": 1,
+      "creator_id": 5,
+      "title": "Software Engineer Intern",
+      "description": "Looking for talented software developers.",
+      "min_cgpa": "7.50",
+      "last_date_of_submission": "2026-08-31T00:00:00.000Z",
+      "is_active": true
+    }
+  }
+  ```
+
+#### 2. Get All Placements
+* **Path**: `GET /placements`
+* **Auth**: `Student` (Role 2), `Organization` (Role 4), `Coordinator` (Role 3), `SuperAdmin` (Role 1)
+* **Behavior**:
+  - **For Students**: Returns active placements where student's CGPA meets/exceeds `min_cgpa`.
+  - **For Admins/Coordinators/Orgs**: Returns placements created by them.
+* **Success Response (Status: 200 OK)**:
+  ```json
+  {
+    "success": true,
+    "message": "Successfully fetched all placements",
+    "data": [ ... ]
+  }
+  ```
+
+#### 3. Get Single Placement Details
+* **Path**: `GET /placements/:placement_id`
+* **Auth**: `Student` (Role 2), `Organization` (Role 4), `Coordinator` (Role 3), `SuperAdmin` (Role 1)
+* **Path Params**: `placement_id` (numeric)
+* **Success Response (Status: 200 OK)**:
+  ```json
+  {
+    "success": true,
+    "message": "Successfully fetched placement",
+    "data": { ... }
+  }
+  ```
+
+---
+
+### Placement Applications (`/placement-applications`)
+
+#### 1. Submit Placement Application
+* **Path**: `POST /placement-applications`
+* **Auth**: `Student` (Role 2)
+* **Body Requirements**:
+  ```json
+  {
+    "placement_id": 1
+  }
+  ```
+* **Success Response (Status: 201 Created)**:
+  ```json
+  {
+    "success": true,
+    "message": "Placement Application created successfully",
+    "data": {
+      "placement_id": 1,
+      "student_id": 12,
+      "status_id": 0,
+      "remarks": null
+    }
+  }
+  ```
+
+#### 2. Approve/Status Update Placement Application
+* **Path**: `PATCH /placement-applications/:placement_id/students/:student_id/status`
+* **Auth**: `Organization` (Role 4), `Coordinator` (Role 3), `SuperAdmin` (Role 1)
+* **Path Params**:
+  - `placement_id`: number (Target placement ID)
+  - `student_id`: number (Target student profile ID)
+* **Success Response (Status: 200 OK)**:
+  ```json
+  {
+    "success": true,
+    "message": "Placement Application approved successfully",
+    "data": {
+      "placement_id": 1,
+      "student_id": 12,
+      "status_id": 1
+    }
+  }
+  ```
+
+#### 3. View Placement Applications
+* **Path**: `GET /placement-applications`
+* **Auth**: `Student` (Role 2), `Organization` (Role 4), `Coordinator` (Role 3), `SuperAdmin` (Role 1)
+* **Behavior**:
+  - **For Students**: Returns their personal submitted placement applications.
+  - **For Creators (Org/Coordinator/SuperAdmin)**: Returns applications received for placements they created.
+* **Success Response (Status: 200 OK)**:
+  ```json
+  {
+    "success": true,
+    "message": "Placement Applications fetched successfully",
+    "data": [ ... ]
+  }
+  ```
+
+---
+
 ### SuperAdmin Namespace (`/admins`)
 
 #### 1. Admin Dashboard
@@ -697,7 +820,3 @@ During review of the backend code, **two remaining logical bugs** were identifie
 * **Issue**: The controller calls `Department.getDashboard(actor.auth_user_id)`, passing the coordinator's **user_id** as the **department_id**.
 * **Impact**: If a coordinator has user ID 15, the dashboard tries to query metrics for department ID 15. If department 15 does not exist, or if the coordinator belongs to department 2, the data returned will be incorrect or blank.
 * **Suggested Fix**: Coordinators should have a department profile reference, or the department_id should be supplied as a path parameter.
-
-### 2. Placements Module is Completely Missing
-* **Issue**: While the Database schema contains tables for placements (`placement_table`, `placement_application_table`, `placement_category_table`, etc.) and the codebase has corresponding model files, **no placement routes** are imported, configured, or mounted in `src/app.ts`.
-* **Impact**: The Placement features are currently non-functional and inaccessible from the frontend.
