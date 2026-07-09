@@ -3,9 +3,9 @@ import { authenticate } from "../middlewares/auth.middleware.js";
 import Role from "../models/role.model.js";
 import { dashboardController } from "../controllers/dashboard.controller.js";
 
-const dashboardRouter = Router();
+const dashboardRoute = Router();
 
-dashboardRouter
-.get("/", authenticate([Role.Student, Role.Coordinator, Role.SuperAdmin]), dashboardController);
+dashboardRoute
+.get("/", authenticate([]), dashboardController)
 
-export default dashboardRouter;
+export default dashboardRoute;
