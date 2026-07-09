@@ -12,7 +12,13 @@ export const studentRegisterSchema = z.object({
         semester_id: z.number({ message: "Frontend must convert semester text to semester_id" }),
         name: z.string({ message: "Name must be of type string" }),
         age: z.string({ message: "Age must be of type string" }),
-    }).strict()
+    }),
+
+    file: z.any()
+    .refine(
+        (file) => ["image/jpeg", "image/png", "image/jpg"].includes(file?.mimetype), 
+        "Only .jpg, .jpeg and .png formats are supported"
+    )
 });
 
 export const studentUpdateAdminSchema = z.object({

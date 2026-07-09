@@ -18,6 +18,11 @@ class Department {
         return departmentList;
     }
 
+    static async findCount(): Promise<number| null>{
+        const departmentCount = await prisma.department_table.count();
+        return departmentCount;
+    }
+
     // static async create(departmentDataInput: departmentRegisterInput): Promise<IDepartment | null> {
     //     const newDepartment = await prisma.$transaction(async (tx) => {
     //         tx.user_table.create({
@@ -30,6 +35,7 @@ class Department {
 
     static async getDashboard(department_id: number): Promise<DepartmentDashboardOutput | null> {
         const studentInDepartmentCount = await Student.findCountByDepartmentId(department_id);
+        const organizationCount = await prisma.organization_table.count();
 
         const approvedTrainingApplicationInDepartmentCount = await prisma.training_application_table.count({
             where: {
@@ -48,13 +54,30 @@ class Department {
             }
         });
 
-        const allOrganizationList = await Organization.findAll();
+        const approvedPlacementApplicationInDepartmentCount = await prisma.placement_application_table.count({
+            where: {
+                status_id: 1,
+                student_table: {
+                    department_id
+                }
+            }
+        });
+
+        const placementApplicationInDepartmentCount = await prisma.placement_application_table.count({
+            where: {
+                student_table: {
+                    department_id
+                }
+            }
+        });
 
         return {
             studentCount: studentInDepartmentCount ?? 0,
-            organizationList: allOrganizationList ?? [],
-            applicationCount: trainingApplicationInDepartmentCount,
+            organizationCount: organizationCount,
+            trainingApplicationCount: trainingApplicationInDepartmentCount,
             trainingPercentage: trainingApplicationInDepartmentCount > 0 ? (approvedTrainingApplicationInDepartmentCount / trainingApplicationInDepartmentCount) * 100 : 0,
+            placementApplicationCount: placementApplicationInDepartmentCount,
+            placementApplicationPercentage: placementApplicationInDepartmentCount > 0 ? (approvedPlacementApplicationInDepartmentCount / placementApplicationInDepartmentCount) * 100 : 0,
         }
     } 
 

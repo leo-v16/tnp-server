@@ -4,6 +4,8 @@ import type { studentIdParamSchema, studentRegisterSchema, studentUpdateAdminSch
 import type { ITrainingApplication } from "./training_application.type.js";
 import type { ITraining } from "./training.type.js";
 import type { ParamsDictionary } from "express-serve-static-core";
+import type { IPlacementApplication } from "./placement_application.type.js";
+import type { IPlacement } from "./placement.type.js";
 
 export interface IStudent extends student_table {};
 
@@ -37,8 +39,5 @@ export type StudentUpdateAdminInput = z.infer<typeof studentUpdateAdminSchema>['
 
 export type StudentIdParamInput = z.infer<typeof studentIdParamSchema>['params'] & ParamsDictionary;
 
-export type StudentDashboardOutput = {
-    appliedTrainings: ITrainingApplication[],
-    eligibleTrainings: ITraining[]
-};
+export type { StudentDashboardOutput } from "./dashboard.type.js";
 

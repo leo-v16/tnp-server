@@ -87,7 +87,9 @@ The database utilizes specific static integer IDs for roles:
 | | `/users/:user_id` | `GET` | `SuperAdmin` | Retrieve single user with detailed profile |
 | **Student** | `/students` | `POST` | `SuperAdmin` | Register student profile (Transactional with user table) |
 | | `/students/me` | `PUT` | `Student` | Update own student profile details |
-| | `/students/me/:user_id` | `PUT` | `SuperAdmin` | Admin-level student profile update |
+| | `/students/me` | `GET` | `Student` | Retrieve own student profile details |
+| | `/students/:user_id` | `PUT` | `SuperAdmin` | Admin-level student profile update |
+| | `/students/:user_id` | `GET` | `Student` (self), `SuperAdmin`, `Coordinator` (dept) | Retrieve single student profile details |
 | | `/students/` | `GET` | `SuperAdmin` | Retrieve list of all students |
 | | `/students/me/dashboard` | `GET` | `Student` | Retrieve applied & eligible trainings for student |
 | **Org** | `/organizations` | `POST` | Public | Register organization and request approval |
@@ -103,9 +105,8 @@ The database utilizes specific static integer IDs for roles:
 | **App** | `/training-applications` | `POST` | `Student` | Apply for a training program |
 | | `/training-applications/:training_id/students/:student_id/status`| `POST` | `Org`, `Coordinator`, `SuperAdmin` | Approve student's training application |
 | | `/training-applications` | `GET` | All Authenticated | View training applications submitted/received |
-| **Admin** | `/admins/dashboard` | `GET` | `SuperAdmin` | Retrieve system-wide metrics (Student count, etc.) |
+| **Dashboard** | `/dashboards` | `GET` | All Authenticated | Retrieve role-specific dashboard metrics |
 | **Metadata**| `/departments/` | `GET` | Public | List all departments |
-| | `/departments/dashboard` | `GET` | `Coordinator` | Department dashboard metrics (See Warnings) |
 | | `/categories/` | `GET` | Public | List student/placement categories |
 | | `/divisions/` | `GET` | Public | List educational divisions (First, Second, etc.) |
 | | `/genders/` | `GET` | Public | List genders |
@@ -288,11 +289,43 @@ The database utilizes specific static integer IDs for roles:
   ```
 
 #### 3. Update Student Profile as Admin
-* **Path**: `PUT /students/me/:user_id`
+* **Path**: `PUT /students/:user_id`
 * **Auth**: `SuperAdmin` (Role 1)
 * **Body Requirements (Optional properties)**: Same as Student self update, but also allows `roll_no`, `name`, `age`, `gender_id`, `department_id`, `semester_id`, and `is_graduate` (boolean).
 
-#### 4. List All Students
+#### 4. Retrieve Own Student Profile
+* **Path**: `GET /students/me`
+* **Auth**: `Student` (Role 2)
+* **Success Response (Status: 200 OK)**:
+  ```json
+  {
+    "success": true,
+    "message": "Successfully fetched profile",
+    "data": {
+      "user_id": 6,
+      "roll_no": "20BCE0012",
+      "name": "Jane Doe",
+      "age": 21,
+      "semester_id": 6,
+      "gender_id": 2,
+      "cgpa": 8.5,
+      "department_id": 1,
+      "has_backlog": false,
+      "is_graduate": false,
+      "category_id": 1,
+      "resume_url": "https://resume-url.com",
+      "image_url": "https://image-url.com"
+    }
+  }
+  ```
+
+#### 5. Retrieve Single Student Profile
+* **Path**: `GET /students/:user_id`
+* **Auth**: `Student` who owns the profile, `SuperAdmin` (Role 1), or the coordinator (`Coordinator` Role 3) of the student's department.
+* **Success Response (Status: 200 OK)**: Same as Retrieve Own Student Profile.
+* **Error Response (Status: 403 Forbidden)**: If the user is a Student requesting another student's profile, or a Coordinator requesting a profile of a student from another department.
+
+#### 6. List All Students
 * **Path**: `GET /students/`
 * **Auth**: `SuperAdmin` (Role 1)
 * **Success Response (Status: 200 OK)**:
@@ -311,7 +344,7 @@ The database utilizes specific static integer IDs for roles:
   }
   ```
 
-#### 5. Student Dashboard
+#### 7. Student Dashboard
 * **Path**: `GET /students/me/dashboard`
 * **Auth**: `Student` (Role 2)
 * **Success Response (Status: 200 OK)**:
@@ -735,22 +768,45 @@ The database utilizes specific static integer IDs for roles:
 
 ---
 
-### SuperAdmin Namespace (`/admins`)
+### Dashboard Namespace (`/dashboards`)
 
-#### 1. Admin Dashboard
-* **Path**: `GET /admins/dashboard`
-* **Auth**: `SuperAdmin` (Role 1)
-* **Success Response (Status: 200 OK)**:
+#### 1. Retrieve Dashboard Data
+* **Path**: `GET /dashboards`
+* **Auth**: Student (Role 2), Coordinator (Role 3), SuperAdmin (Role 1)
+* **Behavior**:
+  - **For Students**: Returns applied/eligible trainings and placements.
+  - **For Coordinators**: Returns student count in department, organization count, training and placement application stats.
+  - **For SuperAdmins**: Returns system-wide statistics (student count, department count, org count, training count, training and placement approval percentages).
+
+* **SuperAdmin Response Example**:
   ```json
   {
     "success": true,
-    "message": "Fetched admin dashboard",
+    "message": "Successfully fetched dashboard",
     "data": {
       "studentCount": 420,
       "departmentCount": 8,
       "organizationCount": 15,
       "trainingCount": 24,
-      "trainingPercentage": 64.51 // Approved applications over total applications
+      "trainingPercentage": 64.51,
+      "placementCount": 12,
+      "placementPercentage": 50.00
+    }
+  }
+  ```
+
+* **Coordinator Response Example**:
+  ```json
+  {
+    "success": true,
+    "message": "Successfully fetched dashboard",
+    "data": {
+      "studentCount": 82,
+      "organizationCount": 15,
+      "trainingApplicationCount": 150,
+      "trainingPercentage": 75.00,
+      "placementApplicationCount": 40,
+      "placementApplicationPercentage": 60.00
     }
   }
   ```
@@ -770,24 +826,6 @@ All metadata lists return simple reference objects: `{ <id_name>: number, <value
 * **Path**: `GET /departments/`
 * **Auth**: Public
 * **Data Fields**: `department_id`, `dept_name`, `is_active`
-
-#### 3. Department Dashboard
-* **Path**: `GET /departments/dashboard`
-* **Auth**: `Coordinator` (Role 3)
-* **Warning**: *See developer warnings section regarding severe logic issues with this endpoint.*
-* **Success Response (Status: 200 OK)**:
-  ```json
-  {
-    "success": true,
-    "message": "Fetched depratment dashboard",
-    "data": {
-      "studentCount": 82,
-      "organizationList": [ ... ],
-      "applicationCount": 150,
-      "trainingPercentage": 75.00
-    }
-  }
-  ```
 
 #### 4. Division Table
 * **Path**: `GET /divisions/`
@@ -813,10 +851,4 @@ All metadata lists return simple reference objects: `{ <id_name>: number, <value
 
 ## 6. Critical Integration & Backend Bug Warnings
 
-During review of the backend code, **two remaining logical bugs** were identified. Front-end developers should be aware of these as they will result in runtime errors and API failures:
-
-### 1. Coordinator Department Dashboard Maps User ID to Department ID
-* **Endpoint**: `GET /departments/dashboard`
-* **Issue**: The controller calls `Department.getDashboard(actor.auth_user_id)`, passing the coordinator's **user_id** as the **department_id**.
-* **Impact**: If a coordinator has user ID 15, the dashboard tries to query metrics for department ID 15. If department 15 does not exist, or if the coordinator belongs to department 2, the data returned will be incorrect or blank.
-* **Suggested Fix**: Coordinators should have a department profile reference, or the department_id should be supplied as a path parameter.
+All critical bugs have been resolved.

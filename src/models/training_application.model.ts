@@ -1,3 +1,4 @@
+import type { Prisma } from "@prisma/client";
 import prisma from "../config/db.prisma.js";
 import type { ITrainingApplication, TrainingApplicationCreateData } from "../types/training_application.type.js";
 
@@ -91,6 +92,70 @@ class TrainingApplication {
         });
 
         return approvedTraining;
+    }
+
+    static async findCount(): Promise<number | null> {
+        const applicationCount = await prisma.training_application_table.count();
+        return applicationCount;
+    }
+
+    static async findCountByFilter(filter: {
+        creator_id?: number,
+        status_id?: number,
+        student_id?: number,
+    }): Promise<number | null> {
+        const whereClause: Prisma.training_application_tableWhereInput = {};
+
+        if (filter.student_id !== undefined) {
+            whereClause.student_id = filter.student_id;
+        }
+
+        if (filter.status_id !== undefined) {
+            whereClause.status_id = filter.status_id;
+        }
+
+        if (filter.creator_id !== undefined) {
+            whereClause.training_table = {
+                creator_id: filter.creator_id,
+                
+            }
+        }
+
+        const applicationCount = await prisma.training_application_table.count({
+            where: whereClause
+        });
+
+        return applicationCount;
+    }
+
+
+    static async findByFilter(filter: {
+        creator_id?: number,
+        status_id?: number,
+        student_id?: number,
+    }): Promise<ITrainingApplication[] | null> {
+        const whereClause: Prisma.training_application_tableWhereInput = {};
+
+        if (filter.student_id !== undefined) {
+            whereClause.student_id = filter.student_id;
+        }
+
+        if (filter.status_id !== undefined) {
+            whereClause.status_id = filter.status_id;
+        }
+
+        if (filter.creator_id !== undefined) {
+            whereClause.training_table = {
+                creator_id: filter.creator_id,
+                
+            }
+        }
+
+        const applicationCount = await prisma.training_application_table.findMany({
+            where: whereClause
+        });
+
+        return applicationCount;
     }
 }
 

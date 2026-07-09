@@ -2,7 +2,11 @@ import type { Request, Response, NextFunction } from "express";
 import { registerUserService, loginUserService, getUserService, getOneUserService } from "../services/user.service.js";
 import type { UserIdParamInput, UserLoginInput, UserRegisterInput } from "../types/user.type.js";
 
-export const registerUserController = async (req: Request<{}, {}, UserRegisterInput>, res: Response, next: NextFunction) => {
+export const registerUserController = async (
+    req: Request<{}, {}, UserRegisterInput>, 
+    res: Response, 
+    next: NextFunction
+) => {
     try {
         const newUser = await registerUserService(req.body);
         return res.status(201).json({
@@ -15,7 +19,11 @@ export const registerUserController = async (req: Request<{}, {}, UserRegisterIn
     }
 }
 
-export const loginUserController = async (req: Request<{}, {}, UserLoginInput>, res: Response, next: NextFunction) => {
+export const loginUserController = async (
+    req: Request<{}, {}, UserLoginInput>, 
+    res: Response, 
+    next: NextFunction
+) => {
     try {
         const loggedUser = await loginUserService(req.body);
         const { password, ...sanitizedUser } = loggedUser;

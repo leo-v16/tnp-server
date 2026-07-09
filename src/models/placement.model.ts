@@ -17,6 +17,11 @@ class Placement {
         });
         return newPlacement;
     }
+
+    static async findCount(): Promise<number | null>  {
+        const placementCount = await prisma.placement_table.count();
+        return placementCount;
+    }
     
     static async findOneEligibleById(placement_id: number, student_id: number): Promise<IPlacement | null> {
         const student = await Student.findById(student_id);

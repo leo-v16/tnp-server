@@ -28,6 +28,11 @@ class Organization {
         return organizationList;
     }
 
+    static async findCount(): Promise<number | null> {
+        const organizationCount = await prisma.organization_table.count();
+        return organizationCount;
+    }
+
     static async create(organizationData: OrganizationCreateData): Promise<IOrganization | null> {
         const newOrganization = await prisma.$transaction(async (tx) => {
             const newUser = await tx.user_table.create({

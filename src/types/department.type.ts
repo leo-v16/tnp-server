@@ -12,13 +12,7 @@ export interface IDepartment extends department_table {};
 
 export type CreateDepartmentData = Omit<IDepartment, 'department_id'>;
 
-
-export type DepartmentDashboardOutput = {
-    studentCount: number,
-    organizationList: IOrganization[],
-    applicationCount: number,
-    trainingPercentage: number,
-}
+export type { DepartmentDashboardOutput } from "./dashboard.type.js";
 
 export type DepartmentRegisterInput = z.infer<typeof departmentRegisterSchema>['body'];
 export type DepartmentRegisterData = DepartmentRegisterInput;

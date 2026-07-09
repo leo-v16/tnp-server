@@ -1,3 +1,4 @@
+import type { Prisma } from "@prisma/client";
 import prisma from "../config/db.prisma.js";
 import type { IPlacementApplication, PlacementApplicationCreateData } from "../types/placement_application.type.js";
 
@@ -19,6 +20,11 @@ class PlacementApplication {
             data: placementApplicationData
         });
         return newPlacementApplication;
+    }
+
+    static async findCount(): Promise<number | null> {
+        const applicationCount = await prisma.placement_application_table.count();
+        return applicationCount;
     }
 
     static async findByStudentId(student_id: number): Promise<IPlacementApplication[] | null> {
@@ -91,6 +97,67 @@ class PlacementApplication {
         });
 
         return approvedPlacement;
+    }
+
+    static async findCountByFilter(filter: {
+        creator_id?: number,
+        status_id?: number,
+        student_id?: number,
+    }): Promise<number | null> {
+        const whereClause: Prisma.placement_application_tableWhereInput = {};
+
+        if (filter.student_id !== undefined) {
+            whereClause.student_id = filter.student_id;
+        }
+
+        if (filter.status_id !== undefined) {
+            whereClause.status_id = filter.status_id;
+        }
+
+        if (filter.creator_id !== undefined) {
+            whereClause.placement_table = {
+                creator_id: filter.creator_id,
+                
+            }
+        }
+
+        const applicationCount = await prisma.placement_application_table.count({
+            where: whereClause
+        });
+
+        return applicationCount;
+    }
+
+
+
+
+    static async findByFilter(filter: {
+        creator_id?: number,
+        status_id?: number,
+        student_id?: number,
+    }): Promise<IPlacementApplication[] | null> {
+        const whereClause: Prisma.placement_application_tableWhereInput = {};
+
+        if (filter.student_id !== undefined) {
+            whereClause.student_id = filter.student_id;
+        }
+
+        if (filter.status_id !== undefined) {
+            whereClause.status_id = filter.status_id;
+        }
+
+        if (filter.creator_id !== undefined) {
+            whereClause.placement_table = {
+                creator_id: filter.creator_id,
+                
+            }
+        }
+
+        const applicationCount = await prisma.placement_application_table.findMany({
+            where: whereClause
+        });
+
+        return applicationCount;
     }
 }
 

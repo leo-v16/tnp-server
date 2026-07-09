@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { registerStudentService, studentDashboardService, updateStudentAdminService, updateStudentService } from "../services/student.service.js";
+import { registerStudentService, updateStudentAdminService, updateStudentService, getStudentByIdService } from "../services/student.service.js";
 import type { UserJwtPayload } from "../utils/jwt.util.js";
 import Student from "../models/student.model.js";
 import type { StudentIdParamInput, StudentRegisterInput, StudentUpdateAdminInput, StudentUpdateInput } from "../types/student.type.js";
@@ -73,18 +73,38 @@ export const getStudentController = async (
     }
 }
 
-export const studentDashboardController = async (
+export const getStudentMeController = async (
     req: Request,
     res: Response,
     next: NextFunction
 ) => {
     try {
-        const studentList = await studentDashboardService(req.user as UserJwtPayload);
+        const actor = req.user as UserJwtPayload;
+        const student = await getStudentByIdService(actor.auth_user_id, actor);
         res.status(200).json({
             success: true,
-            message: "Successfully fetched dashboard",
-            data: studentList
-        })
+            message: "Successfully fetched profile",
+            data: student
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getStudentByIdController = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const actor = req.user as UserJwtPayload;
+        const { user_id } = req.params as StudentIdParamInput;
+        const student = await getStudentByIdService(Number(user_id), actor);
+        res.status(200).json({
+            success: true,
+            message: "Successfully fetched student profile",
+            data: student
+        });
     } catch (error) {
         next(error);
     }

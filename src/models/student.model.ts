@@ -63,6 +63,10 @@ class Student {
         });
         return newStudent
     }
+    static async findCount(): Promise<number | null> {
+        const studentCount = await prisma.student_table.count();
+        return studentCount;
+    }
 
     static async findAll(): Promise<IStudent[] | null> {
         const studentList = await prisma.student_table.findMany({
@@ -111,21 +115,6 @@ class Student {
         })
 
         return studentList;
-    }
-
-    static async getDashboard(user_id: number): Promise<StudentDashboardOutput | null> {
-        const appliedTrainings = await prisma.training_application_table.findMany({
-            where: {
-                student_id: user_id
-            },
-            include: {
-                training_table: true
-            }
-        });
-
-        const eligibleTrainings = await Training.findEligibleById(user_id);
-
-        return { appliedTrainings: appliedTrainings, eligibleTrainings: eligibleTrainings ?? []};
     }
 
     static async updateAdmin(user_id: number, updateData: StudentUpdateData): Promise<IStudent | null> {

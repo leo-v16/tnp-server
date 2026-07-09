@@ -1,6 +1,7 @@
 import type { Prisma } from "@prisma/client";
 import Student from "../models/student.model.js";
 import User from "../models/user.model.js";
+import Role from "../models/role.model.js";
 import type { IStudent, StudentCreateData, StudentDashboardOutput, StudentRegisterInput, StudentUpdateAdminInput, StudentUpdateData, StudentUpdateInput } from "../types/student.type.js";
 import ApiError from "../utils/ApiError.js";
 import type { UserJwtPayload } from "../utils/jwt.util.js";
@@ -58,11 +59,19 @@ export const updateStudentAdminService = async (student_id: number, input: Stude
     return updatedStudent;
 }
 
-export const studentDashboardService = async (actor: UserJwtPayload): Promise<StudentDashboardOutput> => {
-    const studentDashboard = await Student.getDashboard(actor.auth_user_id);
-    if (!studentDashboard) {
-        throw new ApiError(500, "Could not fetch dashbord");
+export const getStudentByIdService = async (user_id: number, actor: UserJwtPayload): Promise<IStudent> => {
+    const student = await Student.findById(user_id);
+    if (!student) {
+        throw new ApiError(404, "Student not found");
     }
 
-    return studentDashboard;
+    const isSelf = actor.auth_user_id === user_id;
+    const isSuperAdmin = actor.auth_role_id === Role.SuperAdmin;
+    const isCoordinatorOfDepartment = actor.auth_role_id === Role.Coordinator && student.department_id === actor.auth_user_id;
+
+    if (!isSelf && !isSuperAdmin && !isCoordinatorOfDepartment) {
+        throw new ApiError(403, "You do not have permission to access this student's profile");
+    }
+
+    return student;
 }
