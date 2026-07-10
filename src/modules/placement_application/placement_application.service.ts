@@ -1,12 +1,14 @@
-import Placement from "../models/placement.model.js";
-import PlacementApplication from "../models/placement_application.model.js";
-import Role from "../../models/role.model.js";
+
 import Student from "../student/student.model.js";
-import User from "../models/user.model.js";
+
 import type { IPlacementApplication, PlacementApplicationCreateData, PlacementApplicationCreateInput } from "./placement_application.type.js";
 import ApiError from "../../utils/ApiError.js";
 import type { UserJwtPayload } from "../../utils/jwt.util.js";
 import { checkStudentPlacementEligibilityService } from "../placement/placement.service.js";
+import PlacementApplication from "./placement_application.model.js";
+import User from "../user/user.model.js";
+import Role from "../role/role.model.js";
+import Placement from "../placement/placement.model.js";
 
 export const createPlacementApplicationService = async (input: PlacementApplicationCreateInput, student: UserJwtPayload): Promise<IPlacementApplication> =>  {
     const existingPlacementApplication = await PlacementApplication.findById(student.auth_user_id, input.placement_id);

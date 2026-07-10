@@ -1,5 +1,5 @@
-import prisma from "../config/db.prisma.js";
-import type { ISkill } from "../types/skill.type.js";
+import prisma from "../../config/db.prisma.js";
+import type { ISkill } from "./skill.type.js";
 
 class Skill {
     static async findById(skill_id: number): Promise<ISkill | null> {

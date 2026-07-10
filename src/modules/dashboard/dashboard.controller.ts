@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
-import type { UserJwtPayload } from "../utils/jwt.util.js";
-import { dashboardService } from "../modules/dashboard/dashboard.service.js";
+import { dashboardService } from "./dashboard.service.js";
+import type { UserJwtPayload } from "../../utils/jwt.util.js";
+
 
 export const dashboardController = async (
     req: Request,

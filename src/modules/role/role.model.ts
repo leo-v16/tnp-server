@@ -1,5 +1,5 @@
-import type { IRole } from "../types/role.type.js";
-import prisma from "../config/db.prisma.js";
+import prisma from "../../config/db.prisma.js";
+import type { IRole } from "../../types/role.type.js";
 
 class Role {
     static SuperAdmin: number = 1; 

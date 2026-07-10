@@ -1,5 +1,6 @@
-import prisma from "../config/db.prisma.js";
-import type { ISemester } from "../modules/semester/semester.type.js";
+import prisma from "../../config/db.prisma.js";
+import type { ISemester } from "./semester.type.js";
+
 
 class Semester {
     static async findById(semester_id: number): Promise<ISemester | null> {

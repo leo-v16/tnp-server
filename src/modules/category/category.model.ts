@@ -1,5 +1,6 @@
-import prisma from "../config/db.prisma.js";
-import type { ICategory } from "../modules/category/category.type.js";
+import prisma from "../../config/db.prisma.js";
+import type { ICategory } from "./category.type.js";
+
 
 class Category {
     static async findById(category_id: number): Promise<ICategory | null> {

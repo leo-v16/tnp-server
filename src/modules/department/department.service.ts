@@ -1,8 +1,8 @@
-import Department from "../models/department.model.js";
 import type { DepartmentDashboardOutput, DepartmentRegisterInput, IDepartment } from "./department.type.js";
 import ApiError from "../../utils/ApiError.js";
 import type { UserJwtPayload } from "../../utils/jwt.util.js";
 import { dashboardService } from "../dashboard/dashboard.service.js";
+import Department from "./department.model.js";
 
 export const getAllDepartmentService = async (): Promise<IDepartment[]> => {
     const departmentList = await Department.findAll();

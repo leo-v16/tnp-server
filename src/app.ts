@@ -2,19 +2,20 @@ import express, { application } from "express";
 import cors from "cors";
 import userRouter from "./modules/user/user.routes.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
-import trainingApplicationRouter from "./routes/training_application.routes.js";
+import trainingApplicationRouter from "./modules/training_application/training_application.routes.js";
 import studentRouter from "./modules/student/student.routes.js";
-import trainingRouter from "./routes/training.routes.js";
+import trainingRouter from "./modules/training/training.routes.js";
 import organizationRouter from "./modules/organization/organization.routes.js";
-import departmentRoute from "./routes/department.routes.js";
-import skillRoute from "./routes/skill.routes.js";
-import categoryRoute from "./routes/category.routes.js";
-import divisionRoute from "./routes/division.routes.js";
-import genderRoute from "./routes/gender.routes.js";
-import semesterRoute from "./routes/semester.routes.js";
+import departmentRoute from "./modules/department/department.routes.js";
+import skillRoute from "./modules/skill/skill.routes.js";
+import categoryRoute from "./modules/category/category.routes.js";
+import divisionRoute from "./modules/division/division.routes.js";
+import genderRoute from "./modules/gender/gender.routes.js";
+import semesterRoute from "./modules/semester/semester.routes.js";
 import placementRouter from "./modules/placement/placement.routes.js";
-import placementApplicationRouter from "./routes/placement_application.routes.js";
-import dashboardRouter from "./routes/dashboard.routes.js";
+import placementApplicationRouter from "./modules/placement_application/placement_application.routes.js";
+import dashboardRouter from "./modules/dashboard/dashboard.routes.js";
+
 
 const app = express();
 

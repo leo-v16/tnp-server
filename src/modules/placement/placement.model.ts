@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
-import prisma from "../config/db.prisma.js";
-import Student from "../modules/student/student.model.js";
-import type { IPlacement, PlacementCreateData } from "../types/placement.type.js";
+import type { IPlacement, PlacementCreateData } from "./placement.type.js";
+import prisma from "../../config/db.prisma.js";
+import Student from "../student/student.model.js";
 
 class Placement {
     static async findById(placement_id: number): Promise<IPlacement | null> {

@@ -1,7 +1,7 @@
 import type { Prisma, training_table } from "@prisma/client";
 import type z from "zod";
-import type { trainingCreateSchema, trainingIdParamSchema } from "../validations/training.validation.js";
 import type { ParamsDictionary } from "express-serve-static-core";
+import type { trainingCreateSchema, trainingIdParamSchema } from "./training.validation.js";
 
 export interface ITraining extends training_table{};
 

@@ -1,11 +1,12 @@
-import Role from "../../models/role.model.js";
+
 import Student from "../student/student.model.js";
 import Training from "./training.model.js";
-import User from "../models/user.model.js";
 import Organization from "../organization/organization.model.js";
-import type { ITraining, TrainingCreateData, TrainingCreateInput, TrainingEligibilityResult } from "../../types/training.type.js";
 import ApiError from "../../utils/ApiError.js";
 import type { UserJwtPayload } from "../../utils/jwt.util.js";
+import type { ITraining, TrainingCreateData, TrainingCreateInput, TrainingEligibilityResult } from "./training.type.js";
+import User from "../user/user.model.js";
+import Role from "../role/role.model.js";
 
 export const createTrainingService = async (input: TrainingCreateInput, actor: UserJwtPayload): Promise<ITraining> => {
     const creator = await User.findByEmail(actor.auth_email);

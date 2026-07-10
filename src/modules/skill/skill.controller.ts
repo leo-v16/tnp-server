@@ -1,6 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { getAllDepartmentService } from "../department/department.service.js";
-import { getAllSkillService } from "../services/skill.service.js";
+import { getAllSkillService } from "./skill.service.js";
 
 export const getAllSkillController = async (
     req: Request,

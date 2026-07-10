@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getAllDivisionController } from "../controllers/division.controller.js";
+import { getAllDivisionController } from "./division.controller.js";
 
 const divisionRoute = Router();
 

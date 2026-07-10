@@ -1,5 +1,5 @@
-import prisma from "../config/db.prisma.js";
-import type { IDivision } from "../types/division.type.js";
+import prisma from "../../config/db.prisma.js";
+import type { IDivision } from "./division.type.js";
 
 class Division {
     static async findById(division_id: number): Promise<IDivision | null> {

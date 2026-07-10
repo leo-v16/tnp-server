@@ -1,7 +1,8 @@
-import type { ITrainingApplication } from "./training_application.type.js";
-import type { ITraining } from "./training.type.js";
+import type { IPlacement } from "../placement/placement.type.js";
 import type { IPlacementApplication } from "../placement_application/placement_application.type.js";
-import type { IPlacement } from "./placement.type.js";
+import type { ITraining } from "../training/training.type.js";
+import type { ITrainingApplication } from "../training_application/training_application.type.js";
+
 
 export type AdminDashboardOutput = {
     studentCount: number;

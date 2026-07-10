@@ -1,7 +1,7 @@
 import { getOneOrganizationService, getOrganizationsService, registerOrganizationService, updateOrganizationStatusService } from "./organization.service.js";
 import type { Request, Response, NextFunction } from "express";
 import type { UserJwtPayload } from "../../utils/jwt.util.js";
-import type { OrganizationIdParamInput, OrganizationRegisterInput } from "../types/organization.type.js";
+import type { OrganizationIdParamInput, OrganizationRegisterInput } from "./organization.type.js";
 
 export const registerOrganizationController = async (
     req: Request<{}, {}, OrganizationRegisterInput>,

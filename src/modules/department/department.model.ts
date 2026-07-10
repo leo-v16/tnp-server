@@ -1,7 +1,7 @@
-import prisma from "../config/db.prisma.js";
-import type { DepartmentDashboardOutput, IDepartment } from "../types/department.type.js";
-import Organization from "../modules/organization/organization.model.js";
-import Student from "../modules/student/student.model.js";
+import prisma from "../../config/db.prisma.js";
+import Student from "../student/student.model.js";
+import type { DepartmentDashboardOutput, IDepartment } from "./department.type.js";
+
 
 class Department {
     static async findById(department_id: number): Promise<IDepartment | null> {

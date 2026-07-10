@@ -1,7 +1,7 @@
 import { Prisma, type organization_table } from "@prisma/client";
 import type z from "zod";
-import type { organizationIdParamSchema, organizationRegisterSchema, organizationStatusSchema } from "../modules/organization/organization.validation.js";
 import type { ParamsDictionary } from "express-serve-static-core";
+import type { organizationIdParamSchema, organizationRegisterSchema, organizationStatusSchema } from "./organization.validation.js";
 
 export interface IOrganization extends organization_table{};
 // export interface IOrganization {

@@ -1,7 +1,6 @@
-import Category from "../../models/category.model.js";
-import Department from "../models/department.model.js";
 import type { ICategory } from "./category.type.js";
 import ApiError from "../../utils/ApiError.js";
+import Category from "./category.model.js";
 
 export const getAllCategoryService = async (): Promise<ICategory[]> => {
     const categoryList = await Category.findAll();

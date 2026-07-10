@@ -1,5 +1,4 @@
 import type { department_table } from "@prisma/client";
-import type { IOrganization } from "./organization.type.js";
 import type z from "zod";
 import type { departmentRegisterSchema } from "./department.validation.js";
 

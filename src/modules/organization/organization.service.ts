@@ -1,9 +1,9 @@
 import Organization from "./organization.model.js";
-import User from "../models/user.model.js";
-import type { IOrganization, OrganizationRegisterInput, OrganizationStatusInput, OrganizationUpdateData } from "../../types/organization.type.js";
 import PasswordManager from "../../utils/password.util.js";
 import ApiError from "../../utils/ApiError.js";
 import type { UserJwtPayload } from "../../utils/jwt.util.js";
+import type { IOrganization, OrganizationRegisterInput, OrganizationUpdateData } from "./organization.type.js";
+import User from "../user/user.model.js";
 
 export const registerOrganizationService = async (input: OrganizationRegisterInput, actor: UserJwtPayload): Promise<IOrganization> => {
     const existingUser = await User.findByEmail(input.email);

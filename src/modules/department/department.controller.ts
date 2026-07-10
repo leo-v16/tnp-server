@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
-import { departmentDashboardService, getAllDepartmentService } from "../modules/department/department.service.js";
-import type { UserJwtPayload } from "../utils/jwt.util.js";
-import type { DepartmentRegisterInput } from "../modules/department/department.type.js";
+import { departmentDashboardService, getAllDepartmentService } from "./department.service.js";
+import type { UserJwtPayload } from "../../utils/jwt.util.js";
+import type { DepartmentRegisterInput } from "./department.type.js";
 
 export const getAllDepartmentController = async (
     req: Request,

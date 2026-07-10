@@ -1,5 +1,4 @@
 import app from "./app.js";
-import pool from "./config/db.mysql.js";
 import prisma from "./config/db.prisma.js";
 import dotenv from "dotenv";
 

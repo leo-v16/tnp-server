@@ -1,7 +1,7 @@
 import type { placement_table, Prisma } from "@prisma/client";
 import type z from "zod";
-import type { placementCreateSchema, placementIdParamSchema } from "../modules/placement/placement.validation.js";
 import type { ParamsDictionary } from "express-serve-static-core";
+import type { placementCreateSchema, placementIdParamSchema } from "./placement.validation.js";
 
 export interface IPlacement extends placement_table{};
 

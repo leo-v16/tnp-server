@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { validate } from "../../middlewares/validation.middleware.js";
 import { authenticate } from "../../middlewares/auth.middleware.js";
-import Role from "../../models/role.model.js";
 import { placementCreateSchema, placementIdParamSchema } from "./placement.validation.js";
-import { createPlacementController, getPlacementController, getOnePlacementController } from "../controllers/placement.controller.js";
+import Role from "../role/role.model.js";
+import { createPlacementController, getOnePlacementController, getPlacementController } from "./placement.controller.js";
 
 const placementRouter = Router();
 

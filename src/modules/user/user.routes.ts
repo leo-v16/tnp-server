@@ -3,7 +3,7 @@ import { validate } from "../../middlewares/validation.middleware.js";
 import { userIdParamSchema, userLoginSchema, userRegisterSchema } from "./user.validation.js";
 import { getOneUserController, getUserController, loginUserController, registerUserController } from "./user.controller.js";
 import { authenticate } from "../../middlewares/auth.middleware.js";
-import Role from "../../models/role.model.js";
+import Role from "../role/role.model.js";
 
 const userRouter = express.Router();
 

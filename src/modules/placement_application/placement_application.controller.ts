@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
-import type { UserJwtPayload } from "../utils/jwt.util.js";
-import type { PlacementApplicationCreateInput, PlacementApplicationIdParamInput } from "../modules/placement_application/placement_application.type.js";
-import { approvePlacementApplicationService, createPlacementApplicationService, viewPlacementApplicationService } from "../modules/placement_application/placement_application.service.js";
+import type { PlacementApplicationCreateInput, PlacementApplicationIdParamInput } from "./placement_application.type.js";
+import { approvePlacementApplicationService, createPlacementApplicationService, viewPlacementApplicationService } from "./placement_application.service.js";
+import type { UserJwtPayload } from "../../utils/jwt.util.js";
 
 export const createPlacementApplicationController = async (
     req: Request<{}, {}, PlacementApplicationCreateInput>,

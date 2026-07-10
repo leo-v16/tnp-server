@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { validate } from "../middlewares/validation.middleware.js";
-import { authenticate } from "../middlewares/auth.middleware.js";
-import Role from "../models/role.model.js";
-import { trainingCreateSchema, trainingIdParamSchema } from "../validations/training.validation.js";
-import { createTrainingController, getOneTrainingController, getTrainingController } from "../controllers/training.controller.js";
+import { authenticate } from "../../middlewares/auth.middleware.js";
+import Role from "../role/role.model.js";
+import { trainingCreateSchema, trainingIdParamSchema } from "./training.validation.js";
+import { validate } from "../../middlewares/validation.middleware.js";
+import { createTrainingController, getOneTrainingController, getTrainingController } from "./training.controller.js";
 
 const trainingRouter = Router();
 

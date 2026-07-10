@@ -1,11 +1,13 @@
-import Role from "../../models/role.model.js";
+
 import Student from "../student/student.model.js";
-import User from "../models/user.model.js";
+
 import Organization from "../organization/organization.model.js";
 import ApiError from "../../utils/ApiError.js";
 import type { UserJwtPayload } from "../../utils/jwt.util.js";
-import type { IPlacement, PlacementCreateData, PlacementCreateInput, PlacementEligibilityResult } from "../../types/placement.type.js";
-import Placement from "../models/placement.model.js";
+import type { IPlacement, PlacementCreateData, PlacementCreateInput, PlacementEligibilityResult } from "./placement.type.js";
+import User from "../user/user.model.js";
+import Placement from "./placement.model.js";
+import Role from "../role/role.model.js";
 
 export const createPlacementService = async (input: PlacementCreateInput, actor: UserJwtPayload): Promise<IPlacement> => {
     const creator = await User.findByEmail(actor.auth_email);

@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { getAllSemesterService } from "../modules/semester/semester.service.js";
+import { getAllSemesterService } from "./semester.service.js";
 
 export const getAllSemesterController= async (
     req: Request,

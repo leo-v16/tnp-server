@@ -1,5 +1,5 @@
-import prisma from "../config/db.prisma.js";
-import type { IGender } from "../types/gender.type.js";
+import prisma from "../../config/db.prisma.js";
+import type { IGender } from "./gender.type.js";
 
 class Gender {
     static async findById(gender_id: number): Promise<IGender | null> {

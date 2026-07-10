@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { registerUserService, loginUserService, getUserService, getOneUserService } from "./user.service.js";
-import type { UserIdParamInput, UserLoginInput, UserRegisterInput } from "../types/user.type.js";
+import type { UserIdParamInput, UserLoginInput, UserRegisterInput } from "../user/user.type.js";
 
 export const registerUserController = async (
     req: Request<{}, {}, UserRegisterInput>, 

@@ -1,7 +1,7 @@
 import z from "zod";
-import { userIdParamSchema, userLoginSchema, type userRegisterSchema } from "../validations/user.validation.js";
 import {Prisma, type user_table} from "@prisma/client";
 import type { ParamsDictionary } from "express-serve-static-core";  
+import type { userIdParamSchema, userLoginSchema, userRegisterSchema } from "./user.validation.js";
 
 export interface IUser extends user_table{};
 

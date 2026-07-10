@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { getAllGenderService } from "../services/gender.service.js";
+import { getAllGenderService } from "./gender.service.js";
 
 export const getAllGenderController = async (
     req: Request,

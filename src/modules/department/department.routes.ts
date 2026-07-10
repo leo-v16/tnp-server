@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { departmentDashboardController, departmentRegisterController, getAllDepartmentController } from "../controllers/department.controller.js";
-import Role from "../models/role.model.js";
-import { authenticate } from "../middlewares/auth.middleware.js";
-import { validate } from "../middlewares/validation.middleware.js";
-import { departmentRegisterSchema } from "../modules/department/department.validation.js";
+import { authenticate } from "../../middlewares/auth.middleware.js";
+import Role from "../role/role.model.js";
+import { validate } from "../../middlewares/validation.middleware.js";
+import { departmentRegisterSchema } from "./department.validation.js";
+import { departmentDashboardController, departmentRegisterController, getAllDepartmentController } from "./department.controller.js";
+
 
 const departmentRoute = Router();
 

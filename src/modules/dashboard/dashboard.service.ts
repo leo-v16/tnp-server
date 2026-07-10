@@ -1,14 +1,15 @@
-import Department from "../models/department.model.js";
-import Organization from "../organization/organization.model.js";
-import Placement from "../models/placement.model.js";
-import PlacementApplication from "../models/placement_application.model.js";
-import Role from "../../models/role.model.js";
+
 import Student from "../student/student.model.js";
 import Training from "../training/training.model.js";
 import TrainingApplication from "../training_application/training_application.model.js";
 import type { AdminDashboardOutput, DepartmentDashboardOutput, StudentDashboardOutput } from "./dashboard.type.js";
 import ApiError from "../../utils/ApiError.js";
 import type { UserJwtPayload } from "../../utils/jwt.util.js";
+import PlacementApplication from "../placement_application/placement_application.model.js";
+import Placement from "../placement/placement.model.js";
+import Role from "../role/role.model.js";
+import Department from "../department/department.model.js";
+import Organization from "../organization/organization.model.js";
 
 export const dashboardService = async (actor: UserJwtPayload): Promise<AdminDashboardOutput | StudentDashboardOutput | DepartmentDashboardOutput>  => {
     switch (actor.auth_role_id) {

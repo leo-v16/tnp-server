@@ -1,6 +1,7 @@
-import Division from "../models/division.model.js";
-import type { IDivision } from "../types/division.type.js";
-import ApiError from "../utils/ApiError.js";
+import ApiError from "../../utils/ApiError.js";
+import Division from "./division.model.js";
+import type { IDivision } from "./division.type.js";
+
 
 export const getAllDivisonService = async (): Promise<IDivision[]> => {
     const divisionList = await Division.findAll();
