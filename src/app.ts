@@ -1,18 +1,18 @@
 import express, { application } from "express";
 import cors from "cors";
-import userRouter from "./routes/user.routes.js";
+import userRouter from "./modules/user/user.routes.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
 import trainingApplicationRouter from "./routes/training_application.routes.js";
-import studentRouter from "./routes/student.routes.js";
+import studentRouter from "./modules/student/student.routes.js";
 import trainingRouter from "./routes/training.routes.js";
-import organizationRouter from "./routes/organization.routes.js";
+import organizationRouter from "./modules/organization/organization.routes.js";
 import departmentRoute from "./routes/department.routes.js";
 import skillRoute from "./routes/skill.routes.js";
 import categoryRoute from "./routes/category.routes.js";
 import divisionRoute from "./routes/division.routes.js";
 import genderRoute from "./routes/gender.routes.js";
 import semesterRoute from "./routes/semester.routes.js";
-import placementRouter from "./routes/placement.routes.js";
+import placementRouter from "./modules/placement/placement.routes.js";
 import placementApplicationRouter from "./routes/placement_application.routes.js";
 import dashboardRouter from "./routes/dashboard.routes.js";
 
