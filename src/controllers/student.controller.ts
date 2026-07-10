@@ -96,6 +96,9 @@ export const getStudentMeController = async (
                 gender: student.gender_table.gender,
                 cgpa: student.cgpa,
                 semester: student.semester_table.semester,
+                skill: student.student_skill_table.map((skill) => skill.skill_table.skill),
+                tenth_division: student.division_table_student_table_tenth_division_idTodivision_table?.division,
+                tweflth_division: student.division_table_student_table_twelfth_division_idTodivision_table?.division,
             }
         });
     } catch (error) {

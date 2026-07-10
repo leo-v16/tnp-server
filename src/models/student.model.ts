@@ -12,11 +12,18 @@ class Student {
             include: {
                 training_application_table: true,
                 department_table: true,
-                student_skill_table: true,
+                student_skill_table: {
+                    include: {
+                        skill_table: true
+                    }
+                },
                 user_table: true,
                 gender_table: true,
                 category_table: true,
                 semester_table: true,
+                
+                division_table_student_table_tenth_division_idTodivision_table: true,
+                division_table_student_table_twelfth_division_idTodivision_table: true
             }
         });
         return student;
