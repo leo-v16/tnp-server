@@ -7,6 +7,8 @@ import ApiError from "../utils/ApiError.js";
 import type { UserJwtPayload } from "../utils/jwt.util.js";
 import PasswordManager from "../utils/password.util.js";
 import Data from "../utils/data.util.js";
+import type { IDepartment } from "../types/department.type.js";
+import type { IUser } from "../types/user.type.js";
 
 export const registerStudentService = async (input: StudentRegisterInput, actor: UserJwtPayload): Promise<IStudent> => {
     const existingUser = await User.findByEmail(input.email);
@@ -59,7 +61,7 @@ export const updateStudentAdminService = async (student_id: number, input: Stude
     return updatedStudent;
 }
 
-export const getStudentByIdService = async (user_id: number, actor: UserJwtPayload): Promise<IStudent> => {
+export const getStudentByIdService = async (user_id: number, actor: UserJwtPayload) => {
     const student = await Student.findById(user_id);
     console.log(student, user_id)
     if (!student) {

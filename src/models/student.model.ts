@@ -6,7 +6,7 @@ import Data from "../utils/data.util.js";
 import Training from "./training.model.js";
 
 class Student {
-    static async findById(user_id: number): Promise<IStudent | null> {
+    static async findById(user_id: number) {
         const student = await prisma.student_table.findUnique({
             where: {user_id},
             include: {

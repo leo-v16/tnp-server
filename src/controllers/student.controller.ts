@@ -3,6 +3,8 @@ import { registerStudentService, updateStudentAdminService, updateStudentService
 import type { UserJwtPayload } from "../utils/jwt.util.js";
 import Student from "../models/student.model.js";
 import type { StudentIdParamInput, StudentRegisterInput, StudentUpdateAdminInput, StudentUpdateInput } from "../types/student.type.js";
+import { email } from "zod";
+import Semester from "../models/semester.model.js";
 
 export const registerStudentController = async (
     req: Request<{}, {}, StudentRegisterInput>,
@@ -81,10 +83,20 @@ export const getStudentMeController = async (
     try {
         const actor = req.user as UserJwtPayload;
         const student = await getStudentByIdService(actor.auth_user_id, actor);
+        
         res.status(200).json({
             success: true,
             message: "Successfully fetched profile",
-            data: student
+            data: {
+                name: student.name,
+                mobile_no: student.user_table.mobile_no,
+                email: student.user_table.email,
+                department: student.department_table.dept_name,
+                category: student.category_table?.category,
+                gender: student.gender_table.gender,
+                cgpa: student.cgpa,
+                semester: student.semester_table.semester,
+            }
         });
     } catch (error) {
         next(error);
