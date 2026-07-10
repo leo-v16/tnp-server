@@ -29,5 +29,5 @@ export const organizationIdParamSchema = z.object({
 export const organizationQuerySchema = z.object({
     query: z.object({
         status: z.enum(["approved", "pending", "rejected"]).optional()
-    }).strict()
+    })
 });

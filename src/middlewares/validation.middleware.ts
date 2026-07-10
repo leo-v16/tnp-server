@@ -10,14 +10,14 @@ export const validate = (schema: ZodType) => (req: Request, res: Response, next:
         }) as any;
 
         if (parsed.body !== undefined) req.body = parsed.body;
-        if (parsed.query !== undefined) req.query = parsed.query;
+        // if (parsed.query !== undefined) req.query = parsed.query;
         if (parsed.params !== undefined) req.params = parsed.params;
 
         next();
     } catch (error) {
         res.status(400).json({
             success: false,
-            errors: (error instanceof ZodError)? error.issues: "Failed to validate request",
+            errors: (error instanceof ZodError)? error.issues: `Failed to validate request, ${error}`,
         });
     }
 }
