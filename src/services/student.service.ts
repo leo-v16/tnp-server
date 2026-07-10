@@ -63,7 +63,6 @@ export const updateStudentAdminService = async (student_id: number, input: Stude
 
 export const getStudentByIdService = async (user_id: number, actor: UserJwtPayload) => {
     const student = await Student.findById(user_id);
-    console.log(student, user_id)
     if (!student) {
         throw new ApiError(404, "Student not found");
     }
