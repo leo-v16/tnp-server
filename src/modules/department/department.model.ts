@@ -22,15 +22,15 @@ class Department {
         return departmentCount;
     }
 
-    // static async create(departmentDataInput: departmentRegisterInput): Promise<IDepartment | null> {
-    //     const newDepartment = await prisma.$transaction(async (tx) => {
-    //         tx.user_table.create({
-    //             data: {
-
-    //             }
-    //         })
-    //     })
-    // }
+    static async create(departmentDataInput: {
+        department_id: number,
+        dept_name: string,
+        is_active: boolean,
+    }){
+        const newDepartment = await prisma.$transaction(async (tx) => {
+            // tx.user_table.create()
+        })
+    }
 
     static async getDashboard(department_id: number) {
         const studentInDepartmentCount = await Student.findCountByDepartmentId(department_id);

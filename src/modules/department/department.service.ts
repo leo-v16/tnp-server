@@ -13,15 +13,6 @@ export const getAllDepartmentService = async (): Promise<IDepartment[]> => {
     return departmentList;
 }
 
-export const departmentDashboardService = async (actor: UserJwtPayload): Promise<DepartmentDashboardOutput> => {
-    const departmentDashboard = await dashboardService(actor);
-    if (!departmentDashboard) {
-        throw new ApiError(500, "Could not fetch department dashboard");
-    }
-
-    return departmentDashboard as DepartmentDashboardOutput;
-}
-
 export const departmentRegisterService = async (input: DepartmentRegisterInput,actor: UserJwtPayload): Promise<DepartmentDashboardOutput> => {
     const departmentDashboard = await dashboardService(actor);
     if (!departmentDashboard) {

@@ -12,3 +12,9 @@ export const trainingApplicationIdParamSchema = z.object({
         student_id: z.coerce.number({ message: "student_id must be a number" }),
     })
 });
+
+// export const trainingApplicationApproveSchema = z.object({
+//     body: z.object({
+//         remarks: 
+//     })
+// })
