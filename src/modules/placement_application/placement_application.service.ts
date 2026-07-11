@@ -88,3 +88,38 @@ export const approvePlacementApplicationService = async (student_id: number, pla
 
     return approvedPlacement;
 }  
+
+export const getOnePlacementApplicationService = async (student_id: number, placement_id: number, actor: UserJwtPayload) => {
+    const placement = await Placement.findById(placement_id);
+    if (!placement) {
+        throw new ApiError(404, "Requested placment not found for this application");
+    }
+
+    const student = await Student.findById(student_id);
+    if (!student) {
+        throw new ApiError(404, "This student does not exist");
+    }
+
+    const placmenetApplication = await PlacementApplication.findById(student_id, placement_id);
+    if (!placmenetApplication) {
+        throw new ApiError(404, "Placement application not found");
+    }
+
+    switch (actor.auth_role_id) {
+        case Role.Student:
+            if (actor.auth_user_id != student_id) {
+                throw new ApiError(400, "You are not authorized to view this placmenet application");
+            }
+            return placmenetApplication;
+        case Role.Organization:
+        case Role.Coordinator:
+            if (actor.auth_user_id != placement.creator_id) {
+                throw new ApiError(400, "You are not authroized to view this placement application");
+            }
+            return placmenetApplication;
+        case Role.SuperAdmin:
+            return placmenetApplication;
+        default:
+            throw new ApiError(404, "User role is undefined");
+    }
+}
