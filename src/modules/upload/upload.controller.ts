@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
+import { file } from "zod";
 
 export const uploadController = async (
     req: Request, 
@@ -6,14 +7,19 @@ export const uploadController = async (
     next: NextFunction
 ) => { 
     try {
-        if (!req.file) {                                                                                                                        
+        if (!req.file && !req.files) {                                                                                                                        
             return res.status(400).json({                                                                                                       
                 success: false,                                                                                                                 
                 message: "No file uploaded"                                                                                                     
             });                                                                                                                                 
         }
-        
-        const fileUrl = `${req.protocol}://${req.get("host")}/${req.file.destination}${req.file.filename}`;
+
+        let fileUrl = null
+        if (req.file) {
+            fileUrl = `${req.protocol}://${req.get("host")}/${req.file.destination}${req.file.filename}`
+        } else if (Array.isArray(req.files)) {
+            fileUrl = req.files.map((file) => `${req.protocol}://${req.get("host")}/${file.destination}${file.filename}`)
+        }
 
         res.status(200).json({                                                                                                                  
             success: true,                                                                                                                      
