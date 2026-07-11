@@ -86,3 +86,38 @@ export const approveTrainingApplicationService = async (student_id: number, trai
 
     return approvedTraining;
 }  
+
+export const getOneTrainingApplicationService = async (student_id: number, training_id: number, actor: UserJwtPayload) => {
+    const training = await Training.findById(training_id);
+    if (!training) {
+        throw new ApiError(404, "Requested training not found for this application");
+    }
+
+    const student = await Student.findById(student_id);
+    if (!student) {
+        throw new ApiError(404, "This student does not exist");
+    }
+
+    const trainingApplication = await TrainingApplication.findById(student_id, training_id);
+    if (!trainingApplication) {
+        throw new ApiError(404, "Training application not found");
+    }
+
+    switch (actor.auth_role_id) {
+        case Role.Student:
+            if (actor.auth_user_id != student_id) {
+                throw new ApiError(400, "You are not authorized to view this training application");
+            }
+            return trainingApplication;
+        case Role.Organization:
+        case Role.Coordinator:
+            if (actor.auth_user_id != training.creator_id) {
+                throw new ApiError(400, "You are not authroized to view this training application");
+            }
+            return trainingApplication;
+        case Role.SuperAdmin:
+            return trainingApplication;
+        default:
+            throw new ApiError(404, "User role is undefined");
+    }
+}

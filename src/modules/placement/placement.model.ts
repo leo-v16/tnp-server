@@ -1,17 +1,17 @@
 import { Prisma } from "@prisma/client";
-import type { IPlacement, PlacementCreateData } from "./placement.type.js";
+import type { PlacementCreateData } from "./placement.type.js";
 import prisma from "../../config/db.prisma.js";
 import Student from "../student/student.model.js";
 
 class Placement {
-    static async findById(placement_id: number): Promise<IPlacement | null> {
+    static async findById(placement_id: number) {
         const placement = prisma.placement_table.findUnique({
             where: {placement_id}
         });
         return placement;
     }
 
-    static async create(placementData: PlacementCreateData): Promise<IPlacement | null> {
+    static async create(placementData: PlacementCreateData) {
         const newPlacement = prisma.placement_table.create({
             data: placementData
         });
@@ -23,7 +23,7 @@ class Placement {
         return placementCount;
     }
     
-    static async findOneEligibleById(placement_id: number, student_id: number): Promise<IPlacement | null> {
+    static async findOneEligibleById(placement_id: number, student_id: number) {
         const student = await Student.findById(student_id);
         const placementList = await prisma.placement_table.findFirst({
             where: {
@@ -45,7 +45,7 @@ class Placement {
         return placementList;
     }
 
-    static async findEligibleById(student_id: number): Promise<IPlacement[] | null> {
+    static async findEligibleById(student_id: number) {
         const student = await Student.findById(student_id);
         const placementList = await prisma.placement_table.findMany({
             where: {
@@ -66,7 +66,7 @@ class Placement {
         return placementList;
     }
 
-    static async findByCreatorId(creator_id: number): Promise<IPlacement[] | null> {
+    static async findByCreatorId(creator_id: number) {
         const placementList = await prisma.placement_table.findMany({
             where: {
                 creator_id: creator_id

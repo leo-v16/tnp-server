@@ -3,7 +3,7 @@ import prisma from "../../config/db.prisma.js";
 import type { IPlacementApplication, PlacementApplicationCreateData } from "./placement_application.type.js";
 
 class PlacementApplication {
-    static async findById(student_id: number, placement_id: number): Promise<IPlacementApplication | null> {
+    static async findById(student_id: number, placement_id: number) {
         const placementApplication = await prisma.placement_application_table.findUnique({
             where: {
                 placement_id_student_id: {
@@ -15,7 +15,7 @@ class PlacementApplication {
         return placementApplication;
     }
 
-    static async create(placementApplicationData: PlacementApplicationCreateData): Promise<IPlacementApplication | null> {
+    static async create(placementApplicationData: PlacementApplicationCreateData) {
         const newPlacementApplication = await prisma.placement_application_table.create({
             data: placementApplicationData
         });
@@ -27,7 +27,7 @@ class PlacementApplication {
         return applicationCount;
     }
 
-    static async findByStudentId(student_id: number): Promise<IPlacementApplication[] | null> {
+    static async findByStudentId(student_id: number) {
         const appliedPlacement = await prisma.placement_application_table.findMany({
             where: {
                 student_id
@@ -48,7 +48,7 @@ class PlacementApplication {
         return appliedPlacement
     }
 
-    static async findByCreatorId(creator_id: number): Promise<IPlacementApplication[] | null> {
+    static async findByCreatorId(creator_id: number) {
         const appliedPlacement = await prisma.placement_application_table.findMany({
             where: {
                 placement_table: {
@@ -64,7 +64,7 @@ class PlacementApplication {
         return appliedPlacement
     }
 
-    static async findByDepartmentId(department_id: number): Promise<IPlacementApplication[] | null> {
+    static async findByDepartmentId(department_id: number) {
         const appliedPlacement = await prisma.placement_application_table.findMany({
             where: {
                 placement_table: {
@@ -83,7 +83,7 @@ class PlacementApplication {
         return appliedPlacement
     }
 
-    static async approve(student_id: number, placement_id: number): Promise<IPlacementApplication | null> {
+    static async approve(student_id: number, placement_id: number) {
         const approvedPlacement = await prisma.placement_application_table.update({
             where: {
                 placement_id_student_id: {
@@ -135,7 +135,7 @@ class PlacementApplication {
         creator_id?: number,
         status_id?: number,
         student_id?: number,
-    }): Promise<IPlacementApplication[] | null> {
+    }) {
         const whereClause: Prisma.placement_application_tableWhereInput = {};
 
         if (filter.student_id !== undefined) {

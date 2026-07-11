@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import {approveTrainingApplicationService, createTrainingApplicationService, viewTrainingApplicationService } from "./training_application.service.js";
+import {approveTrainingApplicationService, createTrainingApplicationService, getOneTrainingApplicationService, viewTrainingApplicationService } from "./training_application.service.js";
 import type { UserJwtPayload } from "../../utils/jwt.util.js";
 import type { TrainingApplicationCreateInput, trainingApplicationIdParamInput } from "./training_application.type.js";
 
@@ -51,6 +51,25 @@ export const approveTrainingApplicationController = async (
             success: true,
             message: "Training Application approved successfull",
             data: approvedTraining
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getOneTrainingApplicationController = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const params = (req.params as trainingApplicationIdParamInput);
+        const {student_id, training_id} = params;
+        const trainingApplication = await getOneTrainingApplicationService(student_id, training_id, req.user as UserJwtPayload);
+        res.status(200).json({
+            success: true,
+            message: "Training Application approved successfull",
+            data: trainingApplication
         });
     } catch (error) {
         next(error);

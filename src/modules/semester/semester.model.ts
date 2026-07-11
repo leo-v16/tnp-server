@@ -1,18 +1,18 @@
 import prisma from "../../config/db.prisma.js";
-import type { ISemester } from "./semester.type.js";
-
 
 class Semester {
-    static async findById(semester_id: number): Promise<ISemester | null> {
-        return await prisma.semester_table.findUnique({
+    static async findById(semester_id: number) {
+        const semester = await prisma.semester_table.findUnique({
             where: {
                 semester_id
             }
         });
+        return semester;
     }
 
-    static async findAll(): Promise<ISemester[] | null> {
-        return await prisma.semester_table.findMany();
+    static async findAll() {
+        const semesterList = await prisma.semester_table.findMany();
+        return semesterList;
     }
 }
 

@@ -1,9 +1,8 @@
 import prisma from "../../config/db.prisma.js";
-import type { ICategory } from "./category.type.js";
 
 
 class Category {
-    static async findById(category_id: number): Promise<ICategory | null> {
+    static async findById(category_id: number) {
         const category = await prisma.category_table.findUnique({
             where: {
                 category_id
@@ -12,7 +11,7 @@ class Category {
         return category;
     }
 
-    static async findAll(): Promise<ICategory[] | null> {
+    static async findAll() {
         const categoryList = await prisma.category_table.findMany();
         return categoryList;
     }

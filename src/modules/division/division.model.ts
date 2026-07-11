@@ -2,7 +2,7 @@ import prisma from "../../config/db.prisma.js";
 import type { IDivision } from "./division.type.js";
 
 class Division {
-    static async findById(division_id: number): Promise<IDivision | null> {
+    static async findById(division_id: number) {
         const division = await prisma.division_table.findUnique({
             where: {
                 division_id
@@ -10,7 +10,7 @@ class Division {
         });
         return division;
     }
-        static async findAll(): Promise<IDivision[] | null> {
+        static async findAll() {
             const divisionList = await prisma.division_table.findMany();
             return divisionList;
         }

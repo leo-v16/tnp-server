@@ -1,8 +1,7 @@
 import prisma from "../../config/db.prisma.js";
-import type { IGender } from "./gender.type.js";
 
 class Gender {
-    static async findById(gender_id: number): Promise<IGender | null> {
+    static async findById(gender_id: number) {
         const gender = await prisma.gender_table.findUnique({
             where: {
                 gender_id
@@ -11,7 +10,7 @@ class Gender {
         return gender;
     }
 
-    static async findAll(): Promise<IGender[] | null> {
+    static async findAll() {
         const genderList = await prisma.gender_table.findMany();
         return genderList;
     }

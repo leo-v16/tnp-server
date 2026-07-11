@@ -1,8 +1,7 @@
 import prisma from "../../config/db.prisma.js";
-import type { ISkill } from "./skill.type.js";
 
 class Skill {
-    static async findById(skill_id: number): Promise<ISkill | null> {
+    static async findById(skill_id: number) {
         const skill = await prisma.skill_table.findUnique({
             where: {
                 skill_id
@@ -11,7 +10,7 @@ class Skill {
         return skill;
     }
 
-    static async findAll(): Promise<ISkill[] | null> {
+    static async findAll() {
         const skillList = await prisma.skill_table.findMany();
         return skillList;
     }

@@ -1,10 +1,9 @@
 import prisma from "../../config/db.prisma.js";
 import Student from "../student/student.model.js";
-import type { DepartmentDashboardOutput, IDepartment } from "./department.type.js";
 
 
 class Department {
-    static async findById(department_id: number): Promise<IDepartment | null> {
+    static async findById(department_id: number) {
         const department = await prisma.department_table.findUnique({
             where: {
                 department_id
@@ -13,12 +12,12 @@ class Department {
         return department;
     }
 
-    static async findAll(): Promise<IDepartment[] | null> {
+    static async findAll() {
         const departmentList = await prisma.department_table.findMany();
         return departmentList;
     }
 
-    static async findCount(): Promise<number| null>{
+    static async findCount() {
         const departmentCount = await prisma.department_table.count();
         return departmentCount;
     }
@@ -33,7 +32,7 @@ class Department {
     //     })
     // }
 
-    static async getDashboard(department_id: number): Promise<DepartmentDashboardOutput | null> {
+    static async getDashboard(department_id: number) {
         const studentInDepartmentCount = await Student.findCountByDepartmentId(department_id);
         const organizationCount = await prisma.organization_table.count();
 

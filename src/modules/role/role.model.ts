@@ -1,5 +1,4 @@
 import prisma from "../../config/db.prisma.js";
-import type { IRole } from "../../types/role.type.js";
 
 class Role {
     static SuperAdmin: number = 1; 
@@ -7,7 +6,7 @@ class Role {
     static Coordinator: number = 3; 
     static Organization: number = 4; 
 
-    static async findById(role_id: number): Promise<IRole | null> {
+    static async findById(role_id: number) {
         const role = await prisma.role_table.findUnique({
             where: {
                 role_id
@@ -16,7 +15,7 @@ class Role {
         return role;
     }
 
-    static async findAll(): Promise<IRole[] | null> {
+    static async findAll() {
         const roleList = await prisma.role_table.findMany();
         return roleList;
     }
