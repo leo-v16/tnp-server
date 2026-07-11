@@ -1,31 +1,41 @@
 import multer from 'multer';
 
-const studentImageStorage = multer.diskStorage({
+const profileMediaStorage = multer.diskStorage({
     destination:    (req, file, callback) => {
-        callback(null, "student_images/");
+        callback(null, "public/profile_media/");
     },
     filename: (req, file, callback) => {
         callback(null, `${Date.now()}-${file.originalname}`);
     }
 });
-export const studentImageUpload = multer({ storage: studentImageStorage });
+export const profileMediaUpload = multer({ storage: profileMediaStorage });
 
-const studentResumeStorage = multer.diskStorage({
+const resumeMediaStorage = multer.diskStorage({
     destination: (req, file, callback) => {
-        callback(null, "student_resumes/");
+        callback(null, "public/resume_media/");
     },
     filename: (req, file, callback) => {
         callback(null, `${Date.now()}-${file.originalname}`);
     }
 });
-export const studentResumeUpload = multer({ storage: studentResumeStorage });
+export const resumeMediaUpload= multer({ storage: resumeMediaStorage });
 
-const bannerImageStorage = multer.diskStorage({
+const bannerMediaStorage = multer.diskStorage({
     destination: (req, file, callback) => {
-        callback(null, "banner_images/");
+        callback(null, "public/banner_media/");
     },
     filename: (req, file, callback) => {
         callback(null, `${Date.now()}-${file.originalname}`);
     }
 });
-export const bannerImageUpload = multer({ storage: bannerImageStorage });
+export const bannerMediaUpload = multer({ storage: bannerMediaStorage });
+
+const notesMediaStorage = multer.diskStorage({
+    destination: (req, file, callback) => {
+        callback(null, "public/notes_media/");
+    },
+    filename: (req, file, callback) => {
+        callback(null, `${Date.now()}-${file.originalname}`);
+    }
+});
+export const notesMediaUpload = multer({ storage: notesMediaStorage });
