@@ -47,10 +47,17 @@ export const getOrganizationsController = async (
     try {
         const { status } = req.query as any;
         const organizationList = await getOrganizationsService(status);
+        const sanitizedOrganizationList = organizationList.map((organization) => {
+            const {password, ...userTable} = organization.user_table;
+            return {
+                ...organization,
+                user_table: userTable
+            }
+        });
         res.status(200).json({
             success: true,
             message: "Successfully fetched organizations",
-            data: organizationList
+            data: sanitizedOrganizationList
         });
     } catch (error) {
         next(error);

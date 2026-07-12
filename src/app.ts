@@ -17,6 +17,7 @@ import placementApplicationRouter from "./modules/placement_application/placemen
 import dashboardRouter from "./modules/dashboard/dashboard.routes.js";
 import uploadRouter from "./modules/upload/upload.route.js";
 import { globalRateLimiter } from "./middlewares/rate_limitter.middleware.js";
+import masterRouter from "./modules/master/master.routes.js";
 
 
 const app = express();
@@ -34,14 +35,17 @@ app.use("/students", studentRouter);
 app.use("/trainings", trainingRouter);
 app.use("/organizations", organizationRouter);
 app.use("/departments", departmentRoute);
+app.use("/placements", placementRouter);
+app.use("/placement-applications", placementApplicationRouter);
+app.use("/dashboards", dashboardRouter);
+
+app.use("/masters", masterRouter);
+
 app.use("/skills", skillRoute);
 app.use("/categories", categoryRoute);
 app.use("/divisions", divisionRoute);
 app.use("/genders", genderRoute);
 app.use("/semesters", semesterRoute);
-app.use("/placements", placementRouter);
-app.use("/placement-applications", placementApplicationRouter);
-app.use("/dashboards", dashboardRouter);
 
 app.use(errorHandler);
 

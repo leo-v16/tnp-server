@@ -33,7 +33,7 @@ export const updateStudentService = async (input: StudentUpdateInput, actor: Use
         mobile_no: input.mobile_no,
         has_backlog: input.has_backlog,
         cgpa: input.cgpa,
-        tenth_division_id: input.tenth_divison_id,
+        tenth_division_id: input.tenth_division_id,
         twelfth_division_id: input.twelfth_division_id,
         category_id: input.category_id,
         resume_url: input.resume_url,
