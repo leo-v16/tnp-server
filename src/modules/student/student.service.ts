@@ -1,6 +1,6 @@
 import type { Prisma } from "@prisma/client";
 import Student from "./student.model.js";
-import type { IStudent, StudentCreateData, StudentDashboardOutput, StudentRegisterInput, StudentUpdateAdminInput, StudentUpdateData, StudentUpdateInput } from "./student.type.js";
+import type { IStudent, StudentRegisterInput, StudentUpdateAdminInput, StudentUpdateData, StudentUpdateInput } from "./student.type.js";
 import ApiError from "../../utils/ApiError.js";
 import type { UserJwtPayload } from "../../utils/jwt.util.js";
 import PasswordManager from "../../utils/password.util.js";
@@ -23,7 +23,7 @@ export const registerStudentService = async (input: StudentRegisterInput, actor:
     return newStudent;
 }
 
-export const updateStudentService = async (input: StudentUpdateInput, actor: UserJwtPayload): Promise<IStudent> => {
+export const updateStudentService = async (input: StudentUpdateInput, actor: UserJwtPayload) => {
     const existingStudent = await Student.findByEmail(actor.auth_email);
     if (!existingStudent) {
         throw new ApiError(404, "Student not found");
@@ -39,11 +39,15 @@ export const updateStudentService = async (input: StudentUpdateInput, actor: Use
         resume_url: input.resume_url,
         image_url: input.image_url,
     });
-     const updatedStudent = await Student.update(actor.auth_user_id, studentData);
+    const updatedStudent = await Student.update(actor.auth_user_id, studentData);
     if (!updatedStudent) {
         throw new ApiError(500, "Failed to update student");
     }
-    return updatedStudent;
+    const theStudent = await Student.findById(updatedStudent.user_id);
+    if (!theStudent) {
+        throw new ApiError(500, "Failed to update student");
+    }
+    return theStudent;
 }
 
 export const updateStudentAdminService = async (student_id: number, input: StudentUpdateAdminInput, actor: UserJwtPayload): Promise<IStudent> => {
