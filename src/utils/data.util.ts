@@ -5,6 +5,19 @@ class Data {
             Object.entries(dataObject).filter(([_, value]) => value !== undefined)
         );
     }
+
+    static sanitize(obj: any): any {
+        if (!obj || typeof obj !== 'object') return obj;
+        const clone = { ...obj };
+        delete clone.password;
+        delete clone.auth_token;
+        if (clone.user_table && typeof clone.user_table === 'object') {
+            clone.user_table = { ...clone.user_table };
+            delete clone.user_table.password;
+            delete clone.user_table.auth_token;
+        }
+        return clone;
+    }
 }
 
 export default Data;

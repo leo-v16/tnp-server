@@ -72,19 +72,20 @@ export const getUserService = async (): Promise<IUser[]> => {
     return userList;
 }
 
-export const getOneUserService = async (input: UserIdParamInput): Promise<IUser & (IStudent | IOrganization)> => {
+export const getOneUserService = async (input: UserIdParamInput) => {
     console.log(input)
     const user = await User.findById(input.user_id);
     if (!user) {
         throw new ApiError(404, "User not found");
     }
+    // const {password, ...san_user} = user;
     switch (user.role_id) {
         case Role.Student:
             const student = await Student.findById(user.user_id);
-            return {...user, ...student} as IUser & IStudent;
+            return {...user, ...student};
         case Role.Organization:
             const organization = await Organization.findById(user.user_id);
-            return {...user, ...organization} as IUser & IOrganization;
+            return {...user, ...organization};
         default:
             throw new ApiError(400, "Unknown Role, Can't fetch admin information");
     }

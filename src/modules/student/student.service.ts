@@ -50,7 +50,7 @@ export const updateStudentService = async (input: StudentUpdateInput, actor: Use
     return theStudent;
 }
 
-export const updateStudentAdminService = async (student_id: number, input: StudentUpdateAdminInput, actor: UserJwtPayload): Promise<IStudent> => {
+export const updateStudentAdminService = async (student_id: number, input: StudentUpdateAdminInput, actor: UserJwtPayload) => {
     const existingStudent = await Student.findById(student_id);
     if (!existingStudent) {
         throw new ApiError(404, "Student not found");
@@ -60,7 +60,11 @@ export const updateStudentAdminService = async (student_id: number, input: Stude
     if (!updatedStudent) {
         throw new ApiError(500, "Failed to update student");
     }
-    return updatedStudent;
+    const theStudent = await Student.findById(updatedStudent.user_id);
+    if (!theStudent) {
+        throw new ApiError(500, "Failed to update student");
+    }
+    return theStudent;
 }
 
 export const getStudentByIdService = async (user_id: number, actor: UserJwtPayload) => {

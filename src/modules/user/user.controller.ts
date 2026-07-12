@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { registerUserService, loginUserService, getUserService, getOneUserService } from "./user.service.js";
 import type { UserIdParamInput, UserLoginInput, UserRegisterInput } from "../user/user.type.js";
+import Data from "../../utils/data.util.js";
 
 export const registerUserController = async (
     req: Request<{}, {}, UserRegisterInput>, 
@@ -12,7 +13,7 @@ export const registerUserController = async (
         return res.status(201).json({
             success: true,
             message: "User register successful",
-            data: newUser
+            data: Data.sanitize(newUser)
         });
     } catch (error) {
         next(error);
@@ -27,11 +28,10 @@ export const loginUserController = async (
     try {
         console.log("RUNNING");
         const loggedUser = await loginUserService(req.body);
-        const { password, ...sanitizedUser } = loggedUser;
         return res.status(200).json({
             success: true,
             message: "User login successful",
-            data: sanitizedUser
+            data: Data.sanitize(loggedUser)
         });
     } catch (error) {
         next(error);
@@ -45,7 +45,7 @@ export const getUserController = async (
 ) => {
     try {
         const userList = await getUserService();
-        const sanitizedUsers = userList.map(({ password, ...user }) => user);
+        const sanitizedUsers = userList.map((user) => Data.sanitize(user));
         res.status(200).json({
             success: true,
             message: "All user list provided",
@@ -63,11 +63,10 @@ export const getOneUserController = async (
 ) => {
     try {
         const user = await getOneUserService(req.params as UserIdParamInput);
-        const { password, ...sanitizedUser } = user;
         res.status(200).json({
             success: true,
             message: "User details provided",
-            data: sanitizedUser
+            data: Data.sanitize(user)
         });
     } catch(error) {
         next(error);

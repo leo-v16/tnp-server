@@ -3,6 +3,7 @@ import { registerStudentService, updateStudentAdminService, updateStudentService
 import type { UserJwtPayload } from "../../utils/jwt.util.js";
 import Student from "./student.model.js";
 import type { StudentIdParamInput, StudentRegisterInput, StudentUpdateAdminInput, StudentUpdateInput } from "./student.type.js";
+import Data from "../../utils/data.util.js";
 
 export const registerStudentController = async (
     req: Request<{}, {}, StudentRegisterInput>,
@@ -14,7 +15,7 @@ export const registerStudentController = async (
         res.status(201).json({
             success: true,
             message: `Student with roll: ${newStudent.roll_no} created`,
-            data: newStudent
+            data: Data.sanitize(newStudent)
         });
     } catch (error) {
         next(error);
@@ -31,7 +32,7 @@ export const updateStudentController = async (
         res.status(200).json({
             success: true,
             message: `Student with roll: ${newStudent.roll_no} updated`,
-            data: newStudent
+            data: Data.sanitize(newStudent)
         });
     } catch (error) {
         next(error);
@@ -49,7 +50,7 @@ export const studentUpdateAdminController = async (
         res.status(200).json({
             success: true,
             message: `Student with roll: ${newStudent.roll_no} updated`,
-            data: newStudent
+            data: Data.sanitize(newStudent)
         });
     } catch (error) {
         next(error);
@@ -63,17 +64,11 @@ export const getStudentController = async (
 ) => {
     try {
         const studentList = await getStudentService();
-        const sanatizedList = studentList.map((student) => {
-            const {password, auth_token, ...safeUserTable} = student.user_table;
-            return {
-                ...student,
-                user_table: safeUserTable
-            }
-        });
+        const sanitizedList = studentList.map((student) => Data.sanitize(student));
         res.status(200).json({
             success: true,
             message: "Successfully fetched students",
-            data: sanatizedList
+            data: sanitizedList
         });
     } catch (error) {
         next(error);
