@@ -6,6 +6,6 @@ import { masterTypeSchema } from "./master.validation.js";
 const masterRouter = Router();
 
 masterRouter
-.get("/:type", validate(masterTypeSchema), masterGetController);
+.get("/", validate(masterTypeSchema), masterGetController);
 
 export default masterRouter;
