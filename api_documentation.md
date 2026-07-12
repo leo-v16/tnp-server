@@ -1,6 +1,6 @@
 # Internship & Training Server - API Handover Documentation
 
-This documentation provides details of all endpoints, request validation structures, response formats, authentication requirements, and critical developer/frontend integration notes.
+This documentation provides comprehensive details of all endpoints, request validation structures, response formats, authentication requirements, and developer integration notes for the Internship & Training Server.
 
 ---
 
@@ -8,7 +8,7 @@ This documentation provides details of all endpoints, request validation structu
 
 ### Base URL
 All routes are prefixed according to their resource namespace. For local development, the base URL is typically:
-`http://localhost:<PORT>` (e.g. `http://localhost:5000` or `3000`)
+`http://localhost:<PORT>` (e.g., `http://localhost:5000` or `http://localhost:3000` depending on environment configuration)
 
 ### Authentication
 The server uses **JWT-based Bearer Authentication**.
@@ -26,7 +26,7 @@ The server uses **JWT-based Bearer Authentication**.
   ```
 
 ### Rate Limiting
-To protect the server from abuse and brute-force attempts, the API implements rate limiting:
+To protect the server from abuse, the API implements IP-based rate limiting:
 * **Global Rate Limit**: Applied to all endpoints.
   * **Limit**: 100 requests per 15 minutes per IP address.
   * **Headers**: Conforms to the `draft-7` standard rate-limiting headers.
@@ -39,7 +39,7 @@ To protect the server from abuse and brute-force attempts, the API implements ra
       "retryAfterSeconds": 900
     }
     ```
-* **Auth Rate Limit**: Applied to sensitive authentication endpoints.
+* **Auth Rate Limit**: Applied to sensitive authentication endpoints (e.g., `/users/login`).
   * **Limit**: 10 requests per 1 minute per IP address.
   * **Exceeded Response (429 Too Many Requests)**:
     ```json
@@ -60,7 +60,7 @@ To protect the server from abuse and brute-force attempts, the API implements ra
 {
   "success": true,
   "message": "Action description message",
-  "data": { ... } // Or [ ... ]
+  "data": { ... } // Or [ ... ] or null
 }
 ```
 
@@ -110,31 +110,41 @@ The database utilizes specific static integer IDs for roles:
 | **User** | `/users/register` | `POST` | Public | Register a base user (Admin, Student, Org, Coordinator) |
 | | `/users/login` | `POST` | Public | Login and obtain JWT token + Profile Details |
 | | `/users/` | `GET` | `SuperAdmin` | Retrieve list of all users |
-| | `/users/:user_id` | `GET` | `SuperAdmin` | Retrieve single user with detailed profile |
+| | `/users/:user_id` | `GET` | `SuperAdmin` | Retrieve single user details |
 | **Student** | `/students` | `POST` | `SuperAdmin` | Register student profile (Transactional with user table) |
 | | `/students/me` | `PUT` | `Student` | Update own student profile details |
-| | `/students/me` | `GET` | `Student` | Retrieve own student profile details |
+| | `/students/me` | `GET` | `Student` | Retrieve own student profile details (Friendly format) |
 | | `/students/:user_id` | `PUT` | `SuperAdmin` | Admin-level student profile update |
-| | `/students/:user_id` | `GET` | `Student` (self), `SuperAdmin`, `Coordinator` (dept) | Retrieve single student profile details |
+| | `/students/:user_id` | `GET` | `Student` (self), `SuperAdmin`, `Coordinator` | Retrieve single student profile details |
 | | `/students/` | `GET` | `SuperAdmin` | Retrieve list of all students |
-| | `/students/me/dashboard` | `GET` | `Student` | Retrieve applied & eligible trainings for student |
 | **Org** | `/organizations` | `POST` | Public | Register organization and request approval |
-| | `/organizations/:organization_id/status` | `POST` | `SuperAdmin` | Approve organization status (approval_id = 1) |
-| | `/organizations/:organization_id/status` | `POST` | `SuperAdmin` | Reject organization status (approval_id = 2) |
-| | `/organizations?status=approved`| `GET` | `SuperAdmin` | Retrieve list of approved organizations |
-| | `/organizations?status=pending` | `GET` | `SuperAdmin` | Retrieve list of pending organizations (approval_id = 0) |
-| | `/organizations?status=rejected`| `GET` | `SuperAdmin` | Retrieve list of rejected organizations |
-| | `/organizations/:organization_id` | `GET` | Public | Retrieve single organization detail |
+| | `/organizations/:organization_id/status` | `PATCH` | `SuperAdmin` | Approve (status = 1) or Reject (status = 2) organization |
+| | `/organizations` | `GET` | `SuperAdmin` | Retrieve list of organizations (Filter by `status` query) |
+| | `/organizations/:organization_id` | `GET` | `Student`, `Coordinator`, `SuperAdmin` | Retrieve single organization detail |
 | **Training**| `/trainings` | `POST` | `Org`, `SuperAdmin`, `Coordinator` | Create a new training program |
 | | `/trainings/` | `GET` | All Authenticated | Get list of trainings (filtered by role eligibility) |
 | | `/trainings/:training_id` | `GET` | All Authenticated | Get details of a single training program |
-| **App** | `/training-applications` | `POST` | `Student` | Apply for a training program |
-| | `/training-applications/:training_id/students/:student_id/status`| `POST` | `Org`, `Coordinator`, `SuperAdmin` | Approve student's training application |
+| **Training Applications** | `/training-applications` | `POST` | `Student` | Apply for a training program |
+| | `/training-applications/:training_id/students/:student_id/status`| `PATCH` | `Org`, `Coordinator`, `SuperAdmin` | Approve a student's training application |
 | | `/training-applications` | `GET` | All Authenticated | View training applications submitted/received |
-| **Dashboard** | `/dashboards` | `GET` | All Authenticated | Retrieve role-specific dashboard metrics |
-| **Metadata**| `/departments/` | `GET` | Public | List all departments |
-| | `/categories/` | `GET` | Public | List student/placement categories |
-| | `/divisions/` | `GET` | Public | List educational divisions (First, Second, etc.) |
+| | `/training-applications/:training_id/students/:student_id` | `GET` | All Authenticated | View details of a single training application |
+| **Placement**| `/placements` | `POST` | `Org`, `SuperAdmin`, `Coordinator` | Create a new placement program |
+| | `/placements/` | `GET` | All Authenticated | Get list of placements (filtered by role eligibility) |
+| | `/placements/:placement_id` | `GET` | All Authenticated | Get details of a single placement program |
+| **Placement Applications** | `/placement-applications` | `POST` | `Student` | Apply for a placement program |
+| | `/placement-applications/:placement_id/students/:student_id/status`| `PATCH` | `Org`, `Coordinator`, `SuperAdmin` | Approve a student's placement application |
+| | `/placement-applications` | `GET` | All Authenticated | View placement applications submitted/received |
+| | `/placement-applications/:placement_id/students/:student_id` | `GET` | All Authenticated | View details of a single placement application |
+| **Dashboard** | `/dashboards` | `GET` | `Student`, `Coordinator`, `SuperAdmin` | Retrieve role-specific dashboard metrics |
+| **Upload** | `/upload/profile` | `POST` | Public | Upload a single profile picture (`media`) |
+| | `/upload/banner` | `POST` | Public | Upload a single banner image (`media`) |
+| | `/upload/notes` | `POST` | Public | Upload multiple notes files (`media`) |
+| | `/upload/resume` | `POST` | Public | Upload a single resume PDF/document (`media`) |
+| **Department** | `/departments/register` | `POST` | `SuperAdmin` | Register a new department |
+| | `/departments/` | `GET` | Public | List all departments |
+| **Masters** | `/masters/:type` | `GET` | Public | List any master table by type (genders, semesters, divisions, categories, skills) |
+| **Metadata**| `/categories/` | `GET` | Public | List student/placement categories |
+| | `/divisions/` | `GET` | Public | List educational divisions |
 | | `/genders/` | `GET` | Public | List genders |
 | | `/semesters/` | `GET` | Public | List academic semesters |
 | | `/skills/` | `GET` | Public | List student skills |
@@ -246,7 +256,6 @@ The database utilizes specific static integer IDs for roles:
       "name": "Jane Doe",
       "roll_no": "20BCE0012",
       "department_table": { "department_id": 1, "dept_name": "Computer Science" }
-      // Dynamic profile joins
     }
   }
   ```
@@ -265,9 +274,9 @@ The database utilizes specific static integer IDs for roles:
     "email": "student@domain.com",
     "password": "securepassword",
     "mobile_no": "1234567890",
-    "gender_id": 2,
-    "department_id": 1,
-    "semester_id": 6,
+    "gender_id": 2, // Frontend must convert gender text to gender_id
+    "department_id": 1, // Frontend must convert department text to department_id
+    "semester_id": 6, // Frontend must convert semester text to semester_id
     "name": "Jane Doe",
     "age": "21"
   }
@@ -299,7 +308,7 @@ The database utilizes specific static integer IDs for roles:
     "mobile_no": "0987654321",
     "has_backlog": false,
     "cgpa": 8.75, // numeric decimal
-    "tenth_divison_id": 1,
+    "tenth_division_id": 1,
     "twelfth_division_id": 1,
     "category_id": 2,
     "resume_url": "https://storage.provider.com/resumes/my_resume.pdf",
@@ -318,39 +327,57 @@ The database utilizes specific static integer IDs for roles:
 #### 3. Update Student Profile as Admin
 * **Path**: `PUT /students/:user_id`
 * **Auth**: `SuperAdmin` (Role 1)
-* **Body Requirements (Optional properties)**: Same as Student self update, but also allows `roll_no`, `name`, `age`, `gender_id`, `department_id`, `semester_id`, and `is_graduate` (boolean).
+* **Body Requirements (Optional properties)**: Same as Student self update, but also allows `roll_no`, `gender_id`, `department_id`, `semester_id`, `name`, `age`, and `is_graduate` (boolean).
 
 #### 4. Retrieve Own Student Profile
 * **Path**: `GET /students/me`
 * **Auth**: `Student` (Role 2)
 * **Success Response (Status: 200 OK)**:
+  Returns profile data with friendly string lookups dynamically resolved for departments, categories, skills, and divisions.
   ```json
   {
     "success": true,
     "message": "Successfully fetched profile",
     "data": {
-      "user_id": 6,
-      "roll_no": "20BCE0012",
       "name": "Jane Doe",
-      "age": 21,
-      "semester_id": 6,
-      "gender_id": 2,
-      "cgpa": 8.5,
-      "department_id": 1,
-      "has_backlog": false,
-      "is_graduate": false,
-      "category_id": 1,
-      "resume_url": "https://resume-url.com",
-      "image_url": "https://image-url.com"
+      "mobile_no": "1234567890",
+      "email": "student@domain.com",
+      "department": "Computer Science",
+      "category": "Unreserved",
+      "gender": "Female",
+      "cgpa": "8.50",
+      "semester": "Sem 6",
+      "skill": ["TypeScript", "React", "Python"],
+      "tenth_division": "First",
+      "twelfth_division": "First"
     }
   }
   ```
 
 #### 5. Retrieve Single Student Profile
 * **Path**: `GET /students/:user_id`
-* **Auth**: `Student` who owns the profile, `SuperAdmin` (Role 1), or the coordinator (`Coordinator` Role 3) of the student's department.
-* **Success Response (Status: 200 OK)**: Same as Retrieve Own Student Profile.
-* **Error Response (Status: 403 Forbidden)**: If the user is a Student requesting another student's profile, or a Coordinator requesting a profile of a student from another department.
+* **Auth**: `Student` (self), `SuperAdmin` (Role 1), or `Coordinator` (Role 3) of the student's department.
+* **Success Response (Status: 200 OK)**:
+  ```json
+  {
+    "success": true,
+    "message": "Successfully fetched student profile",
+    "data": {
+      "email": "student@domain.com",
+      "mobile_no": "1234567890",
+      "name": "Jane Doe",
+      "category": "Unreserved",
+      "department": "Computer Science",
+      "gender": "Female",
+      "cgpa": "8.50",
+      "semester": "Sem 6",
+      "skill": ["TypeScript", "React"],
+      "tenth_division": "First",
+      "twelfth_division": "First"
+    }
+  }
+  ```
+* **Error Response (Status: 403 Forbidden)**: If a Student requests another student's profile, or a Coordinator requests a student profile from another department.
 
 #### 6. List All Students
 * **Path**: `GET /students/`
@@ -368,41 +395,6 @@ The database utilizes specific static integer IDs for roles:
         "user_table": { "email": "student@domain.com", "mobile_no": "1234567890" }
       }
     ]
-  }
-  ```
-
-#### 7. Student Dashboard
-* **Path**: `GET /students/me/dashboard`
-* **Auth**: `Student` (Role 2)
-* **Success Response (Status: 200 OK)**:
-  ```json
-  {
-    "success": true,
-    "message": "Successfully fetched dashboard",
-    "data": {
-      "appliedTrainings": [
-        {
-          "training_id": 1,
-          "student_id": 6,
-          "status_id": 0,
-          "date_of_submission": "2026-07-08T00:00:00.000Z",
-          "remarks": null,
-          "training_table": {
-            "training_id": 1,
-            "title": "React Development Bootcamp",
-            "is_active": true
-          }
-        }
-      ],
-      "eligibleTrainings": [
-        {
-          "training_id": 2,
-          "title": "NodeJS Advanced Training",
-          "min_cgpa": "7.50",
-          "is_active": true
-        }
-      ]
-    }
   }
   ```
 
@@ -436,61 +428,38 @@ The database utilizes specific static integer IDs for roles:
   }
   ```
 
-#### 2. Approve Organization
-* **Path**: `POST /organizations/:organization_id/status`
+#### 2. Update Organization Approval Status
+* **Path**: `PATCH /organizations/:organization_id/status`
 * **Auth**: `SuperAdmin` (Role 1)
-* **Body Requirements**:
+* **Body Requirements (Strict)**:
   ```json
   {
-    "email": "contact@google.com"
+    "approval_id": 1 // 1 = Approved, 2 = Rejected
   }
   ```
-* **Success Response (Status: 201 Created)**:
-  ```json
-  {
-    "success": true,
-    "message": "Organization with email: contact@google.com approved",
-    "data": {
-      "user_id": 7,
-      "name": "Google",
-      "approval_id": 1 // 1 = Approved
-    }
-  }
-  ```
-
-#### 3. Reject Organization
-* **Path**: `POST /organizations/:organization_id/status`
-* **Auth**: `SuperAdmin` (Role 1)
-* **Body Requirements**:
-  ```json
-  {
-    "email": "contact@google.com"
-  }
-  ```
-* **Success Response (Status: 201 Created)**:
-  ```json
-  {
-    "success": true,
-    "message": "Organization with email: contact@google.com rejected",
-    "data": {
-      "user_id": 7,
-      "name": "Google",
-      "approval_id": 2 // 2 = Rejected
-    }
-  }
-  ```
-
-#### 4. Get Organizations (Approved / Pending / Rejected)
-* **Paths**:
-  - `GET /organizations?status=approved`
-  - `GET /organizations?status=pending`
-  - `GET /organizations?status=rejected`
-* **Auth**: `SuperAdmin` (Role 1)
 * **Success Response (Status: 200 OK)**:
   ```json
   {
     "success": true,
-    "message": "Successfully fetched list of approved organization",
+    "message": "Successfully updated organization approval status",
+    "data": {
+      "user_id": 7,
+      "name": "Google",
+      "approval_id": 1
+    }
+  }
+  ```
+
+#### 3. Get Organizations
+* **Path**: `GET /organizations`
+* **Auth**: `SuperAdmin` (Role 1)
+* **Query Params**:
+  - `status`: `approved` | `pending` | `rejected` (optional; defaults to fetching approved organizations)
+* **Success Response (Status: 200 OK)**:
+  ```json
+  {
+    "success": true,
+    "message": "Successfully fetched organizations",
     "data": [
       {
         "user_id": 7,
@@ -502,15 +471,15 @@ The database utilizes specific static integer IDs for roles:
   }
   ```
 
-#### 5. Get Single Organization
+#### 4. Get Single Organization
 * **Path**: `GET /organizations/:organization_id`
-* **Auth**: None
+* **Auth**: `Student` (Role 2), `Coordinator` (Role 3), `SuperAdmin` (Role 1)
 * **Path Params**: `organization_id` (numeric)
 * **Success Response (Status: 200 OK)**:
   ```json
   {
     "success": true,
-    "message": "Successfully fetched list of approved organization", // Note: hardcoded msg in API
+    "message": "Successfully fetched organization details",
     "data": {
       "user_id": 7,
       "name": "Google",
@@ -527,16 +496,16 @@ The database utilizes specific static integer IDs for roles:
 #### 1. Create Training
 * **Path**: `POST /trainings`
 * **Auth**: `Organization` (Role 4), `Coordinator` (Role 3), `SuperAdmin` (Role 1)
-* **Body Requirements (Strict)**:
+* **Body Requirements**:
   ```json
   {
     "title": "Advanced Web Security",
     "description": "Bootcamp on web app exploits", // optional
     "min_cgpa": 7.0, // optional number (decimal conversion handled by backend)
-    "end_date": "2026-08-31T00:00:00.000Z", // optional datetime
-    "start_date": "2026-08-01T00:00:00.000Z", // optional datetime
+    "end_date": "2026-08-31T00:00:00.000Z", // optional datetime string
+    "start_date": "2026-08-01T00:00:00.000Z", // optional datetime string
     "image_url": "https://storage.provider.com/banner.png", // optional string
-    "last_date_of_submission": "2026-07-25T00:00:00.000Z", // optional datetime
+    "last_date_of_submission": "2026-07-25T00:00:00.000Z", // optional datetime string
     "is_active": true // optional boolean (default: true)
   }
   ```
@@ -560,12 +529,14 @@ The database utilizes specific static integer IDs for roles:
   ```
 
 #### 2. Get All Trainings
-* **Path**: `GET /trainings/`
+* **Path**: `GET /trainings`
 * **Auth**: `Student` (Role 2), `Org` (Role 4), `Coordinator` (Role 3), `SuperAdmin` (Role 1)
 * **Behavior**:
-  - **For Students**: Only returns active trainings for which they meet eligibility requirements (e.g. `min_cgpa` threshold <= student's `cgpa`).
-  - **For Creators (Org/Admin/Coordinator)**: Returns all training programs they created.
+  - **For Students**: Only returns active trainings for which they meet eligibility requirements (e.g., student's CGPA >= `min_cgpa` threshold).
+  - **For Creators (Org/Admin/Coordinator)**: Returns all training programs created by their account.
 * **Success Response (Status: 201 Created)**:
+  > [!NOTE]
+  > This endpoint returns a status code of **201 Created** instead of 200 due to backend controller configuration.
   ```json
   {
     "success": true,
@@ -585,8 +556,9 @@ The database utilizes specific static integer IDs for roles:
 * **Path**: `GET /trainings/:training_id`
 * **Auth**: `Student` (Role 2), `Org` (Role 4), `Coordinator` (Role 3), `SuperAdmin` (Role 1)
 * **Path Params**: `training_id` (numeric)
-* **Behavior**: Similar role filtering logic applies.
 * **Success Response (Status: 201 Created)**:
+  > [!NOTE]
+  > This endpoint returns a status code of **201 Created** instead of 200 due to backend controller configuration.
   ```json
   {
     "success": true,
@@ -603,7 +575,7 @@ The database utilizes specific static integer IDs for roles:
 
 ---
 
-### Training Applications (`/training-applications`)
+### Training Applications Namespace (`/training-applications`)
 
 #### 1. Submit Application
 * **Path**: `POST /training-applications`
@@ -618,11 +590,11 @@ The database utilizes specific static integer IDs for roles:
   ```json
   {
     "success": true,
-    "message": "Training Applcation created successfully",
+    "message": "Training Applcation created successfully", // Note: hardcoded typo in API
     "data": {
       "training_id": 4,
       "student_id": 6,
-      "status_id": 0, // 0 = Pending
+      "status_id": 0, // 0 = Pending, 1 = Approved
       "date_of_submission": "2026-07-08T00:00:00.000Z",
       "remarks": null
     }
@@ -630,16 +602,16 @@ The database utilizes specific static integer IDs for roles:
   ```
 
 #### 2. Approve Application
-* **Path**: `POST /training-applications/:training_id/students/:student_id/status`
+* **Path**: `PATCH /training-applications/:training_id/students/:student_id/status`
 * **Auth**: `Organization` (Role 4), `Coordinator` (Role 3), `SuperAdmin` (Role 1)
 * **Path Params**: 
-  - `student_id`: number (Target student profile ID)
+  - `student_id`: number (Target student user ID)
   - `training_id`: number (Target training program ID)
 * **Success Response (Status: 200 OK)**:
   ```json
   {
     "success": true,
-    "message": "Training Application approved successfull",
+    "message": "Training Application approved successfull", // Note: hardcoded typo in API
     "data": {
       "training_id": 4,
       "student_id": 6,
@@ -658,7 +630,7 @@ The database utilizes specific static integer IDs for roles:
   ```json
   {
     "success": true,
-    "message": "Training Application fetch successfull",
+    "message": "Training Application fetch successfull", // Note: hardcoded typo in API
     "data": [
       {
         "training_id": 4,
@@ -667,6 +639,24 @@ The database utilizes specific static integer IDs for roles:
         "training_table": { "title": "Advanced Web Security" }
       }
     ]
+  }
+  ```
+
+#### 4. View Single Application
+* **Path**: `GET /training-applications/:training_id/students/:student_id`
+* **Auth**: `Student` (self), `Org` (creator), `Coordinator` (creator), `SuperAdmin` (Role 1)
+* **Success Response (Status: 200 OK)**:
+  ```json
+  {
+    "success": true,
+    "message": "Training Application approved successfull", // Note: returns approval msg on retrieval
+    "data": {
+      "training_id": 4,
+      "student_id": 6,
+      "status_id": 0,
+      "date_of_submission": "2026-07-08T00:00:00.000Z",
+      "remarks": null
+    }
   }
   ```
 
@@ -681,10 +671,13 @@ The database utilizes specific static integer IDs for roles:
   ```json
   {
     "title": "Software Engineer Intern",
-    "description": "Looking for talented software developers.",
-    "min_cgpa": 7.5,
-    "last_date_of_submission": "2026-08-31T00:00:00.000Z",
-    "is_active": true
+    "description": "Looking for talented software developers.", // optional
+    "min_cgpa": 7.5, // optional number (decimal conversion handled by backend)
+    "last_date_of_submission": "2026-08-31T00:00:00.000Z", // optional datetime string
+    "start_date": "2026-08-01T00:00:00.000Z", // optional datetime string
+    "end_date": "2026-08-31T00:00:00.000Z", // optional datetime string
+    "image_url": "https://storage.provider.com/banner.png", // optional string
+    "is_active": true // optional boolean (default: true)
   }
   ```
 * **Success Response (Status: 201 Created)**:
@@ -709,13 +702,20 @@ The database utilizes specific static integer IDs for roles:
 * **Auth**: `Student` (Role 2), `Organization` (Role 4), `Coordinator` (Role 3), `SuperAdmin` (Role 1)
 * **Behavior**:
   - **For Students**: Returns active placements where student's CGPA meets/exceeds `min_cgpa`.
-  - **For Admins/Coordinators/Orgs**: Returns placements created by them.
+  - **For Creators (Org/Admin/Coordinator)**: Returns placements created by them.
 * **Success Response (Status: 200 OK)**:
   ```json
   {
     "success": true,
     "message": "Successfully fetched all placements",
-    "data": [ ... ]
+    "data": [
+      {
+        "placement_id": 1,
+        "title": "Software Engineer Intern",
+        "min_cgpa": "7.50",
+        "is_active": true
+      }
+    ]
   }
   ```
 
@@ -728,18 +728,24 @@ The database utilizes specific static integer IDs for roles:
   {
     "success": true,
     "message": "Successfully fetched placement",
-    "data": { ... }
+    "data": {
+      "placement_id": 1,
+      "creator_id": 5,
+      "title": "Software Engineer Intern",
+      "description": "Looking for talented software developers.",
+      "min_cgpa": "7.50"
+    }
   }
   ```
 
 ---
 
-### Placement Applications (`/placement-applications`)
+### Placement Applications Namespace (`/placement-applications`)
 
 #### 1. Submit Placement Application
 * **Path**: `POST /placement-applications`
 * **Auth**: `Student` (Role 2)
-* **Body Requirements**:
+* **Body Requirements (Strict)**:
   ```json
   {
     "placement_id": 1
@@ -753,18 +759,18 @@ The database utilizes specific static integer IDs for roles:
     "data": {
       "placement_id": 1,
       "student_id": 12,
-      "status_id": 0,
+      "status_id": 0, // 0 = Pending, 1 = Approved
       "remarks": null
     }
   }
   ```
 
-#### 2. Approve/Status Update Placement Application
+#### 2. Approve Application
 * **Path**: `PATCH /placement-applications/:placement_id/students/:student_id/status`
 * **Auth**: `Organization` (Role 4), `Coordinator` (Role 3), `SuperAdmin` (Role 1)
 * **Path Params**:
   - `placement_id`: number (Target placement ID)
-  - `student_id`: number (Target student profile ID)
+  - `student_id`: number (Target student user ID)
 * **Success Response (Status: 200 OK)**:
   ```json
   {
@@ -789,7 +795,31 @@ The database utilizes specific static integer IDs for roles:
   {
     "success": true,
     "message": "Placement Applications fetched successfully",
-    "data": [ ... ]
+    "data": [
+      {
+        "placement_id": 1,
+        "student_id": 12,
+        "status_id": 0,
+        "placement_table": { "title": "Software Engineer Intern" }
+      }
+    ]
+  }
+  ```
+
+#### 4. View Single Placement Application
+* **Path**: `GET /placement-applications/:placement_id/students/:student_id`
+* **Auth**: `Student` (self), `Org` (creator), `Coordinator` (creator), `SuperAdmin` (Role 1)
+* **Success Response (Status: 200 OK)**:
+  ```json
+  {
+    "success": true,
+    "message": "Training Application approved successfull", // Note: hardcoded message returned by backend controller
+    "data": {
+      "placement_id": 1,
+      "student_id": 12,
+      "status_id": 0,
+      "remarks": null
+    }
   }
   ```
 
@@ -799,25 +829,22 @@ The database utilizes specific static integer IDs for roles:
 
 #### 1. Retrieve Dashboard Data
 * **Path**: `GET /dashboards`
-* **Auth**: Student (Role 2), Coordinator (Role 3), SuperAdmin (Role 1)
+* **Auth**: `Student` (Role 2), `Coordinator` (Role 3), `SuperAdmin` (Role 1)
 * **Behavior**:
-  - **For Students**: Returns applied/eligible trainings and placements.
-  - **For Coordinators**: Returns student count in department, organization count, training and placement application stats.
-  - **For SuperAdmins**: Returns system-wide statistics (student count, department count, org count, training count, training and placement approval percentages).
+  - **For Students**: Returns personal applied and eligible training/placement details.
+  - **For Coordinators**: Returns student count in their department, organization counts, and approval ratios.
+  - **For SuperAdmins**: Returns global counters (student, department, org, training count) and approval percentages.
 
-* **SuperAdmin Response Example**:
+* **Student Response Example**:
   ```json
   {
     "success": true,
     "message": "Successfully fetched dashboard",
     "data": {
-      "studentCount": 420,
-      "departmentCount": 8,
-      "organizationCount": 15,
-      "trainingCount": 24,
-      "trainingPercentage": 64.51,
-      "placementCount": 12,
-      "placementPercentage": 50.00
+      "appliedTrainings": [ ... ],
+      "eligibleTrainings": [ ... ],
+      "appliedPlacement": [ ... ],
+      "eligiblePlacement": [ ... ]
     }
   }
   ```
@@ -838,41 +865,181 @@ The database utilizes specific static integer IDs for roles:
   }
   ```
 
+* **SuperAdmin Response Example**:
+  ```json
+  {
+    "success": true,
+    "message": "Successfully fetched dashboard",
+    "data": {
+      "studentCount": 420,
+      "departmentCount": 8,
+      "organizationCount": 15,
+      "trainingCount": 24,
+      "trainingPercentage": 64.51,
+      "placementCount": 12,
+      "placementPercentage": 50.00
+    }
+  }
+  ```
+
 ---
 
-### Metadata Namespaces (Reference Data)
+### Upload Namespace (`/upload`)
+
+These endpoints receive file uploads and store them locally inside the `public/` directory using Multer. Uploaded files are served statically from `/public` route.
+
+* **Format**: Multipart Form-Data with parameter name `media`
+
+#### 1. Profile Picture Upload
+* **Path**: `POST /upload/profile`
+* **Auth**: Public
+* **Destination Directory**: `public/profile_media/`
+* **Success Response (Status: 200 OK)**:
+  ```json
+  {
+    "success": true,
+    "message": "File uploaded successfully",
+    "fileUrl": "http://localhost:5000/public/profile_media/1720442300000-avatar.png"
+  }
+  ```
+
+#### 2. Banner Upload
+* **Path**: `POST /upload/banner`
+* **Auth**: Public
+* **Destination Directory**: `public/banner_media/`
+* **Success Response (Status: 200 OK)**:
+  ```json
+  {
+    "success": true,
+    "message": "File uploaded successfully",
+    "fileUrl": "http://localhost:5000/public/banner_media/1720442300000-banner.png"
+  }
+  ```
+
+#### 3. Notes Upload (Multiple files supported)
+* **Path**: `POST /upload/notes`
+* **Auth**: Public
+* **Destination Directory**: `public/notes_media/`
+* **Success Response (Status: 200 OK)**:
+  `fileUrl` will contain an array of static URLs.
+  ```json
+  {
+    "success": true,
+    "message": "File uploaded successfully",
+    "fileUrl": [
+      "http://localhost:5000/public/notes_media/1720442300000-note1.pdf",
+      "http://localhost:5000/public/notes_media/1720442300000-note2.docx"
+    ]
+  }
+  ```
+
+#### 4. Resume Upload
+* **Path**: `POST /upload/resume`
+* **Auth**: Public
+* **Destination Directory**: `public/resume_media/`
+* **Success Response (Status: 200 OK)**:
+  ```json
+  {
+    "success": true,
+    "message": "File uploaded successfully",
+    "fileUrl": "http://localhost:5000/public/resume_media/1720442300000-my_resume.pdf"
+  }
+  ```
+
+---
+
+### Department Namespace (`/departments`)
+
+#### 1. Register Department
+* **Path**: `POST /departments/register`
+* **Auth**: `SuperAdmin` (Role 1)
+* **Body Requirements (Strict)**:
+  ```json
+  {
+    "dept_name": "Computer Science", // string (required)
+    "is_active": true // boolean (optional)
+  }
+  ```
+* **Success Response (Status: 200 OK)**:
+  ```json
+  {
+    "success": true,
+    "message": "Department ID has to be made autoincrement",
+    "data": null
+  }
+  ```
+
+#### 2. Get All Departments
+* **Path**: `GET /departments`
+* **Auth**: Public
+* **Success Response (Status: 200 OK)**:
+  ```json
+  {
+    "success": true,
+    "message": "Fetched all departments",
+    "data": [
+      {
+        "department_id": 1,
+        "dept_name": "Computer Science",
+        "is_active": true
+      }
+    ]
+  }
+  ```
+
+---
+
+### Master Namespace (`/masters`)
+
+Allows unified access to multiple system lookups under a cached and centralized endpoint.
+
+* **Path**: `GET /masters/:type`
+* **Auth**: Public
+* **Route Param `type`**: `genders` | `semesters` | `divisions` | `categories` | `skills`
+* **Success Response (Status: 200 OK)**:
+  ```json
+  {
+    "success": true,
+    "message": "Successfully fetched master table",
+    "data": [ ... ] // Array of master table rows
+  }
+  ```
+
+---
+
+### Metadata Namespaces (Individual Reference Data)
 
 All metadata lists return simple reference objects: `{ <id_name>: number, <value_name>: string }`.
 
 #### 1. Category Table
-* **Path**: `GET /categories/`
+* **Path**: `GET /categories`
 * **Auth**: Public
-* **Data Fields**: `category_id`, `category` (e.g. Unreserved, OBC, SC, ST)
+* **Success Response Message**: `"Fetched all category"`
+* **Data Fields**: `category_id`, `category` (e.g., Unreserved, OBC, SC, ST)
 
-#### 2. Department Table
-* **Path**: `GET /departments/`
+#### 2. Division Table
+* **Path**: `GET /divisions`
 * **Auth**: Public
-* **Data Fields**: `department_id`, `dept_name`, `is_active`
+* **Success Response Message**: `"Fetched all divisions"`
+* **Data Fields**: `division_id`, `division` (e.g., Distinction, First, Second)
 
-#### 4. Division Table
-* **Path**: `GET /divisions/`
+#### 3. Gender Table
+* **Path**: `GET /genders`
 * **Auth**: Public
-* **Data Fields**: `division_id`, `division` (e.g. Distinction, First, Second)
+* **Success Response Message**: `"Fetched all genders"`
+* **Data Fields**: `gender_id`, `gender` (e.g., Male, Female, Other)
 
-#### 5. Gender Table
-* **Path**: `GET /genders/`
+#### 4. Semester Table
+* **Path**: `GET /semesters`
 * **Auth**: Public
-* **Data Fields**: `gender_id`, `gender` (e.g. Male, Female, Other)
+* **Success Response Message**: `"Fetched all departments"` (Note: returns departments message due to backend code reuse)
+* **Data Fields**: `semester_id`, `semester` (e.g., Sem 1, Sem 2...)
 
-#### 6. Semester Table
-* **Path**: `GET /semesters/`
+#### 5. Skill Table
+* **Path**: `GET /skills`
 * **Auth**: Public
-* **Data Fields**: `semester_id`, `semester` (e.g. Sem 1, Sem 2...)
-
-#### 7. Skill Table
-* **Path**: `GET /skills/`
-* **Auth**: Public
-* **Data Fields**: `skill_id`, `skill` (e.g. TypeScript, React, Python)
+* **Success Response Message**: `"Fetched all skills"`
+* **Data Fields**: `skill_id`, `skill` (e.g., TypeScript, React, Python)
 
 ---
 
