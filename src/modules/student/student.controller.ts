@@ -63,11 +63,18 @@ export const getStudentController = async (
 ) => {
     try {
         const studentList = await Student.findAll();
+        const sanatizedList = studentList.map((student) => {
+            const {password, ...safeUserTable} = student.user_table;
+            return {
+                ...student,
+                user_table: safeUserTable
+            }
+        });
         res.status(200).json({
             success: true,
             message: "Successfully fetched students",
-            data: studentList
-        })
+            data: sanatizedList
+        });
     } catch (error) {
         next(error);
     }
@@ -96,7 +103,7 @@ export const getStudentMeController = async (
                 semester: student.semester_table.semester,
                 skill: student.student_skill_table.map((skill) => skill.skill_table.skill),
                 tenth_division: student.division_table_student_table_tenth_division_idTodivision_table?.division,
-                tweflth_division: student.division_table_student_table_twelfth_division_idTodivision_table?.division,
+                twelfth_division: student.division_table_student_table_twelfth_division_idTodivision_table?.division,
             }
         });
     } catch (error) {
@@ -116,7 +123,19 @@ export const getStudentByIdController = async (
         res.status(200).json({
             success: true,
             message: "Successfully fetched student profile",
-            data: student
+            data: {
+                email: student.user_table.email,
+                mobile_no: student.user_table.mobile_no,
+                name: student.name,
+                category: student.category_table?.category,
+                department: student.department_table.dept_name,
+                gender: student.gender_table.gender,
+                cgpa: student.cgpa,
+                semester: student.semester_table.semester,
+                skill: student.student_skill_table.map((skill) => skill.skill_table.skill),
+                tenth_division: student.division_table_student_table_tenth_division_idTodivision_table?.division,
+                twelfth_division: student.division_table_student_table_twelfth_division_idTodivision_table?.division,
+            }
         });
     } catch (error) {
         next(error);

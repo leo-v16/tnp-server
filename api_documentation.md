@@ -25,6 +25,32 @@ The server uses **JWT-based Bearer Authentication**.
   }
   ```
 
+### Rate Limiting
+To protect the server from abuse and brute-force attempts, the API implements rate limiting:
+* **Global Rate Limit**: Applied to all endpoints.
+  * **Limit**: 100 requests per 15 minutes per IP address.
+  * **Headers**: Conforms to the `draft-7` standard rate-limiting headers.
+  * **Exceeded Response (429 Too Many Requests)**:
+    ```json
+    {
+      "success": false,
+      "code": "TOO_MANY_REQUESTS",
+      "message": "You have made too many requests. Please wait for some time.",
+      "retryAfterSeconds": 900
+    }
+    ```
+* **Auth Rate Limit**: Applied to sensitive authentication endpoints.
+  * **Limit**: 10 requests per 1 minute per IP address.
+  * **Exceeded Response (429 Too Many Requests)**:
+    ```json
+    {
+      "success": false,
+      "code": "TOO_MANY_REQUESTS",
+      "message": "Too many requests, slow down bro.",
+      "retryAfterSeconds": 60
+    }
+    ```
+
 ---
 
 ## 2. Global Response Formats
@@ -150,6 +176,7 @@ The database utilizes specific static integer IDs for roles:
 #### 2. User Login
 * **Path**: `POST /users/login`
 * **Auth**: None
+* **Rate Limit**: Max 10 requests/minute (IP-based)
 * **Body Requirements (Strict)**:
   ```json
   {
