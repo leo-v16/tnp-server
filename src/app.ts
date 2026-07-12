@@ -16,12 +16,14 @@ import placementRouter from "./modules/placement/placement.routes.js";
 import placementApplicationRouter from "./modules/placement_application/placement_application.routes.js";
 import dashboardRouter from "./modules/dashboard/dashboard.routes.js";
 import uploadRouter from "./modules/upload/upload.route.js";
+import { globalRateLimiter } from "./middlewares/rate_limitter.middleware.js";
 
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(globalRateLimiter)
 
 app.use("/public", express.static("public"));
 app.use("/upload", uploadRouter);

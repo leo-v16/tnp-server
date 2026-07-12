@@ -4,12 +4,13 @@ import { userIdParamSchema, userLoginSchema, userRegisterSchema } from "./user.v
 import { getOneUserController, getUserController, loginUserController, registerUserController } from "./user.controller.js";
 import { authenticate } from "../../middlewares/auth.middleware.js";
 import Role from "../role/role.model.js";
+import { apiLimit } from "../../middlewares/rate_limitter.middleware.js";
 
 const userRouter = express.Router();
 
 userRouter
 .post("/register", validate(userRegisterSchema), registerUserController)
-.post("/login", validate(userLoginSchema), loginUserController)
+.post("/login", apiLimit, validate(userLoginSchema), loginUserController)
 .get("/", authenticate(Role.SuperAdmin), getUserController)
 .get("/:user_id", authenticate(Role.SuperAdmin), validate(userIdParamSchema), getOneUserController)
 
