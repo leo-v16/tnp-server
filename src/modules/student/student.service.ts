@@ -75,3 +75,11 @@ export const getStudentByIdService = async (user_id: number, actor: UserJwtPaylo
 
     return student;
 }
+
+export const getStudentService = async () => {
+    const studentList = await Student.findAll();
+    if (!studentList) {
+        throw new ApiError(404, "Couldn't fetch student list");
+    }
+    return studentList;
+}

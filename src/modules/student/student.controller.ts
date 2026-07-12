@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { registerStudentService, updateStudentAdminService, updateStudentService, getStudentByIdService } from "./student.service.js";
+import { registerStudentService, updateStudentAdminService, updateStudentService, getStudentByIdService, getStudentService } from "./student.service.js";
 import type { UserJwtPayload } from "../../utils/jwt.util.js";
 import Student from "./student.model.js";
 import type { StudentIdParamInput, StudentRegisterInput, StudentUpdateAdminInput, StudentUpdateInput } from "./student.type.js";
@@ -62,9 +62,9 @@ export const getStudentController = async (
     next: NextFunction
 ) => {
     try {
-        const studentList = await Student.findAll();
+        const studentList = await getStudentService();
         const sanatizedList = studentList.map((student) => {
-            const {password, ...safeUserTable} = student.user_table;
+            const {password, auth_token, ...safeUserTable} = student.user_table;
             return {
                 ...student,
                 user_table: safeUserTable
