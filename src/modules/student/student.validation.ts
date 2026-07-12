@@ -14,11 +14,11 @@ export const studentRegisterSchema = z.object({
         age: z.string({ message: "Age must be of type string" }),
     }),
 
-    file: z.any()
-    .refine(
-        (file) => ["image/jpeg", "image/png", "image/jpg"].includes(file?.mimetype), 
-        "Only .jpg, .jpeg and .png formats are supported"
-    )
+    // file: z.any()
+    // .refine(
+    //     (file) => ["image/jpeg", "image/png", "image/jpg"].includes(file?.mimetype), 
+    //     "Only .jpg, .jpeg and .png formats are supported"
+    // )
 });
 
 export const studentUpdateAdminSchema = z.object({
