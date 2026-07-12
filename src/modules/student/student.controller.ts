@@ -104,6 +104,7 @@ export const getStudentMeController = async (
                 skill: student.student_skill_table.map((skill) => skill.skill_table.skill),
                 tenth_division: student.division_table_student_table_tenth_division_idTodivision_table?.division,
                 twelfth_division: student.division_table_student_table_twelfth_division_idTodivision_table?.division,
+                age: student.age
             }
         });
     } catch (error) {
@@ -135,6 +136,7 @@ export const getStudentByIdController = async (
                 skill: student.student_skill_table.map((skill) => skill.skill_table.skill),
                 tenth_division: student.division_table_student_table_tenth_division_idTodivision_table?.division,
                 twelfth_division: student.division_table_student_table_twelfth_division_idTodivision_table?.division,
+                age: student.age
             }
         });
     } catch (error) {
