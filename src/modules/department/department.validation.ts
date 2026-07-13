@@ -8,4 +8,5 @@ export const departmentRegisterSchema = z.object({
         email: z.email("Incorrect email format"),
         password: z.string().min(6, "Minimum 6 characters must be their for password")
     }).strict()
+    
 });
