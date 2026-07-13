@@ -18,9 +18,12 @@ import dashboardRouter from "./modules/dashboard/dashboard.routes.js";
 import uploadRouter from "./modules/upload/upload.route.js";
 import { globalRateLimiter } from "./middlewares/rate_limitter.middleware.js";
 import masterRouter from "./modules/master/master.routes.js";
+import morgan from "morgan";    
 
 
 const app = express();
+
+app.use(morgan("common")); // logger
 
 app.use(cors());
 app.use(express.json());
