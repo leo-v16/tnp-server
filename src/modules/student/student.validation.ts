@@ -46,6 +46,7 @@ export const studentUpdateSchema = z.object({
         date_of_birth: z.coerce.date("Invalid date of birth format").optional(),
         semester_id: z.number("Semester must be converted to semester id").optional(),
         name: z.string("Name must be string").optional(),
+        skills: z.array(z.string()).optional().default([])
     }).strict()
 });
 

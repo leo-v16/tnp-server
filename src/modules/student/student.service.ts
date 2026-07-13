@@ -39,7 +39,7 @@ export const updateStudentService = async (input: StudentUpdateInput, actor: Use
         resume_url: input.resume_url,
         image_url: input.image_url,
     });
-    const updatedStudent = await Student.update(actor.auth_user_id, studentData);
+    const updatedStudent = await Student.update(actor.auth_user_id, studentData, input.skills);
     if (!updatedStudent) {
         throw new ApiError(500, "Failed to update student");
     }

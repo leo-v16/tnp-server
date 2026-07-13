@@ -87,7 +87,7 @@ class Student {
         return studentList;
     }
 
-    static async update(user_id: number, updateData: StudentUpdateData) {
+    static async update(user_id: number, updateData: StudentUpdateData, skills: string[]) {
         const userData: Prisma.user_tableUncheckedUpdateInput = Data.filterUndefined({
             email: updateData.email,
             mobile_no: updateData.mobile_no,
@@ -115,7 +115,36 @@ class Student {
                 },
                 data: userData
             });
-            
+
+            if (skills && skills.length > 0) {
+                await tx.skill_table.createMany({
+                    data: skills.map((skillName) => ({skill: skillName})),
+                    skipDuplicates: true
+                });
+
+                const dbSkills = await tx.skill_table.findMany({
+                    where: {
+                        skill: {in: skills}
+                    }
+                });
+
+                await tx.student_skill_table.deleteMany({
+                    where: {
+                        user_id: user.user_id
+                    }
+                })
+
+                await tx.student_skill_table.createMany({
+                    data: dbSkills.map((dbSkill) => ({
+                        user_id: user.user_id,
+                        skill_id: dbSkill.skill_id
+                    }))
+                });
+            } else {
+                await tx.student_skill_table.deleteMany({
+                    where: {user_id: user.user_id}
+                });
+            }
             const student = await prisma.student_table.update({
                 where: {
                     user_id: user.user_id
@@ -125,6 +154,8 @@ class Student {
                     user_table: true
                 }
             });
+
+
 
             return student;
         })
