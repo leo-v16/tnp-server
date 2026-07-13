@@ -43,7 +43,7 @@ model gender_table {
 
 model organization_table {
   user_id      Int           @id
-  approval_id  Int?          @default(1)
+  approval_id  Int?          @default(0)
   document_url String?       @db.VarChar(255)
   is_active    Boolean?      @default(true)
   remarks      String?       @db.Text

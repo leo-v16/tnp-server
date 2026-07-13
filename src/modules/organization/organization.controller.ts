@@ -27,8 +27,8 @@ export const updateOrganizationStatusController = async (
 ) => {
     try {
         const { organization_id } = req.params as any;
-        const { approval_id } = req.body;
-        const updatedOrganization = await updateOrganizationStatusService(Number(organization_id), approval_id, req.user as UserJwtPayload);
+        const { approval_id,  remarks } = req.body;
+        const updatedOrganization = await updateOrganizationStatusService({organization_id: Number(organization_id), approval_id, remarks}, req.user as UserJwtPayload);
         res.status(200).json({
             success: true,
             message: `Successfully updated organization approval status`,

@@ -21,21 +21,22 @@ export const registerOrganizationService = async (input: OrganizationRegisterInp
     return newOganization;
 }
 
-export const updateOrganizationStatusService = async (organization_id: number, approval_id: number, actor: UserJwtPayload) => {
+export const updateOrganizationStatusService = async (data: {organization_id: number, approval_id: number, remarks?: string | undefined}, actor: UserJwtPayload) => {
     const existingUser = await User.findByEmail(actor.auth_email);
     if (!existingUser) {
         throw new ApiError(404, "User does not exist");
     } 
 
-    const existingOrganization = await Organization.findById(organization_id);
+    const existingOrganization = await Organization.findById(data.organization_id);
     if (!existingOrganization) {
         throw new ApiError(404, "Organization does not exist");
     }
 
     const organizationData: OrganizationUpdateData = {
-        approval_id
+        remarks: data.remarks ?? null,
+        approval_id: data.approval_id
     }
-    const organization = await Organization.update(organization_id, organizationData);
+    const organization = await Organization.update(data.organization_id, organizationData);
     if (!organization) {
         throw new ApiError(500, "Failed to update organization status");
     }

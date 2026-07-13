@@ -13,8 +13,8 @@ export const trainingApplicationIdParamSchema = z.object({
     })
 });
 
-// export const trainingApplicationApproveSchema = z.object({
-//     body: z.object({
-//         remarks: 
-//     })
-// })
+export const trainingApplicationApproveSchema = z.object({
+    body: z.object({
+        remarks: z.string("Remark must be a string").optional()
+    })
+})

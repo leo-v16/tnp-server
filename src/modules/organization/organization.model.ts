@@ -69,7 +69,7 @@ class Organization {
     static async findApproved() {
         const organizationList = await prisma.organization_table.findMany({
             where: {
-                approval_id: 1
+                approval_id: 2
             },
             include: {
                 user_table: true
@@ -81,7 +81,7 @@ class Organization {
     static async findRejected() {
         const organizationList = await prisma.organization_table.findMany({
             where: {
-                approval_id: 2
+                approval_id: 3
             },
             include: {
                 user_table: true
@@ -93,7 +93,7 @@ class Organization {
     static async findPending() {
         const organizationList = await prisma.organization_table.findMany({
             where: {
-                approval_id: 0
+                approval_id: 1
             },
             include: {
                 user_table: true

@@ -16,7 +16,8 @@ export const organizationStatusSchema = z.object({
     body: z.object({
         approval_id: z.number({ message: "approval_id must be a number" }).refine(val => val === 1 || val === 2, {
             message: "approval_id must be 1 (Approved) or 2 (Rejected)"
-        })
+        }),
+        remarks: z.string("Remark must be a string").optional()
     }).strict()
 });
 
