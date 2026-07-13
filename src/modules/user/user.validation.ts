@@ -5,8 +5,9 @@ export const userRegisterSchema = z.object({
         email: z.email("Invalid email address"),
         password: z.string().min(6, "Password must be atleast 6 characters"),
         role_id: z.number({ message: "Frontend must convert role text to role_id" }),
-        mobile_no: z.string().length(10, "Phone number should be 10 digits"),
-    }).strict()  
+        mobile_no: z.string().length(10, "Phone number should be 10 digits").optional(),
+        name: z.string("Name must be enetred as a string")
+    }).strict()
 });
 
 export const userLoginSchema = z.object({

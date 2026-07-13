@@ -25,14 +25,16 @@ class User {
         email: string,
         password: string,
         role_id: number,
-        mobile_no: string
+        mobile_no?: string | undefined,
+        name: string
     }) {
         const newUser = await prisma.user_table.create({
             data: {
                 email: userData.email,
                 password: userData.password,
                 role_id: userData.role_id,
-                mobile_no: userData.mobile_no
+                mobile_no: userData.mobile_no ?? null,
+                name: userData.name
             }
         });
         return newUser;
