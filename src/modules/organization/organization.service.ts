@@ -8,7 +8,7 @@ import User from "../user/user.model.js";
 export const registerOrganizationService = async (input: OrganizationRegisterInput, actor: UserJwtPayload) => {
     const existingUser = await User.findByEmail(input.email);
     if (existingUser) {
-        throw new ApiError(409, "Organization with this email already exists");
+        throw new ApiError(409, "This email is already exists");
     }
 
     input.password = await PasswordManager.hashPassword(input.password);

@@ -39,14 +39,14 @@ class Organization {
                     email: organizationData.email,
                     password: organizationData.password,
                     role_id: Role.Organization,
-                    mobile_no: organizationData.mobile_no
+                    name: organizationData.name,
+                    mobile_no: organizationData.mobile_no ?? null
                 }
             });
 
             const newOrganization = await tx.organization_table.create({
                 data: {
-                    user_id: newUser.user_id,
-                    name: organizationData.name
+                    user_id: newUser.user_id
                 }
             });
 
