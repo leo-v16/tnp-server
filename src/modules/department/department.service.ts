@@ -1,8 +1,9 @@
-import type { DepartmentDashboardOutput, DepartmentRegisterInput, IDepartment } from "./department.type.js";
+import type { DepartmentDashboardOutput, DepartmentRegisterInput, DepartmentUpdateInput, IDepartment } from "./department.type.js";
 import ApiError from "../../utils/ApiError.js";
 import type { UserJwtPayload } from "../../utils/jwt.util.js";
 import { dashboardService } from "../dashboard/dashboard.service.js";
 import Department from "./department.model.js";
+import Data from "../../utils/data.util.js";
 
 export const getAllDepartmentService = async () => {
     const departmentList = await Department.findAll();
@@ -20,4 +21,19 @@ export const departmentRegisterService = async (input: DepartmentRegisterInput,a
     }
 
     return departmentDashboard;
+}
+
+export const departmentUpdateService = async (department_id: number, input: DepartmentUpdateInput,actor: UserJwtPayload) => {
+    const updateData = Data.filterUndefined({
+        department_name: input.department_name,
+        email: input.email,
+        name: input.name,
+        is_active: input.is_active
+    });
+    const department = await Department.update(department_id, updateData);
+    if (!department) {
+        throw new ApiError(500, "Could not fetch department dashboard");
+    }
+
+    return department;
 }

@@ -10,3 +10,18 @@ export const departmentRegisterSchema = z.object({
     }).strict()
     
 });
+
+export const departmentUpdateSchema = z.object({
+    body: z.object({
+        department_name: z.string({ message: "Department name must be a string" }).optional(),
+        is_active: z.boolean({ message: "Active status must be a boolean value" }).optional(),
+        name: z.string("Name must be string").optional(),
+        email: z.email("Incorrect email format").optional(),
+    }).strict()
+});
+
+export const departmentIdParamSchema = z.object({
+    params: z.object({
+        department_id: z.number("Department id must be a number")
+    }).strict()
+})

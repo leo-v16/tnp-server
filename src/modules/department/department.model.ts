@@ -1,6 +1,8 @@
 import { email } from "zod";
 import prisma from "../../config/db.prisma.js";
 import Student from "../student/student.model.js";
+import type { DepartmentUpdateData, DepartmentUpdateInput } from "./department.type.js";
+import type { Prisma } from "@prisma/client";
 
 
 class Department {
@@ -59,6 +61,43 @@ class Department {
         });
 
         return newDepartment;
+    }
+
+    static async update(department_id: number, data: DepartmentUpdateData) {                                                                                   
+            const departmentData: Prisma.department_tableUpdateInput = {};                                                                         
+                                                                                                                                                   
+            if (data.department_name !== undefined) {                                                                                              
+                departmentData.department_name = data.department_name;                                                                             
+            }                                                                                                                                      
+            if (data.is_active !== undefined) {                                                                                                    
+                departmentData.is_active = data.is_active;                                                                                         
+            }                                                                                                                                                                                                               
+            const userData: Prisma.user_tableUpdateWithoutDepartment_tableInput = {};                                                              
+                                                                                                                                                   
+            if (data.name !== undefined) {                                                                                                         
+                userData.name = data.name;                                                                                                         
+            }                                                                                                                                      
+            if (data.email !== undefined) {                                                                                                        
+                userData.email = data.email;                                                                                                       
+            }                                                                                                                                      
+                                                                                                                                                                                          
+            if (Object.keys(userData).length > 0) {                                                                                                
+                departmentData.user_table = {                                                                                                      
+                    update: userData                                                                                                               
+                };                                                                                                                                 
+            }                                                                                                                                      
+                                                                                                                                                                                                                                                 
+            const updatedDepartment = await prisma.department_table.update({                                                                       
+                where: {                                                                                                                           
+                    department_id: department_id                                                                                                   
+                },                                                                                                                                 
+                data: departmentData,                                                                                                              
+                include: {                                                                                                                         
+                    user_table: true                            
+                }                                                                                                                                  
+            });                                                                                                                                    
+                                                                                                                                                   
+            return updatedDepartment;    
     }
 
     static async getDashboard(department_id: number) {
