@@ -47,10 +47,13 @@ model organization_table {
   document_url String?       @db.VarChar(255)
   is_active    Boolean?      @default(true)
   remarks      String?       @db.Text
+  sector_id    Int?
+  sector_table sector_table? @relation(fields: [sector_id], references: [sector_id], map: "fk_organization_sector")
   user_table   user_table    @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: Restrict, map: "organization_table_ibfk_1")
   status_table status_table? @relation(fields: [approval_id], references: [status_id], onDelete: Restrict, onUpdate: Restrict, map: "organization_table_ibfk_2")
 
   @@index([approval_id], map: "approval_id")
+  @@index([sector_id], map: "fk_organization_sector")
 }
 
 model placement_application_table {
@@ -147,7 +150,7 @@ model semester_table {
 
 model skill_table {
   skill_id            Int                   @id @default(autoincrement())
-  skill               String                @unique(map: "uq_skill") @db.VarChar(255)
+  skill               String                @unique(map: "skill") @db.VarChar(255)
   student_skill_table student_skill_table[]
 }
 
@@ -296,4 +299,11 @@ model note_table {
   user_table  user_table @relation(fields: [creator_id], references: [user_id], onDelete: Cascade, onUpdate: Restrict, map: "note_table_ibfk_1")
 
   @@index([creator_id], map: "creator_id")
+}
+
+model sector_table {
+  sector_id          Int                  @id @default(autoincrement())
+  sector_name        String               @db.VarChar(100)
+  sector_shorthand   String               @unique(map: "sector_shorthand") @db.VarChar(5)
+  organization_table organization_table[]
 }

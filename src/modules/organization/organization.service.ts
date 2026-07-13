@@ -12,7 +12,13 @@ export const registerOrganizationService = async (input: OrganizationRegisterInp
     }
 
     input.password = await PasswordManager.hashPassword(input.password);
-    const newOganization = await Organization.create(input);
+    const newOganization = await Organization.create({
+        name: input.name,
+        email: input.email,
+        mobile_no: input.mobile_no,
+        password: input.password,
+        sector_id: input.sector_id ?? null
+    });
 
     if (!newOganization) {
         throw new Error;
@@ -44,14 +50,16 @@ export const updateOrganizationStatusService = async (data: {organization_id: nu
     return organization;
 }
 
-export const getOrganizationsService = async (status?: "approved" | "pending" | "rejected") => {
+export const getOrganizationsService = async (status?: "approved" | "pending" | "rejected" | "all") => {
     let organizationList = null;
     if (status === "pending") {
         organizationList = await Organization.findPending();
     } else if (status === "rejected") {
         organizationList = await Organization.findRejected();
+    } else if (status === "all") {
+                organizationList = await Organization.findAll();
     } else {
-        organizationList = await Organization.findApproved();
+                organizationList = await Organization.findApproved();
     }
 
     if (!organizationList) {

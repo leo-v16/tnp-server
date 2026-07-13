@@ -23,7 +23,11 @@ class Organization {
     }
 
     static async findAll() {
-        const organizationList = await prisma.organization_table.findMany();
+        const organizationList = await prisma.organization_table.findMany({
+            include: {
+                user_table: true
+            }
+        });
         return organizationList;
     }
 
@@ -40,13 +44,14 @@ class Organization {
                     password: organizationData.password,
                     role_id: Role.Organization,
                     name: organizationData.name,
-                    mobile_no: organizationData.mobile_no ?? null
+                    mobile_no: organizationData.mobile_no ?? null,
                 }
             });
 
             const newOrganization = await tx.organization_table.create({
                 data: {
-                    user_id: newUser.user_id
+                    user_id: newUser.user_id,
+                    sector_id: organizationData.sector_id ?? null
                 }
             });
 

@@ -13,6 +13,8 @@ class Master {
                 return await prisma.category_table.findMany();
             case "skills":
                 return await prisma.skill_table.findMany();
+            case "sectors":
+                return await prisma.sector_table.findMany();
             default:
                 return null;
         }
