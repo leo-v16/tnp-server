@@ -7,6 +7,6 @@ if (!process.env.DATABASE_URL) {
 }
 
 const adapter = new PrismaMariaDb(process.env.DATABASE_URL);
-const prisma = new PrismaClient({adapter});
+const prisma = new PrismaClient({adapter, log: ['error', 'warn']});
 
 export default prisma;
