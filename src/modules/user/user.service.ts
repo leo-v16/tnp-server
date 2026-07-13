@@ -16,6 +16,7 @@ export const registerUserService = async (input: UserRegisterInput): Promise<IUs
     }
 
     input.password = await PasswordManager.hashPassword(input.password);
+
     const newUser = await User.create(input);
 
     if (!newUser) {
@@ -25,7 +26,7 @@ export const registerUserService = async (input: UserRegisterInput): Promise<IUs
     return newUser;
 }
 
-export const loginUserService = async (input: UserLoginInput): Promise<IUser & (IStudent | IOrganization)> => {
+export const loginUserService = async (input: UserLoginInput) => {
     const existingUser = await User.findByEmail(input.email);
     if (!existingUser || existingUser.role_id !== input.role_id) {
         throw new ApiError(401, "Invalid email, password, or role");
@@ -60,7 +61,13 @@ export const loginUserService = async (input: UserLoginInput): Promise<IUser & (
             break;
     }
 
-    return {...existingUser, auth_token: auth_token, ...extradata} as IUser & (IStudent | IOrganization);
+    let first_login = false;
+    if (existingUser.last_login === null) {
+        first_login = true;
+    }
+    await User.updateLastLogin(existingUser.user_id);
+
+    return {...existingUser, auth_token: auth_token, ...extradata, first_login};
 }
 
 export const getUserService = async (): Promise<IUser[]> => {

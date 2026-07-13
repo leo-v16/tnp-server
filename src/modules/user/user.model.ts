@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import prisma from "../../config/db.prisma.js";
 
 class User {
@@ -38,6 +39,17 @@ class User {
             }
         });
         return newUser;
+    }
+
+    static async updateLastLogin(user_id: number) {
+        await prisma.user_table.update({
+            where: {
+                user_id: user_id
+            },
+            data: {
+                last_login: new Date()
+            }
+        })
     }
 
     static async findAll() {

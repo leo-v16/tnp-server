@@ -26,7 +26,6 @@ export const loginUserController = async (
     next: NextFunction
 ) => {
     try {
-        console.log("RUNNING");
         const loggedUser = await loginUserService(req.body);
         return res.status(200).json({
             success: true,
@@ -71,4 +70,5 @@ export const getOneUserController = async (
     } catch(error) {
         next(error);
     }
+    
 }
