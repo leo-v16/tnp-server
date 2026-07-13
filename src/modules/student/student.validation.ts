@@ -7,18 +7,8 @@ export const studentRegisterSchema = z.object({
         email: z.email("Invalid email address"),
         password: z.string().min(6, "Password must be atleast 6 characters"),
         mobile_no: z.string().length(10, "Phone number should be 10 digits"),
-        gender_id: z.number({ message: "Frontend must convert gender text to gender_id" }),
-        department_id: z.number({ message: "Frontend must convert department text to department_id" }),
-        semester_id: z.number({ message: "Frontend must convert semester text to semester_id" }),
-        name: z.string({ message: "Name must be of type string" }),
-        age: z.string({ message: "Age must be of type string" }),
-    }),
-
-    // file: z.any()
-    // .refine(
-    //     (file) => ["image/jpeg", "image/png", "image/jpg"].includes(file?.mimetype), 
-    //     "Only .jpg, .jpeg and .png formats are supported"
-    // )
+        name: z.string("Name must be provided as a string")
+    }).strict()
 });
 
 export const studentUpdateAdminSchema = z.object({
@@ -30,7 +20,7 @@ export const studentUpdateAdminSchema = z.object({
         department_id: z.number({ message: "Frontend must convert department text to department_id" }).optional(),
         semester_id: z.number({ message: "Frontend must convert semester text to semester_id" }).optional(),
         name: z.string({ message: "Name must be of type string" }).optional(),
-        age: z.string({ message: "Age must be of type string" }).optional(),
+        date_of_birth: z.coerce.date({ message: "Invalid date of birth format" }).optional(),
         has_backlog: z.boolean({ message: "has_backlog must be of type boolean" }).optional(),
         is_graduate: z.boolean({ message: "is_graduate must be of type boolean" }).optional(),
         cgpa: z.number({ message: "cgpa must be of type number" }).optional().transform((val) => (val !== undefined ? new Prisma.Decimal(val): undefined)),
@@ -52,7 +42,12 @@ export const studentUpdateSchema = z.object({
         twelfth_division_id: z.number({ message: "Frontend must convert twelfth_division text to twelfth_division_id" }).optional(),
         category_id: z.number({ message: "Frontend must convert category text to category_id" }).optional(),
         resume_url: z.string({ message: "resume_url must be of type string" }).optional(),
-        image_url: z.string({ message: "image_url must be of type string" }).optional()
+        image_url: z.string({ message: "image_url must be of type string" }).optional(),
+        gender_id: z.number("Gender must be converted to gender id").optional(),
+        deprtment_id: z.number("Department must be converted to department id").optional(),
+        date_of_birth: z.coerce.date("Invalid date of birth format").optional(),
+        semester_id: z.number("Semester must be converted to semester id").optional(),
+        name: z.string("Name must be string").optional(),
     }).strict()
 });
 

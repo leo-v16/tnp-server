@@ -49,19 +49,14 @@ class Student {
                     email: studentData.email,
                     password: studentData.password,
                     role_id: Role.Student,
-                    mobile_no: studentData.mobile_no
+                    name: studentData.name
                 }
             });
 
             const newStudent = await tx.student_table.create({
                 data: {
                     user_id: newUser.user_id,
-                    roll_no: studentData.roll_no, 
-                    name: studentData.name, 
-                    age: studentData.age, 
-                    semester_id: studentData.semester_id,
-                    department_id: studentData.department_id, 
-                    gender_id: studentData.gender_id
+                    roll_no: studentData.roll_no
                 }
             });
 
@@ -93,7 +88,8 @@ class Student {
     static async update(user_id: number, updateData: StudentUpdateData) {
         const userData: Prisma.user_tableUncheckedUpdateInput = Data.filterUndefined({
             email: updateData.email,
-            mobile_no: updateData.mobile_no
+            mobile_no: updateData.mobile_no,
+            name: updateData.name
         });
 
         const studentData: Prisma.student_tableUncheckedUpdateInput = Data.filterUndefined({
@@ -103,7 +99,11 @@ class Student {
             image_url: updateData.image_url,
             tenth_division_id: updateData.tenth_division_id,
             twelfth_division_id: updateData.twelfth_division_id,
-            category_id: updateData.category_id
+            category_id: updateData.category_id,
+            department_id: updateData.department_id,
+            semester_id: updateData.semester_id,
+            gender_id: updateData.gender_id,
+            date_of_birth: updateData.date_of_birth
         });
 
         const studentList = await prisma.$transaction(async (tx)=> {
@@ -133,7 +133,8 @@ class Student {
     static async updateAdmin(user_id: number, updateData: StudentUpdateData) {
         const userData: Prisma.user_tableUpdateInput = Data.filterUndefined({
             email: updateData.email,
-            mobile_no: updateData.mobile_no
+            mobile_no: updateData.mobile_no,
+            name: updateData.name
         });
 
         const studentData: Prisma.student_tableUncheckedUpdateInput = Data.filterUndefined({
@@ -143,7 +144,13 @@ class Student {
             image_url: updateData.image_url,
             tenth_division_id: updateData.tenth_division_id,
             twelfth_division_id: updateData.twelfth_division_id,
-            category_id: updateData.category_id
+            category_id: updateData.category_id,
+            department_id: updateData.department_id,
+            semester_id: updateData.semester_id,
+            gender_id: updateData.gender_id,
+            date_of_birth: updateData.date_of_birth,
+            roll_no: updateData.roll_no,
+            is_graduate: updateData.is_graduate,
         });
 
         return await prisma.$transaction(async (tx)=> {
