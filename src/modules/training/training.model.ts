@@ -160,6 +160,18 @@ class Training {
         });
         return trainingList;
     }
+
+    static async disable(training_id: number) {
+        const training = await prisma.training_table.update({
+            where: {
+                training_id
+            },
+            data: {
+                is_active: false
+            }
+        });
+        return training;
+    }
 }
 
 export default Training;

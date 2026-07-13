@@ -58,6 +58,23 @@ export const getTrainingService = async (actor: UserJwtPayload): Promise<ITraini
     }
 }
 
+export const disableOneTrainingService = async (training_id: number, actor: UserJwtPayload) => {
+    const training = await Training.findById(training_id);
+    if (!training) {
+        throw new ApiError(500, "Could not find trainings");
+    }
+    if (training?.creator_id !== actor.auth_user_id) {
+        throw new ApiError(400, "You are not authorized to delete the trainig")
+    }
+
+    const disabledTraining = await Training.disable(training_id);
+    if (!disabledTraining) {
+        throw new ApiError(500, "Could not disable training");
+    }
+
+    return disabledTraining;
+}
+
 export const getOneTrainingService = async (trainind_id: number, actor: UserJwtPayload): Promise<ITraining> => {
     switch (actor.auth_role_id) {
         case Role.Student:
