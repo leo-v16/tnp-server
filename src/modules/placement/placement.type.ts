@@ -5,7 +5,11 @@ import type { placementCreateSchema, placementIdParamSchema } from "./placement.
 
 export interface IPlacement extends placement_table{};
 
-export type PlacementCreateData = Prisma.placement_tableCreateManyInput;
+export interface PlacementCreateData extends Prisma.placement_tableCreateManyInput {
+    only_category?: number[],
+    only_semester?: number[],
+    only_department?: number[]
+}
 export type PlacementCreateInput = z.infer<typeof placementCreateSchema>['body'];
 
 export type PlacementIdParamInput = z.infer<typeof placementIdParamSchema>['params'] & ParamsDictionary;

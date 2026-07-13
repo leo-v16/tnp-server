@@ -12,8 +12,33 @@ class Placement {
     }
 
     static async create(placementData: PlacementCreateData) {
+        const { only_category, only_semester, only_department, ...dbData} = placementData;
+
+        const data: Prisma.placement_tableUncheckedCreateInput = {
+            ...dbData
+        };
+
+        if (only_category && only_category.length > 0) {
+            data.placement_category_table = {
+                create: only_category.map((id) => ({category_id: id}))
+            }
+        }
+
+        if (only_semester && only_semester.length > 0) {
+            data.placement_semester_table = {
+                create: only_semester.map(id => ({semester_id: id}))
+            }
+        }
+
+        if (only_department && only_department.length > 0) {
+            data.placement_department_table = {
+                create: only_department.map(id => ({department_id: id}))
+            }
+        }
+
+
         const newPlacement = prisma.placement_table.create({
-            data: placementData
+            data: data
         });
         return newPlacement;
     }

@@ -29,6 +29,15 @@ export const createPlacementService = async (input: PlacementCreateInput, actor:
         image_url: input.image_url ?? null,
         last_date_of_submission: input.last_date_of_submission ?? null,
         is_active: input.is_active ?? null,
+        min_tenth_division_id: input.min_tenth_division_id ?? null,
+        min_twelfth_division_id: input.min_twelfth_division_id ?? null,
+        has_backlog: input.has_backlog ?? null,
+        salary_lower: input.salary_lower ?? null,
+        salary_upper: input.salary_upper ?? null,
+        only_category: input.only_category ?? [],
+        only_department: input.only_department ?? [],
+        only_semester: input.only_semester ?? []
+        
     }
     const placement = await Placement.create(placementData);
     if (!placement) {
