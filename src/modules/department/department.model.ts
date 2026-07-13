@@ -14,7 +14,11 @@ class Department {
     }
 
     static async findAll() {
-        const departmentList = await prisma.department_table.findMany();
+        const departmentList = await prisma.department_table.findMany({
+            include: {
+                user_table: true
+            }
+        });
         return departmentList;
     }
 

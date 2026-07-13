@@ -4,7 +4,7 @@ import type { UserJwtPayload } from "../../utils/jwt.util.js";
 import { dashboardService } from "../dashboard/dashboard.service.js";
 import Department from "./department.model.js";
 
-export const getAllDepartmentService = async (): Promise<IDepartment[]> => {
+export const getAllDepartmentService = async () => {
     const departmentList = await Department.findAll();
     if (!departmentList) {
         throw new ApiError(500, "Could not fetch department");

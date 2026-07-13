@@ -11,5 +11,6 @@ const departmentRoute = Router();
 departmentRoute
 .post("/register", authenticate(Role.SuperAdmin), validate(departmentRegisterSchema), departmentRegisterController)
 .get("/", getAllDepartmentController)
+// .delete("/:department_id")
 
 export default departmentRoute;

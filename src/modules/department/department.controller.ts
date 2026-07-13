@@ -14,7 +14,7 @@ export const getAllDepartmentController = async (
         res.status(200).json({
             success: true,
             message: `Fetched all departments`,
-            data: departmentList
+            data: departmentList.map((department) => Data.sanitize(department))
         });
     } catch (error) {
         next(error);
