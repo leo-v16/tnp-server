@@ -67,7 +67,7 @@ export const loginUserService = async (input: UserLoginInput) => {
     }
     await User.updateLastLogin(existingUser.user_id);
 
-    return {...existingUser, auth_token: auth_token, ...extradata, first_login};
+    return {...existingUser, ...extradata, first_login, auth_token: auth_token};
 }
 
 export const getUserService = async (): Promise<IUser[]> => {
