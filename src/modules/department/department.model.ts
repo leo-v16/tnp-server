@@ -1,3 +1,4 @@
+import { email } from "zod";
 import prisma from "../../config/db.prisma.js";
 import Student from "../student/student.model.js";
 
@@ -23,13 +24,37 @@ class Department {
     }
 
     static async create(departmentDataInput: {
-        department_id: number,
-        dept_name: string,
-        is_active: boolean,
+        department_name: string,
+        is_active?: boolean | undefined,
+        email: string,
+        password: string,
+        name: string,
     }){
         const newDepartment = await prisma.$transaction(async (tx) => {
-            // tx.user_table.create()
-        })
+            const user = await tx.user_table.create({
+                data: {
+                    email: departmentDataInput.email,
+                    password: departmentDataInput.password,
+                    name: departmentDataInput.name,
+                    role_id: 3
+                }
+            });
+
+            const department = tx.department_table.create({
+                data: {
+                    department_name: departmentDataInput.department_name,
+                    coordinator_id: user.user_id,
+                    is_active: departmentDataInput.is_active ?? true
+                },
+                include: {
+                    user_table: true
+                }
+            });
+
+            return department;
+        });
+
+        return newDepartment;
     }
 
     static async getDashboard(department_id: number) {

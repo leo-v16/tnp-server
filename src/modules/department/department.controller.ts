@@ -2,6 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import { departmentRegisterService, getAllDepartmentService } from "./department.service.js";
 import type { UserJwtPayload } from "../../utils/jwt.util.js";
 import type { DepartmentRegisterInput } from "./department.type.js";
+import Data from "../../utils/data.util.js";
 
 export const getAllDepartmentController = async (
     req: Request,
@@ -29,8 +30,8 @@ export const departmentRegisterController = async (
         const newDepartment = await departmentRegisterService(req.body, req.user as UserJwtPayload);
         res.status(200).json({
             success: true,
-            message: "Department ID has to be made autoincrement",
-            data: null
+            message: "Successfully registered department",
+            data: Data.sanitize(newDepartment)
         });
     } catch (error) {
         next(error);

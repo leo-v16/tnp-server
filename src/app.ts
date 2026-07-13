@@ -27,7 +27,7 @@ app.use(express.json());
 app.use(globalRateLimiter)
 
 app.use("/public", express.static("public"));
-app.use("/upload", uploadRouter);
+app.use("/uploads", uploadRouter);
 
 app.use("/users", userRouter);
 app.use("/training-applications", trainingApplicationRouter);
