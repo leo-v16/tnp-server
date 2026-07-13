@@ -6,8 +6,9 @@ export const studentRegisterSchema = z.object({
         roll_no: z.string({ message: "Roll Number must be of type string" }),
         email: z.email("Invalid email address"),
         password: z.string().min(6, "Password must be atleast 6 characters"),
-        mobile_no: z.string().length(10, "Phone number should be 10 digits").optional(),
-        name: z.string("Name must be provided as a string")
+        name: z.string("Name must be provided as a string"),
+        department_id: z.number("Department must be converted to department id"),
+        semester_id: z.number("Semester id must be converted to semester id")
     }).strict()
 });
 

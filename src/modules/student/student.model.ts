@@ -56,7 +56,9 @@ class Student {
             const newStudent = await tx.student_table.create({
                 data: {
                     user_id: newUser.user_id,
-                    roll_no: studentData.roll_no
+                    roll_no: studentData.roll_no,
+                    department_id: studentData.department_id ?? null,
+                    semester_id: studentData.semester_id ?? null
                 }
             });
 
