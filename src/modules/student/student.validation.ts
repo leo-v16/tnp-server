@@ -26,7 +26,10 @@ export const studentUpdateAdminSchema = z.object({
         twelfth_division_id: z.number({ message: "Frontend must convert twelfth_division text to twelfth_division_id" }).optional(),
         category_id: z.number({ message: "Frontend must convert category text to category_id" }).optional(),
         resume_url: z.string({ message: "resume_url must be of type string" }).optional(),
-        image_url: z.string({ message: "image_url must be of type string" }).optional()
+        image_url: z.string({ message: "image_url must be of type string" }).optional(),
+        department_id: z.number("Department ID must be number").optional(),
+        semester_id: z.number("Semester ID must be number").optional(),
+        is_graduate: z.boolean("Must be boolean")
     }).strict()
 });
 

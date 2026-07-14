@@ -10,7 +10,7 @@ interface RateLimitInfo {
 
 export const globalRateLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    limit: 100,
+    limit: 1000,
     standardHeaders: "draft-7",
     legacyHeaders: false,
     message: (req: Request & {rateLimit: RateLimitInfo}, res: Response) => {
@@ -25,7 +25,7 @@ export const globalRateLimiter = rateLimit({
 
 export const apiLimit = rateLimit({
     windowMs: 1 * 60 * 1000,
-    limit: 10,
+    limit: 50,
     standardHeaders: "draft-7",
     legacyHeaders: false,
     message: (req: Request & {rateLimit: RateLimitInfo}, res: Response) => {
