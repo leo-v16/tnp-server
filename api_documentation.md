@@ -111,6 +111,7 @@ The database utilizes specific static integer IDs for roles:
 | | `/users/login` | `POST` | Public | Login and obtain JWT token + Profile Details |
 | | `/users/` | `GET` | `SuperAdmin` | Retrieve list of all users |
 | | `/users/:user_id` | `GET` | `SuperAdmin` | Retrieve single user details |
+| | `/users/change-password` | `POST` | All Authenticated | Change logged in user's password |
 | **Student** | `/students` | `POST` | `SuperAdmin` | Register student profile (Transactional with user table) |
 | | `/students/me` | `PUT` | `Student` | Update own student profile details |
 | | `/students/me` | `GET` | `Student` | Retrieve own student profile details (Friendly format) |
@@ -142,7 +143,8 @@ The database utilizes specific static integer IDs for roles:
 | | `/upload/resume` | `POST` | Public | Upload a single resume PDF/document (`media`) |
 | **Department** | `/departments/register` | `POST` | `SuperAdmin` | Register a new department |
 | | `/departments/` | `GET` | Public | List all departments |
-| **Masters** | `/masters/:type` | `GET` | Public | List any master table by type (genders, semesters, divisions, categories, skills) |
+| | `/departments/:department_id` | `PATCH` | `SuperAdmin` | Update department details and coordinator |
+| **Masters** | `/masters` | `GET` | Public | List any master table by type using `?type=...` (genders, semesters, divisions, categories, skills, sectors) |
 | **Metadata**| `/categories/` | `GET` | Public | List student/placement categories |
 | | `/divisions/` | `GET` | Public | List educational divisions |
 | | `/genders/` | `GET` | Public | List genders |
@@ -257,6 +259,25 @@ The database utilizes specific static integer IDs for roles:
       "roll_no": "20BCE0012",
       "department_table": { "department_id": 1, "dept_name": "Computer Science" }
     }
+  }
+  ```
+
+#### 5. Change Password
+* **Path**: `POST /users/change-password`
+* **Auth**: All Authenticated Roles (`SuperAdmin` [1], `Student` [2], `Coordinator` [3], `Organization` [4])
+* **Body Requirements (Strict)**:
+  ```json
+  {
+    "oldPassword": "currentpassword",
+    "newPassword": "newsecurepassword123",
+    "confirmPassword": "newsecurepassword123"
+  }
+  ```
+* **Success Response (Status: 200 OK)**:
+  ```json
+  {
+    "success": true,
+    "message": "Password updated successfully"
   }
   ```
 
@@ -987,15 +1008,49 @@ These endpoints receive file uploads and store them locally inside the `public/`
   }
   ```
 
+#### 3. Update Department
+* **Path**: `PATCH /departments/:department_id`
+* **Auth**: `SuperAdmin` (Role 1)
+* **Path Params**: `department_id` (numeric)
+* **Body Requirements (Optional properties)**:
+  ```json
+  {
+    "department_name": "Computer Science & Engineering",
+    "email": "newcoordinator@domain.com",
+    "name": "New Coordinator Name",
+    "is_active": true
+  }
+  ```
+* **Success Response (Status: 200 OK)**:
+  ```json
+  {
+    "success": true,
+    "message": "Department updated successfully",
+    "data": {
+      "department_id": 1,
+      "department_name": "Computer Science & Engineering",
+      "is_active": true,
+      "coordinator_id": 3,
+      "user_table": {
+        "user_id": 3,
+        "name": "New Coordinator Name",
+        "email": "newcoordinator@domain.com",
+        "mobile_no": "1234567890"
+      }
+    }
+  }
+  ```
+
 ---
 
 ### Master Namespace (`/masters`)
 
 Allows unified access to multiple system lookups under a cached and centralized endpoint.
 
-* **Path**: `GET /masters/:type`
+* **Path**: `GET /masters`
 * **Auth**: Public
-* **Route Param `type`**: `genders` | `semesters` | `divisions` | `categories` | `skills`
+* **Query Params (Required)**:
+  - `type`: `genders` | `semesters` | `divisions` | `categories` | `skills` | `sectors`
 * **Success Response (Status: 200 OK)**:
   ```json
   {
