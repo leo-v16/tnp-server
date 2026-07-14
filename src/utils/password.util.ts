@@ -1,7 +1,8 @@
 import bcrypt from "bcrypt";
+import "dotenv/config";
 
 class PasswordManager {
-    static hashRounds = 12;
+    static hashRounds = parseInt(process.env.PASSWORD_SALT ?? "0");
 
     static async hashPassword(password: string): Promise<string> {
         const hash = await bcrypt.hash(password, this.hashRounds);
