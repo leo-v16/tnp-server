@@ -57,9 +57,9 @@ export const getOrganizationsService = async (status?: "approved" | "pending" | 
     } else if (status === "rejected") {
         organizationList = await Organization.findRejected();
     } else if (status === "all") {
-                organizationList = await Organization.findAll();
+        organizationList = await Organization.findAll();
     } else {
-                organizationList = await Organization.findApproved();
+        organizationList = await Organization.findApproved();
     }
 
     if (!organizationList) {
