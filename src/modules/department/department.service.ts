@@ -4,6 +4,7 @@ import type { UserJwtPayload } from "../../utils/jwt.util.js";
 import { dashboardService } from "../dashboard/dashboard.service.js";
 import Department from "./department.model.js";
 import Data from "../../utils/data.util.js";
+import PasswordManager from "../../utils/password.util.js";
 
 export const getAllDepartmentService = async () => {
     const departmentList = await Department.findAll();
@@ -15,6 +16,7 @@ export const getAllDepartmentService = async () => {
 }
 
 export const departmentRegisterService = async (input: DepartmentRegisterInput,actor: UserJwtPayload) => {
+    input.password = await PasswordManager.hashPassword(input.password);
     const departmentDashboard = await Department.create(input);
     if (!departmentDashboard) {
         throw new ApiError(500, "Could not fetch department dashboard");
