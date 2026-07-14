@@ -1,7 +1,7 @@
 import z from "zod";
 import {Prisma, type user_table} from "@prisma/client";
 import type { ParamsDictionary } from "express-serve-static-core";  
-import type { userIdParamSchema, userLoginSchema, userRegisterSchema } from "./user.validation.js";
+import type { passwordChangeSchema, userIdParamSchema, userLoginSchema, userRegisterSchema } from "./user.validation.js";
 
 export interface IUser extends user_table{};
 
@@ -22,3 +22,5 @@ export type UserRegisterInput = z.infer<typeof userRegisterSchema>['body'];
 
 export type UserLoginInput = z.infer<typeof userLoginSchema>['body'];
 export type UserIdParamInput = z.infer<typeof userIdParamSchema>['params'] & ParamsDictionary;
+
+export type PasswordChangeInput = z.infer<typeof passwordChangeSchema>['body'];

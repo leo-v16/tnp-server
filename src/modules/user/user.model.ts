@@ -60,6 +60,18 @@ class User {
         });
         return userList;
     }
+
+    static async updatePassword(user_id: number, password: string) {
+        const user = await prisma.user_table.update({
+            where: {
+                user_id
+            },
+            data: {
+                password
+            }
+        });
+        return user;
+    }
 }
 
 export default User;

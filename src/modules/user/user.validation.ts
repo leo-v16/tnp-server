@@ -23,3 +23,10 @@ export const userIdParamSchema = z.object({
         user_id: z.coerce.number({ message: "user_id must be a number" })
     })
 });
+
+export const passwordChangeSchema = z.object({
+    body: z.object({
+        password: z.string("Password must be string"),
+        new_password: z.string("Password must be string").min(6, "Password should be minimum 6 chacaters")
+    })
+})

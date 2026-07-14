@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
-import { registerUserService, loginUserService, getUserService, getOneUserService } from "./user.service.js";
-import type { UserIdParamInput, UserLoginInput, UserRegisterInput } from "../user/user.type.js";
+import { registerUserService, loginUserService, getUserService, getOneUserService, passwordChangeService } from "./user.service.js";
+import type { PasswordChangeInput, UserIdParamInput, UserLoginInput, UserRegisterInput } from "../user/user.type.js";
 import Data from "../../utils/data.util.js";
 
 export const registerUserController = async (
@@ -66,6 +66,24 @@ export const getOneUserController = async (
             success: true,
             message: "User details provided",
             data: Data.sanitize(user)
+        });
+    } catch(error) {
+        next(error);
+    }
+    
+}
+
+export const passwordChangeController = async (
+    req: Request<UserIdParamInput, {}, PasswordChangeInput>,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { user_id } = req.params;
+        await passwordChangeService(user_id, req.body);
+        res.status(200).json({
+            success: true,
+            message: "Password changed successfully",
         });
     } catch(error) {
         next(error);

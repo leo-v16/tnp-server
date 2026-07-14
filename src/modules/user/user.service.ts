@@ -4,7 +4,7 @@ import { Jwt, type UserJwtPayload } from "../../utils/jwt.util.js";
 import Student from "../student/student.model.js";
 import type { IStudent } from "../student/student.type.js";
 import Organization from "../organization/organization.model.js";
-import type { IUser, UserIdParamInput, UserLoginInput, UserRegisterInput } from "./user.type.js";
+import type { IUser, PasswordChangeInput, UserIdParamInput, UserLoginInput, UserRegisterInput } from "./user.type.js";
 import User from "./user.model.js";
 import type { IOrganization } from "../organization/organization.type.js";
 import Role from "../role/role.model.js";
@@ -75,8 +75,19 @@ export const getUserService = async (): Promise<IUser[]> => {
     if (!userList) {
         throw new ApiError(500, "Unable to get user list");
     }
-
+    
     return userList;
+}
+
+export const passwordChangeService = async (user_id: number, data: PasswordChangeInput) => {
+    const user = await User.findById(user_id);
+    if (!user) {
+        throw new ApiError(404, "User not found!");
+    }
+    const userData = await loginUserService(user);
+    
+    await User.updatePassword(user_id, await PasswordManager.hashPassword(data.new_password));
+    return true;
 }
 
 export const getOneUserService = async (input: UserIdParamInput) => {
