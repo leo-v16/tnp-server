@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
-import {approveTrainingApplicationService, createTrainingApplicationService, getOneTrainingApplicationService, viewTrainingApplicationService } from "./training_application.service.js";
+import {createTrainingApplicationService, getOneTrainingApplicationService, updateTrainingApplicationStatusService, viewTrainingApplicationService } from "./training_application.service.js";
 import type { UserJwtPayload } from "../../utils/jwt.util.js";
-import type { trainingApplicationApproveData, TrainingApplicationCreateInput, trainingApplicationIdParamInput } from "./training_application.type.js";
+import type { trainingApplicationApproveData, TrainingApplicationCreateInput, trainingApplicationIdParamInput, trainingApplicationQueryInput } from "./training_application.type.js";
 
 export const createTrainingApplicationController = async (
     req: Request<{}, {}, TrainingApplicationCreateInput>,
@@ -38,7 +38,7 @@ export const viewTrainingApplicationController = async (
     }
 }
 
-export const approveTrainingApplicationController = async (
+export const updateTrainingApplicationStatusController = async (
     req: Request,
     res: Response,
     next: NextFunction
@@ -47,10 +47,11 @@ export const approveTrainingApplicationController = async (
         const params = (req.params as trainingApplicationIdParamInput);
         const {student_id, training_id} = params;
         const {remarks} = (req.body as trainingApplicationApproveData);
-        const approvedTraining = await approveTrainingApplicationService({student_id, training_id, remarks}, req.user as UserJwtPayload);
+        const { status } = (req.query as trainingApplicationQueryInput)
+        const approvedTraining = await updateTrainingApplicationStatusService({student_id, training_id, remarks, status}, req.user as UserJwtPayload);
         res.status(200).json({
             success: true,
-            message: "Training Application approved successfull",
+            message: "Training Application updated successfull",
             data: approvedTraining
         });
     } catch (error) {

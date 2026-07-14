@@ -18,3 +18,13 @@ export const trainingApplicationApproveSchema = z.object({
         remarks: z.string("Remark must be a string").optional()
     })
 })
+
+export const trainingApplicationQuerySchema = z.object({
+    query: z.object({
+        status: z.enum(["approve", "reject"])
+    })
+})
+
+export const updateTrainingApplicationStatusSchema = trainingApplicationIdParamSchema.extend(
+    trainingApplicationApproveSchema.shape
+).extend(trainingApplicationQuerySchema.shape)

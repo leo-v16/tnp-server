@@ -56,7 +56,12 @@ export const viewTrainingApplicationService = async (user: UserJwtPayload): Prom
     return trainingApplication;
 }  
 
-export const approveTrainingApplicationService = async (data: {student_id: number, training_id: number, remarks?: string | undefined}, user: UserJwtPayload): Promise<ITrainingApplication> => {
+export const updateTrainingApplicationStatusService = async (data: {
+    student_id: number, 
+    training_id: number, 
+    remarks?: string | undefined,
+    status: "approve" | "reject"
+}, user: UserJwtPayload) => {
     const student = await Student.findById(data.student_id);
     if (!student) {
         throw new ApiError(404, "Student does not exist");
@@ -76,12 +81,12 @@ export const approveTrainingApplicationService = async (data: {student_id: numbe
     const isAdminOrCoordinator = user.auth_role_id === Role.SuperAdmin || user.auth_role_id === Role.Coordinator;
 
     if (!isCreator && !isAdminOrCoordinator) {
-        throw new ApiError(403, "You do not have permission to approve applications for this training");
+        throw new ApiError(403, `You do not have permission to ${data.status} applications for this training`);
     }
 
-    const approvedTraining = await TrainingApplication.approve(data);
+    const approvedTraining = await TrainingApplication.updateState(data);
     if (!approvedTraining) {
-        throw new ApiError(500, `Could not approve Training Application`);
+        throw new ApiError(500, `Could not ${data.status} Training Application`);
     }
 
     return approvedTraining;

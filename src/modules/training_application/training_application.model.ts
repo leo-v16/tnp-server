@@ -83,6 +83,29 @@ class TrainingApplication {
         return appliedTraining
     }
 
+    static async updateState(data: {
+        student_id: number,
+        training_id: number,
+        remarks?: string | undefined,
+        status: "approve" | "reject"
+    }) {
+        const status = (data.status === "approve")? 2 : 3;
+        const training = await prisma.training_application_table.update({
+            where: {
+                training_id_student_id: {
+                    student_id: data.student_id,
+                    training_id: data.training_id,
+                }
+            },
+            data: {
+                status_id: status,
+                remarks: data.remarks ?? null
+            }
+        });
+
+        return training;
+    }
+
     static async approve(data: {student_id: number, training_id: number, remarks?: string | undefined}) {
         const approvedTraining = await prisma.training_application_table.update({
             where: {
