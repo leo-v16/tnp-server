@@ -87,81 +87,80 @@ class Student {
         return studentList;
     }
 
-    static async update(user_id: number, updateData: StudentUpdateData, skills: string[]) {
-        const userData: Prisma.user_tableUncheckedUpdateInput = Data.filterUndefined({
-            email: updateData.email,
-            mobile_no: updateData.mobile_no,
-            name: updateData.name
-        });
-
-        const studentData: Prisma.student_tableUncheckedUpdateInput = Data.filterUndefined({
-            has_backlog: updateData.has_backlog,
-            cgpa: updateData.cgpa,
-            resume_url: updateData.resume_url,
-            image_url: updateData.image_url,
-            tenth_division_id: updateData.tenth_division_id,
-            twelfth_division_id: updateData.twelfth_division_id,
-            category_id: updateData.category_id,
-            department_id: updateData.department_id,
-            semester_id: updateData.semester_id,
-            gender_id: updateData.gender_id,
-            date_of_birth: updateData.date_of_birth
-        });
-
-        const studentList = await prisma.$transaction(async (tx)=> {
-            const user = await prisma.user_table.update({
-                where: {
-                    user_id: user_id,
-                },
-                data: userData
-            });
-
-            if (skills && skills.length > 0) {
-                await tx.skill_table.createMany({
-                    data: skills.map((skillName) => ({skill: skillName})),
-                    skipDuplicates: true
-                });
-
-                const dbSkills = await tx.skill_table.findMany({
-                    where: {
-                        skill: {in: skills}
-                    }
-                });
-
-                await tx.student_skill_table.deleteMany({
-                    where: {
-                        user_id: user.user_id
-                    }
-                })
-
-                await tx.student_skill_table.createMany({
-                    data: dbSkills.map((dbSkill) => ({
-                        user_id: user.user_id,
-                        skill_id: dbSkill.skill_id
-                    }))
-                });
-            } else {
-                await tx.student_skill_table.deleteMany({
-                    where: {user_id: user.user_id}
-                });
-            }
-            const student = await prisma.student_table.update({
-                where: {
-                    user_id: user.user_id
-                },
-                data: studentData,
-                include: {
-                    user_table: true
-                }
-            });
-
-
-
-            return student;
-        })
-
-        return studentList;
-    }
+    static async update(user_id: number, updateData: StudentUpdateData, skills: string[]) {                                                    
+            const userData: Prisma.user_tableUncheckedUpdateInput = Data.filterUndefined({                                                         
+                email: updateData.email,                                                                                                           
+                mobile_no: updateData.mobile_no,                                                                                                   
+                name: updateData.name                                                                                                              
+            });                                                                                                                                    
+                                                                                                                                                   
+            const studentData: Prisma.student_tableUncheckedUpdateInput = Data.filterUndefined({                                                   
+                has_backlog: updateData.has_backlog,                                                                                               
+                cgpa: updateData.cgpa,                                                                                                             
+                resume_url: updateData.resume_url,                                                                                                 
+                image_url: updateData.image_url,                                                                                                   
+                tenth_division_id: updateData.tenth_division_id,                                                                                   
+                twelfth_division_id: updateData.twelfth_division_id,                                                                               
+                category_id: updateData.category_id,                                                                                               
+                department_id: updateData.department_id,                                                                                           
+                semester_id: updateData.semester_id,                                                                                               
+                gender_id: updateData.gender_id,                                                                                                   
+                date_of_birth: updateData.date_of_birth                                                                                            
+            });                                                                                                                                    
+                                                                                                                                                   
+            const student = await prisma.$transaction(async (tx) => {                                                                              
+                if (skills && skills.length > 0) {                                                                                                 
+                    await tx.skill_table.createMany({                                                                                              
+                        data: skills.map((skillName) => ({ skill: skillName })),                                                                   
+                        skipDuplicates: true                                                                                                       
+                    });                                                                                                                            
+                                                                                                                                                   
+                    const dbSkills = await tx.skill_table.findMany({                                                                               
+                        where: {                                                                                                                   
+                            skill: { in: skills }                                                                                                  
+                        },                                                                                                                         
+                        select: {                                                                                                                  
+                            skill_id: true                                                                                                         
+                        }                                                                                                                          
+                    });                                                                                                                            
+                                                                                                                                                   
+                    await tx.student_skill_table.deleteMany({                                                                                      
+                        where: { user_id }                                                                                                         
+                    });                                                                                                                            
+                                                                                                                                                   
+                    await tx.student_skill_table.createMany({                                                                                      
+                        data: dbSkills.map((dbSkill) => ({                                                                                         
+                            user_id,                                                                                                               
+                            skill_id: dbSkill.skill_id                                                                                             
+                        }))                                                                                                                        
+                    });                                                                                                                            
+                } else {                                                                                                                           
+                    await tx.student_skill_table.deleteMany({                                                                                      
+                        where: { user_id }                                                                                                         
+                    });                                                                                                                            
+                }                                                                                                                                  
+                                                                                                                                                   
+                const updatePayload: Prisma.student_tableUpdateInput = {                                                                           
+                    ...studentData                                                                                                                 
+                };                                                                                                                                 
+                                                                                                                                                   
+                if (Object.keys(userData).length > 0) {                                                                                            
+                    updatePayload.user_table = {                                                                                                   
+                        update: userData                                                                                                           
+                    };                                                                                                                             
+                }                                                                                                                                  
+                                                                                                                                                   
+                return await tx.student_table.update({                                                                                             
+                    where: { user_id },                                                                                                            
+                    data: updatePayload,                                                                                                           
+                    include: {                                                                                                                     
+                        user_table: true                                                                                                           
+                    }                                                                                                                              
+                });                                                                                                                                
+            });                                                                                                                                    
+                                                                                                                                                   
+            return student;                                                                                                                        
+        }               
 
     static async updateAdmin(user_id: number, updateData: StudentUpdateData) {
         const userData: Prisma.user_tableUpdateInput = Data.filterUndefined({
