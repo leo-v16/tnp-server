@@ -19,6 +19,7 @@ import uploadRouter from "./modules/upload/upload.route.js";
 import { globalRateLimiter } from "./middlewares/rate_limitter.middleware.js";
 import masterRouter from "./modules/master/master.routes.js";
 import morgan from "morgan";    
+import notesRouter from "./modules/notes/notes.route.js";
 
 
 const app = express();
@@ -41,6 +42,7 @@ app.use("/departments", departmentRoute);
 app.use("/placements", placementRouter);
 app.use("/placement-applications", placementApplicationRouter);
 app.use("/dashboards", dashboardRouter);
+app.use("/notes", notesRouter);
 
 app.use("/masters", masterRouter);
 
