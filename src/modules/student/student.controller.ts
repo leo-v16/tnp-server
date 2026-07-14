@@ -83,7 +83,6 @@ export const getStudentMeController = async (
     try {
         const actor = req.user as UserJwtPayload;
         const student = await getStudentByIdService(actor.auth_user_id, actor);
-        
         res.status(200).json({
             success: true,
             message: "Successfully fetched profile",
@@ -99,7 +98,8 @@ export const getStudentMeController = async (
                 skill: student.student_skill_table.map((skill) => skill.skill_table.skill),
                 tenth_division: student.division_table_student_table_tenth_division_idTodivision_table?.division,
                 twelfth_division: student.division_table_student_table_twelfth_division_idTodivision_table?.division,
-                date_of_birth: student.date_of_birth
+                date_of_birth: student.date_of_birth,
+                roll_no: student.roll_no
             }
         });
     } catch (error) {
@@ -131,7 +131,8 @@ export const getStudentByIdController = async (
                 skill: student.student_skill_table.map((skill) => skill.skill_table.skill),
                 tenth_division: student.division_table_student_table_tenth_division_idTodivision_table?.division,
                 twelfth_division: student.division_table_student_table_twelfth_division_idTodivision_table?.division,
-                date_of_birth: student.date_of_birth
+                date_of_birth: student.date_of_birth,
+                roll_no: student.roll_no
             }
         });
     } catch (error) {
