@@ -126,7 +126,7 @@ The database utilizes specific static integer IDs for roles:
 | | `/trainings/` | `GET` | All Authenticated | Get list of trainings (filtered by role eligibility) |
 | | `/trainings/:training_id` | `GET` | All Authenticated | Get details of a single training program |
 | **Training Applications** | `/training-applications` | `POST` | `Student` | Apply for a training program |
-| | `/training-applications/:training_id/students/:student_id/status`| `PATCH` | `Org`, `Coordinator`, `SuperAdmin` | Approve a student's training application |
+| | `/training-applications/:training_id/students/:student_id`| `PATCH` | `Org`, `Coordinator`, `SuperAdmin` | Update training application status (approve/reject) |
 | | `/training-applications` | `GET` | All Authenticated | View training applications submitted/received |
 | | `/training-applications/:training_id/students/:student_id` | `GET` | All Authenticated | View details of a single training application |
 | **Placement**| `/placements` | `POST` | `Org`, `SuperAdmin`, `Coordinator` | Create a new placement program |
@@ -622,21 +622,33 @@ The database utilizes specific static integer IDs for roles:
   }
   ```
 
-#### 2. Approve Application
-* **Path**: `PATCH /training-applications/:training_id/students/:student_id/status`
+#### 2. Update Application Status (Approve/Reject)
+* **Path**: `PATCH /training-applications/:training_id/students/:student_id` (Note: No `/status` suffix)
 * **Auth**: `Organization` (Role 4), `Coordinator` (Role 3), `SuperAdmin` (Role 1)
 * **Path Params**: 
   - `student_id`: number (Target student user ID)
   - `training_id`: number (Target training program ID)
+* **Query Params**:
+  - `status`: `approve` | `reject` (required)
+* **Body Requirements**:
+  Due to a validation schema configuration in the backend routes, the request body is strictly validated against the `trainingApplicationCreateSchema`. This means the body **must** contain `training_id`, and any other keys (such as `remarks`) are rejected:
+  ```json
+  {
+    "training_id": 4
+  }
+  ```
+  *(Note: Any custom remarks or text cannot be updated through the body due to this schema check).*
 * **Success Response (Status: 200 OK)**:
   ```json
   {
     "success": true,
-    "message": "Training Application approved successfull", // Note: hardcoded typo in API
+    "message": "Training Application updated successfull", // Note: hardcoded typo in API
     "data": {
       "training_id": 4,
       "student_id": 6,
-      "status_id": 1 // 1 = Approved
+      "status_id": 2, // 2 = Approved, 3 = Rejected
+      "remarks": null,
+      "date_of_submission": "2026-07-08T00:00:00.000Z"
     }
   }
   ```
@@ -645,23 +657,73 @@ The database utilizes specific static integer IDs for roles:
 * **Path**: `GET /training-applications`
 * **Auth**: `Student` (Role 2), `Org` (Role 4), `Coordinator` (Role 3), `SuperAdmin` (Role 1)
 * **Behavior**:
-  - **For Students**: Returns their personal submitted applications.
-  - **For Creators (Org/Coordinator/SuperAdmin)**: Returns applications received for trainings they created.
+  - **For Students**: Returns their personal submitted applications including full training, creator, and organization details.
+  - **For Creators (Org/Coordinator/SuperAdmin)**: Returns applications received for trainings they created including student details.
 * **Success Response (Status: 200 OK)**:
-  ```json
-  {
-    "success": true,
-    "message": "Training Application fetch successfull", // Note: hardcoded typo in API
-    "data": [
-      {
-        "training_id": 4,
-        "student_id": 6,
-        "status_id": 0,
-        "training_table": { "title": "Advanced Web Security" }
-      }
-    ]
-  }
-  ```
+  - **For Students**:
+    ```json
+    {
+      "success": true,
+      "message": "Training Application fetch successfull", // Note: hardcoded typo in API
+      "data": [
+        {
+          "training_id": 4,
+          "student_id": 6,
+          "status_id": 0,
+          "date_of_submission": "2026-07-08T00:00:00.000Z",
+          "remarks": null,
+          "training_table": {
+            "training_id": 4,
+            "title": "Advanced Web Security",
+            "description": "Bootcamp on web app exploits",
+            "creator_id": 4,
+            "min_cgpa": "7.00",
+            "is_active": true,
+            "user_table": {
+              "user_id": 4,
+              "email": "org@example.com",
+              "role_id": 4,
+              "organization_table": {
+                "user_id": 4,
+                "name": "Acme Corp",
+                "approval_id": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+    ```
+  - **For Creators (Org/Coordinator/SuperAdmin)**:
+    ```json
+    {
+      "success": true,
+      "message": "Training Application fetch successfull", // Note: hardcoded typo in API
+      "data": [
+        {
+          "training_id": 4,
+          "student_id": 6,
+          "status_id": 0,
+          "date_of_submission": "2026-07-08T00:00:00.000Z",
+          "remarks": null,
+          "training_table": {
+            "training_id": 4,
+            "title": "Advanced Web Security",
+            "description": "Bootcamp on web app exploits",
+            "creator_id": 4,
+            "min_cgpa": "7.00",
+            "is_active": true
+          },
+          "student_table": {
+            "user_id": 6,
+            "roll_no": "2026001",
+            "department_id": 2,
+            "cgpa": "8.50"
+          }
+        }
+      ]
+    }
+    ```
 
 #### 4. View Single Application
 * **Path**: `GET /training-applications/:training_id/students/:student_id`
