@@ -209,7 +209,7 @@ model student_table {
 model training_application_table {
   training_id        Int
   student_id         Int
-  status_id          Int?           @default(0)
+  status_id          Int?           @default(1)
   date_of_submission DateTime?      @default(dbgenerated("(curdate())")) @db.Date
   remarks            String?        @db.Text
   training_table     training_table @relation(fields: [training_id], references: [training_id], onDelete: Cascade, onUpdate: Restrict, map: "training_application_table_ibfk_1")

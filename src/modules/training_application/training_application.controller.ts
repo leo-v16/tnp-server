@@ -47,11 +47,11 @@ export const updateTrainingApplicationStatusController = async (
         const params = (req.params as trainingApplicationIdParamInput);
         const {student_id, training_id} = params;
         const {remarks} = (req.body as trainingApplicationApproveData);
-        const { status } = (req.query as trainingApplicationQueryInput)
+        const { status } = (req.query as trainingApplicationQueryInput);
         const approvedTraining = await updateTrainingApplicationStatusService({student_id, training_id, remarks, status}, req.user as UserJwtPayload);
         res.status(200).json({
             success: true,
-            message: "Training Application updated successfull",
+            message: `Training Application ${status} successfull`,
             data: approvedTraining
         });
     } catch (error) {
@@ -70,7 +70,7 @@ export const getOneTrainingApplicationController = async (
         const trainingApplication = await getOneTrainingApplicationService(student_id, training_id, req.user as UserJwtPayload);
         res.status(200).json({
             success: true,
-            message: "Training Application approved successfull",
+            message: "Training Application fetched successfull",
             data: trainingApplication
         });
     } catch (error) {
