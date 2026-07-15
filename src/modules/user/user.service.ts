@@ -119,7 +119,7 @@ export const forgotPasswordService = async (email: string) => {
     const rawToken = createAndStoreToken("reset", user.user_id)
     const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
     const actionLink = `${baseUrl}/reset-password?token=${rawToken}`;
-    await sendEmail("reset", "name", actionLink);
+    await sendEmail("reset", email, actionLink);
 }
 
 export const resetPasswordService = async (token: string, newPassword: string) => {
