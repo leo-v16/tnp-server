@@ -18,7 +18,7 @@ export const placementCreateSchema = z.object({
         only_semester: z.array(z.number("Semester must be converted to semester id")).optional().default([]),
         only_department: z.array(z.number("Department must be converted to department id")).optional().default([]),
         end_date: z.coerce.date().optional(),
-        start_data: z.coerce.date().optional()
+        start_date: z.coerce.date().optional()
     }).strict()
 })
 

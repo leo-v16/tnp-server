@@ -42,10 +42,10 @@ export const createPlacementService = async (input: PlacementCreateInput, actor:
     if (input.end_date !== undefined) {
         placementData.end_date = input.end_date
     }
-    if (input.start_data !== undefined) {
-        placementData.start_date = input.start_data;
+    if (input.start_date !== undefined) {
+        placementData.start_date = input.start_date;
     }
-    
+
     const placement = await Placement.create(placementData);
     if (!placement) {
         throw new ApiError(500, "Failed to create placement");
