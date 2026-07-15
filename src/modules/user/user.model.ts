@@ -61,6 +61,18 @@ class User {
         return userList;
     }
 
+    static async update(user_id: number, data: {
+        name?: string,
+        email?: string,
+        mobile_no?: string | null,
+    }) {
+        const user = await prisma.user_table.update({
+            where: { user_id },
+            data: data
+        });
+        return user;
+    }
+
     static async updatePassword(user_id: number, password: string) {
         const user = await prisma.user_table.update({
             where: {

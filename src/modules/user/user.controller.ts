@@ -2,6 +2,8 @@ import type { Request, Response, NextFunction } from "express";
 import { registerUserService, loginUserService, getUserService, getOneUserService, passwordChangeService, forgotPasswordService, resetPasswordService } from "./user.service.js";
 import type { forgotPasswordInput, PasswordChangeInput, resetPasswordInput, UserIdParamInput, UserLoginInput, UserRegisterInput } from "../user/user.type.js";
 import Data from "../../utils/data.util.js";
+import User from "./user.model.js";
+import prisma from "../../config/db.prisma.js";
 
 export const registerUserController = async (
     req: Request<{}, {}, UserRegisterInput>, 

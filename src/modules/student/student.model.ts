@@ -16,7 +16,18 @@ class Student {
                         skill_table: true
                     }
                 },
-                user_table: true,
+                user_table: {
+                    select: {
+                        user_id: true,
+                        name: true,
+                        email: true,
+                        role_id: true,
+                        mobile_no: true,
+                        created_on: true,
+                        updated_on: true,
+                        last_login: true
+                    }
+                },
                 gender_table: true,
                 category_table: true,
                 semester_table: true,
@@ -36,7 +47,18 @@ class Student {
                 }
             },
             include: {
-                user_table: true,
+                user_table: {
+                    select: {
+                        user_id: true,
+                        name: true,
+                        email: true,
+                        role_id: true,
+                        mobile_no: true,
+                        created_on: true,
+                        updated_on: true,
+                        last_login: true
+                    }
+                },
                 gender_table: true,
                 category_table: true,
                 semester_table: true,
@@ -80,7 +102,18 @@ class Student {
     static async findAll() {
         const studentList = await prisma.student_table.findMany({
             include: {
-                user_table: true,
+                user_table: {
+                    select: {
+                        user_id: true,
+                        name: true,
+                        email: true,
+                        role_id: true,
+                        mobile_no: true,
+                        created_on: true,
+                        updated_on: true,
+                        last_login: true
+                    }
+                },
                 department_table: true,
                 category_table: true,
                 gender_table: true,
@@ -157,7 +190,18 @@ class Student {
                     where: { user_id },
                     data: studentData,
                     include: {
-                        user_table: true
+                        user_table: {
+                            select: {
+                                user_id: true,
+                                name: true,
+                                email: true,
+                                role_id: true,
+                                mobile_no: true,
+                                created_on: true,
+                                updated_on: true,
+                                last_login: true
+                            }
+                        }
                     }
                 });                                                                                                                                
             });                                                                                                                                    
@@ -202,7 +246,18 @@ class Student {
                 },
                 data: studentData,
                 include: {
-                    user_table: true
+                    user_table: {
+                        select: {
+                            user_id: true,
+                            name: true,
+                            email: true,
+                            role_id: true,
+                            mobile_no: true,
+                            created_on: true,
+                            updated_on: true,
+                            last_login: true
+                        }
+                    }
                 }
             });
 
@@ -227,7 +282,18 @@ class Student {
                 }
             },
             include: {
-                user_table: true,
+                user_table: {
+                    select: {
+                        user_id: true,
+                        name: true,
+                        email: true,
+                        role_id: true,
+                        mobile_no: true,
+                        created_on: true,
+                        updated_on: true,
+                        last_login: true
+                    }
+                },
                 gender_table: true,
                 category_table: true,
                 semester_table: true,
@@ -246,7 +312,18 @@ class Student {
                 department_id
             },
             include: {
-                user_table: true,
+                user_table: {
+                    select: {
+                        user_id: true,
+                        name: true,
+                        email: true,
+                        role_id: true,
+                        mobile_no: true,
+                        created_on: true,
+                        updated_on: true,
+                        last_login: true
+                    }
+                },
                 gender_table: true,
                 category_table: true,
                 semester_table: true,

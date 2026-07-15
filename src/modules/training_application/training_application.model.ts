@@ -57,7 +57,23 @@ class TrainingApplication {
             },
             include: {
                 training_table: true,
-                student_table: true
+                student_table: {
+                    include: {
+                        user_table: {
+                            select: {
+                                user_id: true,
+                                name: true,
+                                email: true,
+                                role_id: true,
+                                mobile_no: true,
+                                created_on: true,
+                                updated_on: true,
+                                last_login: true
+                            }
+                        },
+                        department_table: true
+                    }
+                }
             }
         });
 
@@ -76,7 +92,23 @@ class TrainingApplication {
             },
             include: {
                 training_table: true,
-                student_table: true
+                student_table: {
+                    include: {
+                        user_table: {
+                            select: {
+                                user_id: true,
+                                name: true,
+                                email: true,
+                                role_id: true,
+                                mobile_no: true,
+                                created_on: true,
+                                updated_on: true,
+                                last_login: true
+                            }
+                        },
+                        department_table: true
+                    }
+                }
             }
         });
 

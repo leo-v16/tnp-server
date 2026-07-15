@@ -2,6 +2,10 @@ import { getOneOrganizationService, getOrganizationsService, registerOrganizatio
 import type { Request, Response, NextFunction } from "express";
 import type { UserJwtPayload } from "../../utils/jwt.util.js";
 import type { OrganizationIdParamInput, OrganizationRegisterInput, OrganizationUpdateActiveStateInput } from "./organization.type.js";
+import User from "../user/user.model.js";
+import prisma from "../../config/db.prisma.js";
+import ApiError from "../../utils/ApiError.js";
+import Role from "../role/role.model.js";
 
 export const registerOrganizationController = async (
     req: Request<{}, {}, OrganizationRegisterInput>,
@@ -95,6 +99,52 @@ export const updateOrganizationActiveStateController = async (
             success: true,
             message: "Successfully updated organization state",
             data: organization
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const updateOrganizationController = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const actor = req.user as UserJwtPayload;
+        const organization_id = Number(req.params.organization_id);
+
+        if (actor.auth_user_id !== organization_id && actor.auth_role_id !== Role.SuperAdmin) {
+            throw new ApiError(403, "You are not authorized to update this profile");
+        }
+
+        const { name, email, mobile_no, sector_id } = req.body;
+
+        const updatedUser = await User.update(organization_id, {
+            name,
+            email,
+            mobile_no
+        });
+
+        const updatedOrg = await prisma.organization_table.update({
+            where: { user_id: organization_id },
+            data: { sector_id: sector_id !== undefined ? (sector_id ? Number(sector_id) : null) : undefined },
+            include: {
+                user_table: {
+                    select: {
+                        user_id: true,
+                        name: true,
+                        email: true,
+                        mobile_no: true
+                    }
+                }
+            }
+        });
+
+        res.status(200).json({
+            success: true,
+            message: "Organization profile updated successfully",
+            data: updatedOrg
         });
     } catch (error) {
         next(error);

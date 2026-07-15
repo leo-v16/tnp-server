@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import type { PlacementApplicationCreateInput, PlacementApplicationIdParamInput } from "./placement_application.type.js";
-import { approvePlacementApplicationService, createPlacementApplicationService, getOnePlacementApplicationService, viewPlacementApplicationService } from "./placement_application.service.js";
+import { approvePlacementApplicationService, createPlacementApplicationService, getOnePlacementApplicationService, viewPlacementApplicationService, rejectPlacementApplicationService } from "./placement_application.service.js";
 import type { UserJwtPayload } from "../../utils/jwt.util.js";
 
 export const createPlacementApplicationController = async (
@@ -46,11 +46,22 @@ export const approvePlacementApplicationController = async (
     try {
         const params = (req.params as PlacementApplicationIdParamInput);
         const {student_id, placement_id} = params;
-        const approvedPlacement = await approvePlacementApplicationService(student_id, placement_id, req.user as UserJwtPayload);
+        const { status } = req.body;
+
+        let result;
+        let message = "Placement Application approved successfully";
+
+        if (status === "Rejected" || status === "rejected") {
+            result = await rejectPlacementApplicationService(student_id, placement_id, req.user as UserJwtPayload);
+            message = "Placement Application rejected successfully";
+        } else {
+            result = await approvePlacementApplicationService(student_id, placement_id, req.user as UserJwtPayload);
+        }
+
         res.status(200).json({
             success: true,
-            message: "Placement Application approved successfully",
-            data: approvedPlacement
+            message,
+            data: result
         });
     } catch (error) {
         next(error);

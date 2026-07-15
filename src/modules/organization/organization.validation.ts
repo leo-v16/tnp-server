@@ -42,3 +42,15 @@ export const organizationUpdateActiveStateSchema = z.object({
         status: z.enum(["activate", "deactivate"])
     })
 })
+
+export const organizationUpdateSchema = z.object({
+    params: z.object({
+        organization_id: z.coerce.number({ message: "organization_id must be a number" })
+    }),
+    body: z.object({
+        name: z.string().optional(),
+        email: z.email("Enter valid email").optional(),
+        mobile_no: z.string().length(10, "Phone number must be string with 10 numbers").optional(),
+        sector_id: z.number("Sector must be converted to sector id").optional().nullable()
+    }).strict()
+});

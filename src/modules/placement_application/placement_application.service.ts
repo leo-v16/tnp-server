@@ -89,6 +89,37 @@ export const approvePlacementApplicationService = async (student_id: number, pla
     return approvedPlacement;
 }  
 
+export const rejectPlacementApplicationService = async (student_id: number, placement_id: number, user: UserJwtPayload): Promise<IPlacementApplication> => {
+    const student = await Student.findById(student_id);
+    if (!student) {
+        throw new ApiError(404, "Student does not exist");
+    }
+
+    const placementApplication = await PlacementApplication.findById(student_id, placement_id);
+    if (!placementApplication) {
+        throw new ApiError(404, "Placement application does not exist");
+    }
+
+    const placement = await Placement.findById(placementApplication.placement_id);
+    if (!placement) {
+        throw new ApiError(404, "Placement with this ID does not exist");
+    }
+
+    const isCreator = placement.creator_id === user.auth_user_id;
+    const isAdminOrCoordinator = user.auth_role_id === Role.SuperAdmin || user.auth_role_id === Role.Coordinator;
+
+    if (!isCreator && !isAdminOrCoordinator) {
+        throw new ApiError(403, "You do not have permission to reject applications for this placement");
+    }
+
+    const rejectedPlacement = await PlacementApplication.reject(student_id, placement_id);
+    if (!rejectedPlacement) {
+        throw new ApiError(500, `Could not reject Placement Application`);
+    }
+
+    return rejectedPlacement;
+}
+
 export const getOnePlacementApplicationService = async (student_id: number, placement_id: number, actor: UserJwtPayload) => {
     const placement = await Placement.findById(placement_id);
     if (!placement) {

@@ -125,6 +125,17 @@ class Training {
                         }
                     }
                 ] 
+            },
+            include: {
+                user_table: {
+                    include: {
+                        organization_table: {
+                            include: {
+                                sector_table: true
+                            }
+                        }
+                    }
+                }
             }
         });
 
@@ -146,6 +157,17 @@ class Training {
                         }
                     }
                 ] 
+            },
+            include: {
+                user_table: {
+                    include: {
+                        organization_table: {
+                            include: {
+                                sector_table: true
+                            }
+                        }
+                    }
+                }
             }
         });
 
