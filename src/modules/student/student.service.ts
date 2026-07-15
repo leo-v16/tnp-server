@@ -7,6 +7,7 @@ import PasswordManager from "../../utils/password.util.js";
 import Data from "../../utils/data.util.js";
 import User from "../user/user.model.js";
 import Role from "../role/role.model.js";
+import Department from "../department/department.model.js";
 
 export const registerStudentService = async (input: StudentRegisterInput, actor: UserJwtPayload): Promise<IStudent> => {
     const existingUser = await User.findByEmail(input.email);
@@ -75,7 +76,9 @@ export const getStudentByIdService = async (user_id: number, actor: UserJwtPaylo
 
     const isSelf = actor.auth_user_id === user_id;
     const isSuperAdmin = actor.auth_role_id === Role.SuperAdmin;
-    const isCoordinatorOfDepartment = actor.auth_role_id === Role.Coordinator && student.department_id === actor.auth_user_id;
+
+    const studentDepartment = await Department.findById(student.department_id ?? 0);
+    const isCoordinatorOfDepartment = actor.auth_role_id === Role.Coordinator && studentDepartment?.coordinator_id === actor.auth_user_id;
 
     if (!isSelf && !isSuperAdmin && !isCoordinatorOfDepartment) {
         throw new ApiError(403, "You do not have permission to access this student's profile");
