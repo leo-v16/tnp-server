@@ -11,7 +11,11 @@ class Semester {
     }
 
     static async findAll() {
-        const semesterList = await prisma.semester_table.findMany();
+        const semesterList = await prisma.semester_table.findMany({
+            orderBy: {
+                semester_id: "asc"
+            }
+        });
         return semesterList;
     }
 }

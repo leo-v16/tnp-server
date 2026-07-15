@@ -33,13 +33,14 @@ export const passwordChangeSchema = z.object({
 
 export const forgotPasswordSchema = z.object({
     body: z.object({
-        email: z.email("Email must be provided in body")
+        email: z.email("Email must be provided in body"),
+        redirect: z.string("redirect url must be a string")
     })
 })
 
 export const resetPasswordSchema = z.object({
     body: z.object({
-        password: z.string().min(6, "New password must be at minimum 6 characters")
+        password: z.string().min(6, "New password must be at minimum 6 characters"),
     }),
     query: z.object({
         token: z.string("Token must be provided")

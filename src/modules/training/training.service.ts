@@ -26,9 +26,12 @@ export const createTrainingService = async (input: TrainingCreateInput, actor: U
         description: input.description ?? null,
         min_cgpa: input.min_cgpa ?? null,
         end_date: input.end_date ?? null,
+        start_date: input.start_date ?? null,
         image_url: input.image_url ?? null,
         last_date_of_submission: input.last_date_of_submission ?? null,
         is_active: input.is_active ?? null,
+        only_semester: input.only_semester,
+        only_department: input.only_department
     }
     const training = await Training.create(trainingData);
     if (!training) {

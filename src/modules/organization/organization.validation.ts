@@ -50,7 +50,7 @@ export const organizationUpdateSchema = z.object({
     body: z.object({
         name: z.string().optional(),
         email: z.email("Enter valid email").optional(),
-        mobile_no: z.string().length(10, "Phone number must be string with 10 numbers").optional(),
+        mobile_no: z.string().length(10, "Phone number must be string with 10 numbers").or(z.literal("")).optional().nullable(),
         sector_id: z.number("Sector must be converted to sector id").optional().nullable()
     }).strict()
 });

@@ -110,15 +110,17 @@ export const getOneUserService = async (input: UserIdParamInput) => {
             throw new ApiError(400, "Unknown Role, Can't fetch admin information");
     }
 }
-export const forgotPasswordService = async (email: string) => {
+export const forgotPasswordService = async (
+    email: string,
+    redirect: string,
+) => {
     console.log("\n\nEMAIL-----", email)
     const user = await User.findByEmail(email);
     if (!user) {
         throw new ApiError(404, "User not found");
     }
     const rawToken = createAndStoreToken("reset", user.user_id)
-    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
-    const actionLink = `${baseUrl}/reset-password?token=${rawToken}`;
+    const actionLink = `${redirect}/reset-password?token=${rawToken}`;
     await sendEmail("reset", email, actionLink);
 }
 

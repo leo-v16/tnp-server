@@ -11,6 +11,8 @@ export const trainingCreateSchema = z.object({
         image_url: z.string().optional(),
         last_date_of_submission: z.coerce.date().optional(),
         is_active: z.boolean().optional(),
+        only_semester: z.array(z.number("Semester must be converted to semester id")).optional().default([]),
+        only_department: z.array(z.number("Department must be converted to department id")).optional().default([])
     }).strict()
 })
 

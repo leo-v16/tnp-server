@@ -126,9 +126,14 @@ export const updateOrganizationController = async (
             mobile_no
         });
 
+        const updateData: any = {};
+        if (sector_id !== undefined) {
+            updateData.sector_id = sector_id ? Number(sector_id) : null;
+        }
+
         const updatedOrg = await prisma.organization_table.update({
             where: { user_id: organization_id },
-            data: { sector_id: sector_id !== undefined ? (sector_id ? Number(sector_id) : null) : undefined },
+            data: updateData,
             include: {
                 user_table: {
                     select: {

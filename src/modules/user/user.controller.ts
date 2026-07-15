@@ -98,8 +98,8 @@ export const forgotPasswordController = async (
     next: NextFunction
 ) => {
     try {
-        const { email } = req.body;
-        await forgotPasswordService(email);
+        const { email, redirect } = req.body;
+        await forgotPasswordService(email, redirect);
         res.status(200).json({
             success: true,
             message: `Verification link sent to ${email}, Valid for 15 minutes`,

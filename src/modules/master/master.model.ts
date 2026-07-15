@@ -6,7 +6,11 @@ class Master {
             case "genders":
                 return await prisma.gender_table.findMany();
             case "semesters":
-                return await prisma.semester_table.findMany();
+                return await prisma.semester_table.findMany({
+                    orderBy: {
+                        semester_id: "asc"
+                    }
+                });
             case "divisions":
                 return await prisma.division_table.findMany();
             case "categories":

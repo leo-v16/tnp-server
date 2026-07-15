@@ -5,8 +5,10 @@ import type { trainingCreateSchema, trainingIdParamSchema } from "./training.val
 
 export interface ITraining extends training_table{};
 
-// export type trainingCreateData = Partial<ITraining> & Pick<ITraining, 'title'>;
-export type TrainingCreateData = Prisma.training_tableCreateManyInput;
+export type TrainingCreateData = Prisma.training_tableCreateManyInput & {
+    only_semester?: number[];
+    only_department?: number[];
+};
 export type TrainingCreateInput = z.infer<typeof trainingCreateSchema>['body'];
 
 export type TrainingIdParamInput = z.infer<typeof trainingIdParamSchema>['params'] & ParamsDictionary;
