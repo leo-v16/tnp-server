@@ -8,6 +8,9 @@ import type { IUser, PasswordChangeInput, UserIdParamInput, UserLoginInput, User
 import User from "./user.model.js";
 import type { IOrganization } from "../organization/organization.type.js";
 import Role from "../role/role.model.js";
+import { consumeToken, createAndStoreToken } from "../../utils/tokenCache.util.js";
+import "dotenv/config";
+import { sendEmail } from "../../utils/email.util.js";
 
 export const registerUserService = async (input: UserRegisterInput): Promise<IUser> => {
     const existingUser = await User.findByEmail(input.email);
@@ -91,7 +94,6 @@ export const passwordChangeService = async (user_id: number, data: PasswordChang
 }
 
 export const getOneUserService = async (input: UserIdParamInput) => {
-    console.log(input)
     const user = await User.findById(input.user_id);
     if (!user) {
         throw new ApiError(404, "User not found");
@@ -107,4 +109,27 @@ export const getOneUserService = async (input: UserIdParamInput) => {
         default:
             throw new ApiError(400, "Unknown Role, Can't fetch admin information");
     }
+}
+export const forgotPasswordService = async (email: string) => {
+    console.log("\n\nEMAIL-----", email)
+    const user = await User.findByEmail(email);
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+    const rawToken = createAndStoreToken("reset", user.user_id)
+    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    const actionLink = `${baseUrl}/reset-password?token=${rawToken}`;
+    await sendEmail("reset", "name", actionLink);
+}
+
+export const resetPasswordService = async (token: string, newPassword: string) => {
+    const user_id = consumeToken("reset", token)
+    if (!user_id) {
+        throw new ApiError(500, "Invalid token");
+    }
+    
+    const passwordHash = await PasswordManager.hashPassword(newPassword);
+    const { password, ...user } = await User.updatePassword(user_id, passwordHash);
+
+    return user;
 }

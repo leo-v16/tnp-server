@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
-import { registerUserService, loginUserService, getUserService, getOneUserService, passwordChangeService } from "./user.service.js";
-import type { PasswordChangeInput, UserIdParamInput, UserLoginInput, UserRegisterInput } from "../user/user.type.js";
+import { registerUserService, loginUserService, getUserService, getOneUserService, passwordChangeService, forgotPasswordService, resetPasswordService } from "./user.service.js";
+import type { forgotPasswordInput, PasswordChangeInput, resetPasswordInput, UserIdParamInput, UserLoginInput, UserRegisterInput } from "../user/user.type.js";
 import Data from "../../utils/data.util.js";
 
 export const registerUserController = async (
@@ -81,6 +81,41 @@ export const passwordChangeController = async (
     try {
         const { user_id } = req.params;
         await passwordChangeService(user_id, req.body);
+        res.status(200).json({
+            success: true,
+            message: "Password changed successfully",
+        });
+    } catch(error) {
+        next(error);
+    }
+    
+}
+export const forgotPasswordController = async (
+    req: Request<{}, {}, forgotPasswordInput>,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { email } = req.body;
+        await forgotPasswordService(email);
+        res.status(200).json({
+            success: true,
+            message: `Verification link sent to ${email}, Valid for 15 minutes`,
+        });
+    } catch(error) {
+        next(error);
+    }
+    
+}
+export const resetPasswordController = async (
+    req: Request<{}, {}, resetPasswordInput, resetPasswordInput>,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { token } = req.query;
+        const { password }  = req.body;
+        await resetPasswordService(token, password);
         res.status(200).json({
             success: true,
             message: "Password changed successfully",

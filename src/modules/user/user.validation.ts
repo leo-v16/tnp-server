@@ -30,3 +30,18 @@ export const passwordChangeSchema = z.object({
         new_password: z.string("Password must be string").min(6, "Password should be minimum 6 chacaters")
     })
 })
+
+export const forgotPasswordSchema = z.object({
+    body: z.object({
+        email: z.email("Email must be provided in body")
+    })
+})
+
+export const resetPasswordSchema = z.object({
+    body: z.object({
+        password: z.string().min(6, "New password must be at minimum 6 characters")
+    }),
+    query: z.object({
+        token: z.string("Token must be provided")
+    })
+})
