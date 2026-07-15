@@ -13,6 +13,6 @@ studentRouter
 .get("/me", authenticate([Role.Student]), getStudentMeController)
 .put("/:user_id", authenticate(Role.SuperAdmin), validate(studentUpdateAdminSchema.extend(studentIdParamSchema.shape)), studentUpdateAdminController)
 .get("/:user_id", authenticate([Role.Student, Role.Coordinator, Role.SuperAdmin]), validate(studentIdParamSchema), getStudentByIdController)
-.get("/", authenticate(Role.SuperAdmin), getStudentController)
+.get("/", authenticate([Role.SuperAdmin, Role.Coordinator]), getStudentController)
 
 export default studentRouter;

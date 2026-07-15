@@ -84,8 +84,16 @@ export const getStudentByIdService = async (user_id: number, actor: UserJwtPaylo
     return student;
 }
 
-export const getStudentService = async () => {
-    const studentList = await Student.findAll();
+export const getStudentService = async (actor: UserJwtPayload) => {
+    let studentList = null;
+    switch (actor.auth_role_id) {
+        case Role.SuperAdmin: {
+            studentList = await Student.findAll();
+        }
+        case Role.Coordinator: {
+            studentList = await Student.findByCoordinatorId(actor.auth_user_id);
+        }
+    }
     if (!studentList) {
         throw new ApiError(404, "Couldn't fetch student list");
     }

@@ -216,6 +216,17 @@ class Student {
         return studentCount;
     }
 
+    static async findByCoordinatorId(coordinator_id: number) {
+        const studentList = await prisma.student_table.findMany({
+            where: {
+                department_table: {
+                    coordinator_id
+                }
+            }
+        });
+        return studentList;
+    }
+
     static async findByDepartmentId(department_id: number) {
         const studentList =  await prisma.student_table.findMany({
             where: {
