@@ -121,6 +121,8 @@ model placement_table {
   updated_on                                                             DateTime                      @default(now()) @db.Timestamp(0)
   last_date_of_submission                                                DateTime?                     @db.Date
   is_active                                                              Boolean?                      @default(true)
+  start_date                                                             DateTime                      @default(dbgenerated("(curdate())")) @db.Date
+  end_date                                                               DateTime                      @default(dbgenerated("(curdate() + interval 15 day)")) @db.Date
   placement_application_table                                            placement_application_table[]
   placement_category_table                                               placement_category_table[]
   placement_department_table                                             placement_department_table[]

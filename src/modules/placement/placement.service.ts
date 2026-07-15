@@ -36,9 +36,16 @@ export const createPlacementService = async (input: PlacementCreateInput, actor:
         salary_upper: input.salary_upper ?? null,
         only_category: input.only_category ?? [],
         only_department: input.only_department ?? [],
-        only_semester: input.only_semester ?? []
-        
+        only_semester: input.only_semester ?? [],
     }
+
+    if (input.end_date !== undefined) {
+        placementData.end_date = input.end_date
+    }
+    if (input.start_data !== undefined) {
+        placementData.start_date = input.start_data;
+    }
+    
     const placement = await Placement.create(placementData);
     if (!placement) {
         throw new ApiError(500, "Failed to create placement");
