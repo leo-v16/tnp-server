@@ -77,7 +77,7 @@ export const getStudentByIdService = async (user_id: number, actor: UserJwtPaylo
     const isSelf = actor.auth_user_id === user_id;
     const isSuperAdmin = actor.auth_role_id === Role.SuperAdmin;
 
-    const studentDepartment = await Department.findById(student.department_id ?? 0);
+    const studentDepartment = await Department.findById(student.department_id ?? 1);
     const isCoordinatorOfDepartment = actor.auth_role_id === Role.Coordinator && studentDepartment?.coordinator_id === actor.auth_user_id;
 
     if (!isSelf && !isSuperAdmin && !isCoordinatorOfDepartment) {
@@ -92,6 +92,7 @@ export const getStudentService = async (actor: UserJwtPayload) => {
     switch (actor.auth_role_id) {
         case Role.SuperAdmin: {
             studentList = await Student.findAll();
+            break;
         }
         case Role.Coordinator: {
             studentList = await Student.findByCoordinatorId(actor.auth_user_id);
