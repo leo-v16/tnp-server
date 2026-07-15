@@ -148,6 +148,19 @@ class Department {
         }
     } 
 
+    static async updateActiveState(department_id: number, state: "activate" | "deactivate") {
+        const is_active = (state === "activate")? true : false;
+        const department = await prisma.department_table.update({
+            where: {
+                department_id
+            },
+            data: {
+                is_active
+            }
+        });
+        return department;
+    }
+
     
 
     // static async create(departmentData: CreateDepartmentData): Promise<IDepartment | null> {

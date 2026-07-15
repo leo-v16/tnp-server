@@ -33,3 +33,12 @@ export const organizationQuerySchema = z.object({
         status: z.enum(["approved", "pending", "rejected", "all"]).optional()
     })
 });
+
+export const organizationUpdateActiveStateSchema = z.object({
+    params: z.object({
+        organization_id: z.coerce.number({ message: "organization_id must be a number" })
+    }),
+    query: z.object({
+        status: z.enum(["activate", "deactivate"])
+    })
+})

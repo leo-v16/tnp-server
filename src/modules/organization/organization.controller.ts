@@ -1,7 +1,7 @@
-import { getOneOrganizationService, getOrganizationsService, registerOrganizationService, updateOrganizationStatusService } from "./organization.service.js";
+import { getOneOrganizationService, getOrganizationsService, registerOrganizationService, updateOrganizationActiveStateService, updateOrganizationStatusService } from "./organization.service.js";
 import type { Request, Response, NextFunction } from "express";
 import type { UserJwtPayload } from "../../utils/jwt.util.js";
-import type { OrganizationIdParamInput, OrganizationRegisterInput } from "./organization.type.js";
+import type { OrganizationIdParamInput, OrganizationRegisterInput, OrganizationUpdateActiveStateInput } from "./organization.type.js";
 
 export const registerOrganizationController = async (
     req: Request<{}, {}, OrganizationRegisterInput>,
@@ -75,6 +75,25 @@ export const getOneOrganizationController = async (
         res.status(200).json({
             success: true,
             message: "Successfully fetched organization details",
+            data: organization
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const updateOrganizationActiveStateController = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { organization_id } = req.params as unknown as OrganizationUpdateActiveStateInput['params'];
+        const { status } = req.query as unknown as OrganizationUpdateActiveStateInput['query'];
+        const organization = await updateOrganizationActiveStateService(organization_id, status);
+        res.status(200).json({
+            success: true,
+            message: "Successfully updated organization state",
             data: organization
         });
     } catch (error) {

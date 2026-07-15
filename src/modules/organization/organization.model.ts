@@ -107,6 +107,19 @@ class Organization {
         return organizationList;
     }
 
+    static async updateActiveState(user_id: number, state: "activate" | "deactivate") {
+        const is_active = (state === "activate")? true : false;
+        const organization = await prisma.organization_table.update({
+            where: {
+                user_id
+            },
+            data: {
+                is_active
+            }
+        });
+        return organization;
+    }
+
 }
 
 export default Organization;

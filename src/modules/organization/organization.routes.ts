@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { validate } from "../../middlewares/validation.middleware.js";
-import { organizationIdParamSchema, organizationQuerySchema, organizationRegisterSchema, organizationStatusSchema } from "./organization.validation.js";
-import { getOneOrganizationController, getOrganizationsController, registerOrganizationController, updateOrganizationStatusController } from "./organization.controller.js";
+import { organizationIdParamSchema, organizationQuerySchema, organizationRegisterSchema, organizationStatusSchema, organizationUpdateActiveStateSchema } from "./organization.validation.js";
+import { getOneOrganizationController, getOrganizationsController, registerOrganizationController, updateOrganizationActiveStateController, updateOrganizationStatusController } from "./organization.controller.js";
 import { authenticate } from "../../middlewares/auth.middleware.js";
 import Role from "../role/role.model.js";
 
@@ -12,5 +12,6 @@ organizationRouter
 .patch("/:organization_id/status", authenticate([Role.SuperAdmin]), validate(organizationStatusSchema), updateOrganizationStatusController)
 .get("/", authenticate(Role.SuperAdmin), validate(organizationQuerySchema), getOrganizationsController)
 .get("/:organization_id", authenticate([Role.Student, Role.Coordinator, Role.SuperAdmin]), validate(organizationIdParamSchema), getOneOrganizationController)
+.delete("/:organization_id", authenticate([Role.SuperAdmin]), validate(organizationUpdateActiveStateSchema), updateOrganizationActiveStateController)
 
 export default organizationRouter;

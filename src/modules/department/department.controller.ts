@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
-import { departmentRegisterService, departmentUpdateService, getAllDepartmentService } from "./department.service.js";
+import { departmentRegisterService, departmentUpdateService, getAllDepartmentService, updateDepartmentActiveStateService } from "./department.service.js";
 import type { UserJwtPayload } from "../../utils/jwt.util.js";
-import type { DepartmentIdParamInput, DepartmentRegisterInput, DepartmentUpdateInput } from "./department.type.js";
+import type { DepartmentIdParamInput, DepartmentRegisterInput, DepartmentUpdateActiveStateInput, DepartmentUpdateInput } from "./department.type.js";
 import Data from "../../utils/data.util.js";
 
 export const getAllDepartmentController = async (
@@ -55,3 +55,24 @@ export const departmentUpdateController = async (
         next(error);
     }
 }
+
+export const updateDepartmentActiveStateController = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { department_id } = req.params as unknown as DepartmentUpdateActiveStateInput['params'];
+        const { status } = req.query as unknown as DepartmentUpdateActiveStateInput['query'];
+        const organization = await updateDepartmentActiveStateService(department_id, status);
+        res.status(200).json({
+            success: true,
+            message: "Successfully updated department state",
+            data: organization
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+

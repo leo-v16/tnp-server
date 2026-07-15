@@ -63,7 +63,7 @@ export const getStudentController = async (
     next: NextFunction
 ) => {
     try {
-        const studentList = await getStudentService();
+        const studentList = await getStudentService(req.user as UserJwtPayload);
         const sanitizedList = studentList.map((student) => Data.sanitize(student));
         res.status(200).json({
             success: true,

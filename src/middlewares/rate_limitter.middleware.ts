@@ -36,4 +36,4 @@ export const apiLimit = rateLimit({
             retryAfterSeconds: Math.ceil(req.rateLimit.resetTime.getTime() - Date.now()) / 1000
         }
     }
-})
+});

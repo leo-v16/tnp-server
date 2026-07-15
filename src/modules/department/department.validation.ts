@@ -25,3 +25,12 @@ export const departmentIdParamSchema = z.object({
         department_id: z.number("Department id must be a number")
     }).strict()
 })
+
+export const departmentUpdateActiveStateSchema = z.object({
+    params: z.object({
+        department_id: z.coerce.number({ message: "department_id must be a number" })
+    }),
+    query: z.object({
+        status: z.enum(["activate", "deactivate"])
+    })
+})

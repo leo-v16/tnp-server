@@ -39,3 +39,11 @@ export const departmentUpdateService = async (department_id: number, input: Depa
 
     return department;
 }
+
+export const updateDepartmentActiveStateService = async (department_id: number, status: "activate" | "deactivate") => {
+    const department = await Department.updateActiveState(department_id, status);
+    if (!department) {
+        throw new ApiError(404, "Department not found");
+    }
+    return department;
+}

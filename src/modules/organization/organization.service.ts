@@ -75,3 +75,11 @@ export const getOneOrganizationService = async (organization_id: number) => {
     }
     return organization;
 }
+
+export const updateOrganizationActiveStateService = async (organization_id: number, status: "activate" | "deactivate") => {
+    const organization = await Organization.updateActiveState(organization_id, status);
+    if (!organization) {
+        throw new ApiError(404, "Organization not found");
+    }
+    return organization;
+}
