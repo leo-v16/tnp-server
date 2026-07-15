@@ -228,6 +228,7 @@ class Student {
                 gender_table: true,
                 category_table: true,
                 semester_table: true,
+                department_table: true,
                 
                 division_table_student_table_tenth_division_idTodivision_table: true,
                 division_table_student_table_twelfth_division_idTodivision_table: true
@@ -240,6 +241,16 @@ class Student {
         const studentList =  await prisma.student_table.findMany({
             where: {
                 department_id
+            },
+            include: {
+                user_table: true,
+                gender_table: true,
+                category_table: true,
+                semester_table: true,
+                department_table: true,
+                
+                division_table_student_table_tenth_division_idTodivision_table: true,
+                division_table_student_table_twelfth_division_idTodivision_table: true
             }
         });
         return studentList;
