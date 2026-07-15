@@ -146,22 +146,19 @@ class Student {
                     });                                                                                                                            
                 }                                                                                                                                  
                                                                                                                                                    
-                const updatePayload: Prisma.student_tableUpdateInput = {                                                                           
-                    ...studentData                                                                                                                 
-                };                                                                                                                                 
-                                                                                                                                                   
-                if (Object.keys(userData).length > 0) {                                                                                            
-                    updatePayload.user_table = {                                                                                                   
-                        update: userData                                                                                                           
-                    };                                                                                                                             
-                }                                                                                                                                  
-                                                                                                                                                   
-                return await tx.student_table.update({                                                                                             
-                    where: { user_id },                                                                                                            
-                    data: updatePayload,                                                                                                           
-                    include: {                                                                                                                     
-                        user_table: true                                                                                                           
-                    }                                                                                                                              
+                if (Object.keys(userData).length > 0) {
+                    await tx.user_table.update({
+                        where: { user_id },
+                        data: userData
+                    });
+                }
+
+                return await tx.student_table.update({
+                    where: { user_id },
+                    data: studentData,
+                    include: {
+                        user_table: true
+                    }
                 });                                                                                                                                
             });                                                                                                                                    
                                                                                                                                                    

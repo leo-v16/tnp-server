@@ -99,7 +99,9 @@ export const getStudentMeController = async (
                 tenth_division: student.division_table_student_table_tenth_division_idTodivision_table?.division,
                 twelfth_division: student.division_table_student_table_twelfth_division_idTodivision_table?.division,
                 date_of_birth: student.date_of_birth,
-                roll_no: student.roll_no
+                roll_no: student.roll_no,
+                image_url: student.image_url,
+                resume_url: student.resume_url
             }
         });
     } catch (error) {
@@ -132,7 +134,9 @@ export const getStudentByIdController = async (
                 tenth_division: student.division_table_student_table_tenth_division_idTodivision_table?.division,
                 twelfth_division: student.division_table_student_table_twelfth_division_idTodivision_table?.division,
                 date_of_birth: student.date_of_birth,
-                roll_no: student.roll_no
+                roll_no: student.roll_no,
+                image_url: student.image_url,
+                resume_url: student.resume_url
             }
         });
     } catch (error) {
