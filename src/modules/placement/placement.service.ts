@@ -16,7 +16,7 @@ export const createPlacementService = async (input: PlacementCreateInput, actor:
     }
     if (actor.auth_role_id === Role.Organization) {
         const org = await Organization.findById(actor.auth_user_id);
-        if (!org || org.approval_id !== 1) {
+        if (!org || org.approval_id !== 2) {
             throw new ApiError(403, "Organization account is not approved or has been rejected");
         }
     }
