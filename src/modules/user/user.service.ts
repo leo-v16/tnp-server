@@ -37,7 +37,7 @@ export const loginUserService = async (input: UserLoginInput) => {
 
     if (input.role_id === Role.Organization) {
         const organization = await Organization.findById(existingUser.user_id);
-        if (!organization || organization.approval_id !== 1) {
+        if (!organization || organization.approval_id !== 2) {
             throw new ApiError(403, "Organization account is pending approval or has been rejected");
         }
     }
