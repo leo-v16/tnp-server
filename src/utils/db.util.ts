@@ -1,3 +1,5 @@
+import NodeCache from "node-cache";
+
 export function buildUpdateQuery<T extends Record<string, unknown>>(payload: T): {setClauses: string, values: NonNullable<T[keyof T]>[]} {
     const fields = Object.keys(payload).filter(
         (key) => payload[key as keyof T] !== undefined

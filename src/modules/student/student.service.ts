@@ -39,6 +39,8 @@ export const updateStudentService = async (input: StudentUpdateInput, actor: Use
         category_id: input.category_id,
         resume_url: input.resume_url,
         image_url: input.image_url,
+        gender_id: input.gender_id,
+        date_of_birth: input.date_of_birth
     });
     const updatedStudent = await Student.update(actor.auth_user_id, studentData, input.skills);
     if (!updatedStudent) {
