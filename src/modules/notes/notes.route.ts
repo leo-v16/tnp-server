@@ -12,7 +12,7 @@ const notesRouter = Router();
 notesRouter
 .post("/", authenticate([Role.Coordinator, Role.SuperAdmin, Role.Organization]), validate(notesCreateSchema), noteCreateController)
 .get("/", noteGetAllController)
-.get("/:note_id", validate(notesIdParamSchema), noteGetOneService)
 .get("/me", authenticate([Role.SuperAdmin, Role.Organization, Role.Coordinator]), noteGetByCreatorService)
+.get("/:note_id", validate(notesIdParamSchema), noteGetOneService)
 
 export default notesRouter;
