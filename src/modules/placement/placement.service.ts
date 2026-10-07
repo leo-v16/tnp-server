@@ -61,14 +61,21 @@ export const getPlacementService = async (actor: UserJwtPayload): Promise<IPlace
                 throw new ApiError(500, "Could not find eligible placements");
             }
             return eligiblePlacement;
+        case Role.SuperAdmin: {
+            const allPlacements = await Placement.findAll();
+            if (!allPlacements) {
+                throw new ApiError(500, "Could not find placements");
+            }
+            return allPlacements as unknown as IPlacement[];
+        }
         case Role.Organization:
-        case Role.Coordinator:
-        case Role.SuperAdmin:
+        case Role.Coordinator: {
             const creatorPlacement = await Placement.findByCreatorId(actor.auth_user_id);
             if (!creatorPlacement) {
                 throw new ApiError(500, "Could not find placements");
             }
             return creatorPlacement;
+        }
         default:
             throw new ApiError(404, "Invalid Role");
     }
